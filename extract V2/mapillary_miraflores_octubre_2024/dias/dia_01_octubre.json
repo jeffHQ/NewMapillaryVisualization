@@ -1,0 +1,74 @@
+[
+  {
+    "id": "1789951711749198",
+    "lat": -12.116597,
+    "lon": -77.03704,
+    "day": 1,
+    "date_str": "2024-10-01",
+    "time_str": "22:05:21",
+    "object_value": "object--street-light",
+    "object_type": "panoptic",
+    "user": "kaart_360",
+    "image_url": "https://scontent.flim39-1.fna.fbcdn.net/m1/v/t6/AQPxZ19uMaml41ph8LBqygaD3X8QKehA7S1yACPkndKTgpCEP7x7Y9ZLwywfxqkvp6PJXu9krC7KTgHTZUT84UDkXjXM06W4ArvZ-2vthGuKItyySb1pbIggz5fmhnIftVNyuUdEkjZ7aAe3GX_W0CdbilaKvkJkpFWqWR37lZ0EDXA?stp=s1024x512&edm=APOBWVQEAAAA&_nc_gid=xVoKQPsDnQ3pHiw-ld-dvw&_nc_oc=AdrEJ4cu5iu-eUb9xn-f8TPJfMvJ4uw7T98LmySd6dvhGPwGxxsSKe117QRDWnlQdU0NhKeOjbnGMhQTgKt4J_ha&ccb=10-5&oh=00_AQOBA-wxsKt5WK_tScNjqnhoM4VJpfhc1q4iQKNfXZm_WA&oe=6AF66378&_nc_sid=201bca"
+  },
+  {
+    "id": "1789951771749192",
+    "lat": -12.116392,
+    "lon": -77.037125,
+    "day": 1,
+    "date_str": "2024-10-01",
+    "time_str": "22:05:13",
+    "object_value": "object--traffic-sign--front",
+    "object_type": "panoptic",
+    "user": "kaart_360",
+    "image_url": "https://scontent.flim39-1.fna.fbcdn.net/m1/v/t6/AQMqioNnvd5-9WYCQA3391nJlzlIP8lZMmz_UjVpo2ALSj4-hRRJWPzC180A12YrAL4OXVEoFUr2XSMm2qw4lTd_K53aPOELtEzg9duElWtS0bDjg-RJLmQKEa_v9vxv1EDmiQ4hFSUK8dGMLAjl8mlIOMaSOFHBJeWGTbnghKVNZA?stp=s1024x512&edm=APOBWVQEAAAA&_nc_gid=xVoKQPsDnQ3pHiw-ld-dvw&_nc_oc=AdqFojYN5x-x99rzgBgJbM4kS9SPejHwhSxLBPzejULy8D3L5nbBGGM0w4nyLVrh3Mt5-lFRIeZCIFSal912vJ8B&ccb=10-5&oh=00_AQMNy5NGju4rPqmP0nuMwFhz44Ijcn_tyWiS4WoZFfib-g&oe=6AF66514&_nc_sid=201bca"
+  },
+  {
+    "id": "1789951801749189",
+    "lat": -12.116217,
+    "lon": -77.03699,
+    "day": 1,
+    "date_str": "2024-10-01",
+    "time_str": "22:05:17",
+    "object_value": "object--sign--advertisement",
+    "object_type": "panoptic",
+    "user": "kaart_3",
+    "image_url": "https://scontent.flim39-1.fna.fbcdn.net/m1/v/t6/AQMjsW8pi_2dx-baaKYJnDhUPfENxCRifCSr--HH-ptIlIWSlcmZ112xjWZZDwEgfTlL3DGj0JZcbEAGIzW9ADHVnojJn3TP-Ebj-uLcCxy6d6zdPHlNl0HV5atbs7bz13r9-H2cGqlv4frENzO48haPsHnY6ATaZVP92Cx3MUqVyK8?stp=s1024x576&edm=APOBWVQEAAAA&_nc_gid=xVoKQPsDnQ3pHiw-ld-dvw&_nc_oc=AdrqGNMw1BZiPi9yWYRAR7uLZhQbX5fIXG8pGT_wPWJMOHEGEcdkc_-UGlkmA8a_MCiftEp-8x7OBaTDOfu9DC6z&ccb=10-5&oh=00_AQMxMNiPOF1fqXccEMFLhkHjaslvcaBFQjbfEuHvZn7aqw&oe=6AF67FBC&_nc_sid=201bca"
+  },
+  {
+    "id": "1789951811749188",
+    "lat": -12.116374,
+    "lon": -77.03717,
+    "day": 1,
+    "date_str": "2024-10-01",
+    "time_str": "22:05:19",
+    "object_value": "object--sign--store",
+    "object_type": "panoptic",
+    "user": "kaart_360",
+    "image_url": "https://scontent.flim39-1.fna.fbcdn.net/m1/v/t6/AQPxZ19uMaml41ph8LBqygaD3X8QKehA7S1yACPkndKTgpCEP7x7Y9ZLwywfxqkvp6PJXu9krC7KTgHTZUT84UDkXjXM06W4ArvZ-2vthGuKItyySb1pbIggz5fmhnIftVNyuUdEkjZ7aAe3GX_W0CdbilaKvkJkpFWqWR37lZ0EDXA?stp=s1024x512&edm=APOBWVQEAAAA&_nc_gid=xVoKQPsDnQ3pHiw-ld-dvw&_nc_oc=AdrEJ4cu5iu-eUb9xn-f8TPJfMvJ4uw7T98LmySd6dvhGPwGxxsSKe117QRDWnlQdU0NhKeOjbnGMhQTgKt4J_ha&ccb=10-5&oh=00_AQOBA-wxsKt5WK_tScNjqnhoM4VJpfhc1q4iQKNfXZm_WA&oe=6AF66378&_nc_sid=201bca"
+  },
+  {
+    "id": "1789951821749187",
+    "lat": -12.116273,
+    "lon": -77.036705,
+    "day": 1,
+    "date_str": "2024-10-01",
+    "time_str": "22:05:15",
+    "object_value": "object--sign--store",
+    "object_type": "panoptic",
+    "user": "kaart_1",
+    "image_url": "https://scontent.flim39-1.fna.fbcdn.net/m1/v/t6/AQPq1iERpIe7U3t5lZUeQdzRtNRamhKy9q4jzaI8JTCjTAuxmdbNBWjqWcOkMxHvYJweDAUEQtGAvDrG3h_6tRMhka0_LloE5ybf5nCJh6VdRebW6DpQ3CrByRPRGGHaOe94EjJI0fNGJ6Mh0lW8jE9jaXBrjy5Yu0OmyHA3GcANpjA?stp=s1024x576&edm=APOBWVQEAAAA&_nc_gid=xVoKQPsDnQ3pHiw-ld-dvw&_nc_oc=Adqlwe7wikQdYqJ23ZkDiVk9qRdYCdbh0Cr5lLXmrN1lLyd5ZwPsVgWyCrNd9bolDJkGu57rC_HOsiI1YoBQA2wS&ccb=10-5&oh=00_AQMZp3ZhigGBC2pLNOzLZ29n-BmYU8T_SieMQkzbf2HCeg&oe=6AF67AC4&_nc_sid=201bca"
+  },
+  {
+    "id": "1789951861749183",
+    "lat": -12.116207,
+    "lon": -77.03707,
+    "day": 1,
+    "date_str": "2024-10-01",
+    "time_str": "22:05:13",
+    "object_value": "object--street-light",
+    "object_type": "panoptic",
+    "user": "ciclolibres",
+    "image_url": "https://scontent.flim39-1.fna.fbcdn.net/m1/v/t6/AQNe4mRYGmTRteWJLPCpeWjg6PIJqc1-Vxak1zL7Fwshcs_PJJSvk7u7fJRCu9JlrLRXBzpUxTJdfD9PyccgyRm54qY8DaII5QDE0gIVgaaZn0Iz5-ElFZkBE3ATT7BiYO4tF4FYCeDjxhBjuEtZnw7a4eoG8-c9CRgmDVsJDa2fRMA?stp=s1024x768&edm=APOBWVQEAAAA&_nc_gid=xVoKQPsDnQ3pHiw-ld-dvw&_nc_oc=Adr7XrS1rGs7IpFpfHDcRTjigBdsUlC4RKi_SHu7n2-UyolenFPNnpBki0RLoW2dkPCidre5TTltJnQrmslGuo4F&ccb=10-5&oh=00_AQPE2mzgpr-dsoH52M_fVh9nZrErY8l0LxdP8a0MtbsxLg&oe=6AF64BA7&_nc_sid=201bca"
+  }
+]
