@@ -1,0 +1,27 @@
+file,field,description,type,unit_or_format,notes
+features.csv,id,Identificador del map_feature en Mapillary,string,,
+features.csv,source,Fuente de la detección en Mapillary (panoptic / mvd_fast / trafficsign),string,,
+features.csv,value,Clase del objeto detectado (taxonomía Mapillary),string,"p. ej. object--street-light",277 valores distintos
+features.csv,category,Categoría analítica propia agrupando `value` por prefijo,string,"signage|lighting|commerce|marking|furniture|utilities|traffic_light|other",ver code/05_build_processed_data.py
+features.csv,lon,Longitud,float,grados WGS84,
+features.csv,lat,Latitud,float,grados WGS84,
+features.csv,direction,Dirección alineada del objeto,float,grados 0-360,vacío si no disponible
+features.csv,captured_at,Fecha-hora de captura de la primera imagen asociada,datetime,ISO 8601 hora de Praga,
+features.csv,year,Año de captura (hora de Praga),int,,4 registros de 2006 se omiten en la app
+features.csv,month,Mes de captura,int,1-12,
+features.csv,hour,Hora local de captura,int,0-23,
+features.csv,sequence,Identificador de la secuencia de captura,string,,
+trips.csv,sequence,Secuencia de origen,string,,
+trips.csv,mode,Modo inferido por velocidad media,string,"walk (<7 km/h)|micro (7-25 km/h)|vehicle (>25 km/h)",inferencia no observada
+trips.csv,avg_speed_kmh,Velocidad media del tramo ajustado a la red vial,float,km/h,
+trips.csv,duration_s,Duración del tramo,float,segundos,
+trips.csv,n_points,Puntos del trazado ajustado (OSRM),int,,
+trips.csv,start,Inicio del tramo,datetime,ISO 8601 hora de Praga,
+trips.csv,year,Año de inicio,int,,
+trips.csv,hour,Hora local de inicio,int,0-23,
+trips.csv,lon_start/lat_start/lon_end/lat_end,Extremos del tramo,float,grados WGS84,
+category_summary.csv,category/label/value/count,Conteo de detecciones por clase y categoría,mixed,,
+yearly_summary.csv,year/category/detections,Detecciones por año y categoría,mixed,,
+images_by_year.csv,year/images,Imágenes por año dentro de la zona cubierta por las detecciones,int,,
+images_by_device_make.csv,make/images,Imágenes por fabricante de cámara (agregado; sin identificar contribuyentes),mixed,,"'Desconocido' = make vacío"
+summary.json,*,Totales y agregados usados por la app y el informe,json,,

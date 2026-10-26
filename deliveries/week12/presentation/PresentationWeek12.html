@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Presentation Week 12 — Praga a pie de calle</title>
+<style>
+  @page { size: 13.333in 7.5in; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 20pt/1.35 "Segoe UI", Arial, sans-serif; color: #e8eefb; background: #0b1220; }
+  section { width: 13.333in; height: 7.5in; padding: 0.55in 0.7in; page-break-after: always; position: relative; overflow: hidden; background: #0b1220; }
+  h1 { font-size: 40pt; margin: 0 0 8pt; line-height: 1.1; } h2 { font-size: 28pt; margin: 0 0 14pt; color: #7cc4ff; }
+  p, li { margin: 0 0 8pt; } ul { padding-left: 24pt; margin: 0; }
+  .muted { color: #a3b1cc; font-size: 14pt; } .todo { color: #ffd166; }
+  .row { display: flex; gap: 0.4in; align-items: flex-start; } .row > * { flex: 1; }
+  img { width: 100%; border: 1px solid #2b3a57; border-radius: 8px; }
+  .big { font-size: 54pt; font-weight: 700; color: #7cc4ff; line-height: 1; } .kpi { background: #131c2e; border: 1px solid #2b3a57; border-radius: 10px; padding: 14pt; }
+  table { border-collapse: collapse; width: 100%; font-size: 16pt; } td, th { border-bottom: 1px solid #2b3a57; padding: 5pt 8pt; text-align: left; }
+  .foot { position: absolute; bottom: 0.25in; left: 0.7in; right: 0.7in; font-size: 11pt; color: #a3b1cc; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<section>
+  <h1>Praga a pie de calle</h1>
+  <p style="font-size:24pt">¿Qué dicen las imágenes colaborativas de Mapillary sobre quién captura la ciudad?</p>
+  <p class="muted">DS5343 Data Visualization · Semana 12: borrador refinado y crítica de pares</p>
+  <p class="todo" style="margin-top:1.2in">[Integrantes del equipo]</p>
+  <div class="foot"><span>UTEC · 2026-2</span><span>28 de octubre de 2026</span></div>
+</section>
+
+<section>
+  <h2>Problema y audiencia</h2>
+  <ul>
+    <li>Mapillary: millones de fotos de calle aportadas por voluntarios; se usan como si describieran <i>la ciudad</i>.</li>
+    <li>Pero cada dato depende de <b>quién</b> captura, <b>cuándo</b> y <b>con qué dispositivo</b>.</li>
+    <li><b>Audiencia:</b> analistas y estudiantes de datos geoespaciales que evalúan datos colaborativos.</li>
+    <li><b>Pregunta guía:</b> ¿puedo confiar en estos datos para mi análisis?</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>2</span></div>
+</section>
+
+<section>
+  <h2>Datos</h2>
+  <div class="row">
+    <div class="kpi"><div class="big">39.564</div>detecciones de objetos · 277 clases</div>
+    <div class="kpi"><div class="big">6.379</div>trayectorias reconstruidas</div>
+    <div class="kpi"><div class="big">76.225</div>imágenes en la zona</div>
+  </div>
+  <ul style="margin-top:22pt">
+    <li>Mapillary API v4 (CC BY-SA) · oeste de Praga, ~4,6 × 8,9 km.</li>
+    <li>Pipeline: cuadrícula → limpieza → ajuste a la red (OSRM) → 7 categorías → JSON compacto.</li>
+    <li class="todo">Límite: solo 2 de 5 lotes de <code>map_features</code> descargados (lon 14,350–14,415).</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>3</span></div>
+</section>
+
+<section>
+  <h2>Del prototipo a la versión refinada</h2>
+  <table>
+    <tr><th>Semana 10</th><th>Semana 12</th></tr>
+    <tr><td>Un HTML generado desde Python</td><td>App estática con datos separados y recorrido guiado</td></tr>
+    <tr><td>Solo trayectorias</td><td>Objetos, densidad 3D y trayectorias</td></tr>
+    <tr><td>Filtros independientes</td><td>Filtros enlazados: año · hora · categoría · modo</td></tr>
+    <tr><td>Sin contexto ni límites</td><td>Narrativa, hallazgos con cifras y bloque de límites</td></tr>
+    <tr><td>Sin accesibilidad</td><td>Teclado, ARIA, paleta segura para daltonismo, responsive</td></tr>
+  </table>
+  <div class="foot"><span>Praga a pie de calle</span><span>4</span></div>
+</section>
+
+<section>
+  <h2>Pregunta 2 · ¿Cuándo se capturó la ciudad?</h2>
+  <div class="row">
+    <div><img src="img/step2.png" alt="Detecciones de 2022"></div>
+    <div>
+      <p><b>2022</b> concentra el <b>26,4 %</b> de las detecciones; 2020 el 15,4 %; 2025 el 14,6 %.</p>
+      <p>2014 y 2021 casi no aportan datos.</p>
+      <p class="muted">Un solo año filtrado revela una campaña que recorre pocos ejes.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Praga a pie de calle</span><span>5</span></div>
+</section>
+
+<section>
+  <h2>Pregunta 4 · ¿Dónde se concentra la actividad?</h2>
+  <div class="row">
+    <div><img src="img/step4.png" alt="Densidad 3D"></div>
+    <div>
+      <p><b>39,5 %</b> de las detecciones en el <b>10 %</b> de las celdas de ~100 m.</p>
+      <p>Dominan señalización (34 %) y alumbrado (25 %); mobiliario urbano solo 6 %.</p>
+      <p class="muted">Hexágonos 3D + filtro de categoría para ver dónde está cada tipo.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Praga a pie de calle</span><span>6</span></div>
+</section>
+
+<section>
+  <h2>Pregunta 5 · ¿Cómo se desplaza quien captura?</h2>
+  <div class="row">
+    <div><img src="img/step5.png" alt="Trayectorias"></div>
+    <div>
+      <p><b>62,6 %</b> vehículo · 24,6 % bici/scooter · 12,8 % a pie (inferido por velocidad).</p>
+      <p>Pico a las <b>13:00 h</b>; casi sin capturas nocturnas.</p>
+      <p class="muted">Reloj de 24 h: superpone todas las fechas (ciclo diario, no un día concreto).</p>
+    </div>
+  </div>
+  <div class="foot"><span>Praga a pie de calle</span><span>7</span></div>
+</section>
+
+<section>
+  <h2>Decisiones de diseño y alternativas</h2>
+  <ul>
+    <li><b>Mapa + panel:</b> el contexto espacial es la pregunta central.</li>
+    <li><b>Hexágonos 3D</b> en lugar de mapa de calor: conservan diferencias de magnitud.</li>
+    <li><b>Crossfilter:</b> cada histograma ignora su propio filtro para mostrar qué se pierde al estrechar.</li>
+    <li><b>Okabe-Ito</b> para categorías; <i>inferno</i> para densidad.</li>
+    <li><b>Recorrido guiado</b> para pasar de “colección de gráficos” a narrativa.</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>8</span></div>
+</section>
+
+<section>
+  <h2>Límites conocidos</h2>
+  <ul>
+    <li>Cobertura geográfica parcial de <code>map_features</code> (lotes 3–5 pendientes).</li>
+    <li>Trayectorias reconstruidas desde detecciones; modo inferido solo por velocidad.</li>
+    <li>Pocas campañas dominan algunos años: sesgo de quién captura.</li>
+    <li>Discrepancia sin explicar: 2020 tiene más imágenes, 2022 más detecciones (razón 0,4 → 1,3).</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>9</span></div>
+</section>
+
+<section>
+  <h2>Retroalimentación que buscamos</h2>
+  <ul>
+    <li>¿El recorrido guiado se entiende sin explicación previa?</li>
+    <li>¿La capa 3D ayuda a comparar zonas o estorba?</li>
+    <li>¿Qué vista falta para evaluar la confianza en los datos (¿dispositivo? ¿comparar años?)?</li>
+  </ul>
+  <p class="todo" style="margin-top:20pt">[Añadir aquí la síntesis de la retroalimentación real recibida y las decisiones: ver PeerCritiqueResponse.pdf]</p>
+  <div class="foot"><span>Praga a pie de calle</span><span>10</span></div>
+</section>
+
+<section>
+  <h2>Plan hasta la semana 15</h2>
+  <table>
+    <tr><th>Tarea</th><th>Estado</th></tr>
+    <tr><td>Descargar lotes 3–5 y regenerar datos</td><td>Pendiente (requiere token)</td></tr>
+    <tr><td>Explicar discrepancia imágenes/detecciones</td><td>Pendiente</td></tr>
+    <tr><td>Comparación de dos años · pruebas con usuarios</td><td>Pendiente</td></tr>
+    <tr><td>Paper final, teaser, video, póster</td><td>Borrador de paper listo</td></tr>
+    <tr><td>Publicar en GitHub Pages</td><td>Workflow listo</td></tr>
+  </table>
+  <div class="foot"><span>Praga a pie de calle</span><span>11</span></div>
+</section>
+
+</body>
+</html>

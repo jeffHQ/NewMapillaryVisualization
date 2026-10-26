@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+.env
+tokens.txt
+dust/
+graphify-out/cache/
+.DS_Store
+
+# Descargas crudas de la API (regenerar con deliveries/weekNN/code/01 y 02)
+deliveries/*/data/raw/

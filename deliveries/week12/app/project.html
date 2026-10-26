@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Praga a pie de calle · Proyecto</title>
+  <meta name="description" content="Página del proyecto: visualización de capturas colaborativas de Mapillary en el oeste de Praga (DS5343, UTEC 2026-2).">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { display: block; height: auto; }
+    main.page { max-width: 820px; margin: 0 auto; padding: 24px 16px 64px; }
+    main.page h2 { margin-top: 32px; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+    .links a { text-decoration: none; }
+    .todo { color: #ffd166; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; border-bottom: 1px solid var(--border); padding: 6px 8px; }
+    pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Praga a pie de calle</h1>
+    <p class="tagline">DS5343 – Data Visualization · UTEC · Semestre 2026-2</p>
+  </div>
+  <nav aria-label="Navegación"><a href="index.html">Abrir la aplicación</a></nav>
+</header>
+
+<main class="page">
+  <h2>Resumen</h2>
+  <p>Mapillary es una plataforma colaborativa de fotografía a nivel de calle. Cada imagen deja un rastro: <em>dónde</em> estuvo alguien, <em>cuándo</em> y <em>qué objetos urbanos</em> reconoció el sistema. Este proyecto convierte ese rastro en una exploración visual del oeste de Praga (~4,6 × 8,9 km): ~39 mil detecciones de objetos y ~6 mil trayectorias reconstruidas.</p>
+  <p>La aplicación guía al usuario por seis preguntas —cobertura, tiempo, tipo de objeto, concentración espacial, desplazamiento y límites— con filtros enlazados por año, hora y categoría. Su mensaje central es metodológico: <strong>Mapillary describe mejor a quienes capturan que a la ciudad capturada</strong>, y cualquier lectura urbana debe considerar quién, cuándo y con qué dispositivo.</p>
+
+  <div class="links">
+    <a class="btn primary" href="index.html">Abrir la aplicación</a>
+    <a class="btn" href="https://github.com/jeffHQ/NewMapillaryVisualization">Repositorio</a>
+    <a class="btn" href="paper/PaperDraft.pdf">Borrador del paper (PDF)</a>
+    <span class="btn todo" aria-disabled="true">Video teaser — semana 15</span>
+    <span class="btn todo" aria-disabled="true">Video de presentación — semana 15</span>
+  </div>
+
+  <h2>Equipo</h2>
+  <table>
+    <tr><th>Integrante</th><th>Responsabilidades</th></tr>
+    <tr><td class="todo">[Completar]</td><td class="todo">[Completar]</td></tr>
+    <tr><td class="todo">[Completar]</td><td class="todo">[Completar]</td></tr>
+    <tr><td class="todo">[Completar]</td><td class="todo">[Completar]</td></tr>
+  </table>
+
+  <h2>Datos y agradecimientos</h2>
+  <ul>
+    <li><a href="https://www.mapillary.com/developer/api-documentation">Mapillary API v4</a> (<code>map_features</code> e <code>images</code>), datos colaborativos bajo CC BY-SA. Imágenes y términos de uso: Mapillary.</li>
+    <li>Ajuste de trayectorias a la red vial: <a href="https://project-osrm.org/">OSRM</a> sobre datos de © OpenStreetMap contributors.</li>
+    <li>Mapa base: © CARTO, © OpenStreetMap contributors.</li>
+    <li>Bibliotecas: <a href="https://deck.gl/">deck.gl</a> 8.9 y <a href="https://maplibre.org/">MapLibre GL</a> 3.6.</li>
+    <li>Paleta categórica de Okabe &amp; Ito (segura para daltonismo).</li>
+    <li>Código asistido por IA (Claude Code), revisado por el equipo.</li>
+  </ul>
+
+  <h2>Ejecutar la aplicación</h2>
+  <pre>cd deliveries/week12/app
+python -m http.server 8000
+# abrir http://localhost:8000</pre>
+  <p>Se necesita conexión a internet para las bibliotecas (CDN) y el mapa base. Los datos ya procesados están en <code>app/data/</code>; el pipeline completo para regenerarlos está en <code>../code/</code>.</p>
+</main>
+</body>
+</html>

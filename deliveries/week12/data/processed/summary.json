@@ -1,0 +1,220 @@
+{
+  "area": {
+    "lon": [
+      14.349994,
+      14.415007
+    ],
+    "lat": [
+      50.05,
+      50.13
+    ],
+    "center": [
+      14.3825,
+      50.09
+    ],
+    "width_km": 4.6,
+    "height_km": 8.9
+  },
+  "generated_at": "2026-10-25",
+  "n_detections": 39564,
+  "n_sequences_detections": 1096,
+  "n_trips": 6379,
+  "n_images": 76225,
+  "n_distinct_values": 277,
+  "year_range": [
+    2006,
+    2026
+  ],
+  "detections_by_year": {
+    "2006": 4,
+    "2014": 27,
+    "2015": 806,
+    "2016": 2952,
+    "2017": 1271,
+    "2018": 534,
+    "2019": 784,
+    "2020": 6076,
+    "2021": 316,
+    "2022": 10446,
+    "2023": 4329,
+    "2024": 1554,
+    "2025": 5764,
+    "2026": 4701
+  },
+  "trips_by_year": {
+    "2014": 2,
+    "2015": 124,
+    "2016": 452,
+    "2017": 218,
+    "2018": 110,
+    "2019": 125,
+    "2020": 1089,
+    "2021": 51,
+    "2022": 1503,
+    "2023": 684,
+    "2024": 247,
+    "2025": 927,
+    "2026": 847
+  },
+  "trips_by_mode": {
+    "walk": 817,
+    "micro": 1568,
+    "vehicle": 3994
+  },
+  "trips_by_hour": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 20,
+    "4": 0,
+    "5": 49,
+    "6": 0,
+    "7": 30,
+    "8": 63,
+    "9": 337,
+    "10": 575,
+    "11": 343,
+    "12": 659,
+    "13": 1320,
+    "14": 663,
+    "15": 715,
+    "16": 523,
+    "17": 442,
+    "18": 560,
+    "19": 48,
+    "20": 26,
+    "21": 6,
+    "22": 0,
+    "23": 0
+  },
+  "images_by_year": {
+    "2003": 7,
+    "2004": 32,
+    "2005": 25,
+    "2006": 79,
+    "2007": 1,
+    "2008": 18,
+    "2010": 2,
+    "2012": 6,
+    "2013": 39,
+    "2014": 130,
+    "2015": 3470,
+    "2016": 7292,
+    "2017": 4851,
+    "2018": 2642,
+    "2019": 2221,
+    "2020": 15259,
+    "2021": 6381,
+    "2022": 7770,
+    "2023": 7471,
+    "2024": 2861,
+    "2025": 7701,
+    "2026": 7966
+  },
+  "device_makes_top": [
+    [
+      "Samsung",
+      20734
+    ],
+    [
+      "Www.Mosaic51.Com",
+      15155
+    ],
+    [
+      "Desconocido",
+      9605
+    ],
+    [
+      "Labpano",
+      6615
+    ],
+    [
+      "Apple",
+      6559
+    ],
+    [
+      "Lge",
+      6302
+    ],
+    [
+      "Xiaomi",
+      2079
+    ],
+    [
+      "Garmin",
+      1984
+    ]
+  ],
+  "top_values": [
+    {
+      "value": "object--street-light",
+      "count": 5703,
+      "category": "lighting"
+    },
+    {
+      "value": "object--traffic-sign--front",
+      "count": 4921,
+      "category": "signage"
+    },
+    {
+      "value": "object--traffic-sign--back",
+      "count": 2674,
+      "category": "signage"
+    },
+    {
+      "value": "object--sign--advertisement",
+      "count": 2580,
+      "category": "commerce"
+    },
+    {
+      "value": "object--support--pole",
+      "count": 2042,
+      "category": "lighting"
+    },
+    {
+      "value": "object--support--utility-pole",
+      "count": 2014,
+      "category": "lighting"
+    },
+    {
+      "value": "object--sign--store",
+      "count": 1767,
+      "category": "commerce"
+    },
+    {
+      "value": "object--trash-can",
+      "count": 1467,
+      "category": "furniture"
+    },
+    {
+      "value": "object--manhole",
+      "count": 961,
+      "category": "utilities"
+    },
+    {
+      "value": "marking--discrete--other-marking",
+      "count": 931,
+      "category": "marking"
+    }
+  ],
+  "categories": {
+    "signage": 13601,
+    "lighting": 9908,
+    "commerce": 4655,
+    "marking": 3632,
+    "furniture": 2450,
+    "utilities": 3286,
+    "traffic_light": 1737,
+    "other": 295
+  },
+  "concentration": {
+    "occupied_cells_100m": 1565,
+    "top10pct_cells_share": 0.395
+  },
+  "peak_trip_hour": 13,
+  "source_split": {
+    "panoptic": 24424,
+    "trafficsign": 4830,
+    "mvd_fast": 10310
+  }
+}
