@@ -39,7 +39,6 @@ Requiere conexión a internet (deck.gl, MapLibre y el mapa base se cargan por CD
 │       ├── paper/  presentation/  critique/
 │       └── RefinedDraftReport.md
 ├── .github/workflows/pages.yml   # despliegue en GitHub Pages
-├── CLAUDE.md                     # configuración de graphify para Claude Code
 └── dust/                         # descartado/legado (ignorado por git)
 ```
 
@@ -70,12 +69,12 @@ Sin token puede ejecutarse solo `05`, que parte de los intermedios versionados e
 
 ## Graphify (grafo de conocimiento del código)
 
-El proyecto incluye [graphify](https://pypi.org/project/graphifyy/) (`graphifyy` en `requirements.txt`) para que Claude Code responda con el contexto del repositorio.
+El proyecto incluye [graphify](https://pypi.org/project/graphifyy/) (`graphifyy` en `requirements.txt`) para que un asistente de código responda con el contexto del repositorio.
 
 ```bash
-graphify install --platform claude   # una vez: instala la skill
-graphify claude install              # una vez por repo: CLAUDE.md y hooks
-# en Claude Code:  /graphify .       # genera graphify-out/graph.json
+graphify install                    # una vez: instala la skill
+graphify hook install               # una vez por repo: hooks de actualización
+# en el asistente:    /graphify .       # genera graphify-out/graph.json
 graphify explain "05_build_processed_data"
 ```
 
@@ -104,7 +103,7 @@ La visualización se implementa con **deck.gl** (HTML/CSS/JS, sin *build*). Los 
 
 ## Reconocimientos
 
-Datos © contribuyentes de [Mapillary](https://www.mapillary.com) (CC BY-SA) · ajuste a la red vial con [OSRM](https://project-osrm.org/) · mapa base © CARTO, © OpenStreetMap contributors · [deck.gl](https://deck.gl) y [MapLibre GL](https://maplibre.org) · paleta Okabe-Ito · código asistido por IA (Claude Code), según §3.3.
+Datos © contribuyentes de [Mapillary](https://www.mapillary.com) (CC BY-SA) · ajuste a la red vial con [OSRM](https://project-osrm.org/) · mapa base © CARTO, © OpenStreetMap contributors · [deck.gl](https://deck.gl) y [MapLibre GL](https://maplibre.org) · paleta Okabe-Ito · código asistido por IA, según §3.3.
 
 ## Licencia
 
