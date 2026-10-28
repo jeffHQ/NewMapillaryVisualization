@@ -67,16 +67,6 @@ python 05_build_processed_data.py
 
 Sin token puede ejecutarse solo `05`, que parte de los intermedios versionados en `data/interim/`. El token (*Client Access Token*) se obtiene en el [dashboard de desarrolladores de Mapillary](https://www.mapillary.com/dashboard/developers); **nunca lo escribas en el código.**
 
-## Graphify (grafo de conocimiento del código)
-
-El proyecto incluye [graphify](https://pypi.org/project/graphifyy/) (`graphifyy` en `requirements.txt`) para que un asistente de código responda con el contexto del repositorio.
-
-```bash
-graphify install                    # una vez: instala la skill
-graphify hook install               # una vez por repo: hooks de actualización
-# en el asistente:    /graphify .       # genera graphify-out/graph.json
-graphify explain "05_build_processed_data"
-```
 
 ## Cronograma
 
@@ -91,15 +81,13 @@ graphify explain "05_build_processed_data"
 
 *Por completar: los lineamientos piden documentar las contribuciones individuales en el repositorio.*
 
-| Integrante | Responsabilidades |
-|---|---|
-| | |
-| | |
-| | |
+| -------- Integrante ---------- | ---------- Responsabilidades ---------- |
+|--------------------------------|-----------------------------------------|
+| Jeffry Arturo Hilario Quintana | Todo ---------------------------------- |
 
 ## Decisión tecnológica
 
-La visualización se implementa con **deck.gl** (HTML/CSS/JS, sin *build*). Los lineamientos (§3.3) establecen D3.js como tecnología principal de la visualización final; el equipo decidió mantener deck.gl y **debe confirmar esa excepción con la profesora** antes de la entrega final.
+La visualización se implementa con **deck.gl** (HTML/CSS/JS, sin *build*). Los lineamientos (§3.3) establecen D3.js como tecnología principal de la visualización final; el equipo decidió mantener deck.gl y **debe confirmar esa excepción con el profesor** antes de la entrega final.
 
 ## Reconocimientos
 
