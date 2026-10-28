@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Praga a pie de calle — Presentación del proyecto</title>
+<style>
+@page { size: 13.333in 7.5in; margin: 0; }
+* { box-sizing: border-box; }
+body { margin:0; font: 20pt/1.35 "Segoe UI", Arial, sans-serif; color:#e8eefb; background:#0b1220; }
+section { width:13.333in; height:7.5in; padding:.5in .7in; page-break-after:always; position:relative; overflow:hidden; background:#0b1220; }
+h1 { font-size:46pt; margin:0 0 10pt; line-height:1.08; } h2 { font-size:28pt; margin:0 0 12pt; color:#7cc4ff; }
+h3 { font-size:19pt; margin:0 0 4pt; color:#e8eefb; }
+p, li { margin:0 0 8pt; } ul { margin:0; padding-left:24pt; }
+.muted { color:#a3b1cc; font-size:14pt; } .todo { color:#ffd166; } .acc { color:#7cc4ff; }
+.row { display:flex; gap:.4in; align-items:flex-start; } .row > * { flex:1; } .row > .narrow { flex:.8; } .row > .wide { flex:1.5; }
+img { width:100%; border:1px solid #2b3a57; border-radius:8px; display:block; }
+.kpi { background:#131c2e; border:1px solid #2b3a57; border-radius:12px; padding:14pt 16pt; }
+.big { font-size:50pt; font-weight:700; color:#7cc4ff; line-height:1; margin-bottom:4pt; }
+.pill { display:inline-block; background:#1b2740; border:1px solid #2b3a57; border-radius:999px; padding:2pt 12pt; font-size:14pt; margin:0 6pt 6pt 0; }
+.foot { position:absolute; bottom:.22in; left:.7in; right:.7in; font-size:11pt; color:#a3b1cc; display:flex; justify-content:space-between; }
+.cover { display:flex; flex-direction:column; justify-content:center; background:linear-gradient(135deg,#0b1220 55%,#16294a); }
+.quote { font-size:30pt; line-height:1.25; color:#e8eefb; border-left:6px solid #7cc4ff; padding-left:20pt; }
+</style></head><body>
+
+<section class="cover">
+  <p class="muted" style="font-size:15pt;letter-spacing:2px;text-transform:uppercase">DS5343 Data Visualization · UTEC · 2026-2</p>
+  <h1>Praga a pie de calle</h1>
+  <p style="font-size:26pt;max-width:9.5in">¿Qué dicen las imágenes colaborativas de Mapillary sobre quién captura la ciudad?</p>
+  <p class="todo" style="margin-top:.7in">[Integrantes del equipo]</p>
+  <p class="muted">Presentación del proyecto · Semana 12</p>
+</section>
+
+<section>
+  <h2>El problema</h2>
+  <p class="quote">Usamos los datos colaborativos como si describieran <b class="acc">la ciudad</b>…<br>pero describen, sobre todo, <b class="acc">a quien la captura</b>.</p>
+  <ul style="margin-top:.45in">
+    <li>Cada dato depende de <b>quién</b> captura, <b>cuándo</b> y <b>con qué dispositivo</b>.</li>
+    <li><b>Audiencia:</b> analistas y estudiantes de datos geoespaciales que evalúan datos colaborativos.</li>
+    <li><b>Pregunta guía:</b> ¿puedo confiar en estos datos para mi análisis?</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>2</span></div>
+</section>
+
+<section>
+  <h2>Los datos</h2>
+  <div class="row">
+    <div class="kpi"><div class="big">39.564</div>detecciones de objetos urbanos · 277 clases</div>
+    <div class="kpi"><div class="big">6.379</div>trayectorias reconstruidas</div>
+    <div class="kpi"><div class="big">76.225</div>imágenes en la zona (2003–2026)</div>
+  </div>
+  <ul style="margin-top:.35in">
+    <li><b>Fuente:</b> Mapillary API v4 (<code>map_features</code> e <code>images</code>), licencia CC BY-SA.</li>
+    <li><b>Zona:</b> oeste de Praga, ~4,6 × 8,9 km (lon 14,350–14,415). <span class="todo">Límite: 2 de 5 lotes de detecciones descargados.</span></li>
+    <li><b>Privacidad:</b> sin nombres de contribuyentes; los dispositivos se agregan por fabricante.</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>3</span></div>
+</section>
+
+<section>
+  <h2>De la API a la pantalla</h2>
+  <svg viewBox="0 0 1180 250" width="100%" style="margin-top:.2in">
+    <defs><marker id="h" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7cc4ff"/></marker></defs>
+    <style>.b{fill:#131c2e;stroke:#2b3a57;stroke-width:2} .t{font:700 22px 'Segoe UI';fill:#7cc4ff} .s{font:17px 'Segoe UI';fill:#e8eefb} .a{stroke:#7cc4ff;stroke-width:3;fill:none;marker-end:url(#h)}</style>
+    <rect class="b" x="0" y="20" width="215" height="210" rx="12"/><text class="t" x="16" y="55">1 · Extraer</text><text class="s" x="16" y="88">Mapillary API v4</text><text class="s" x="16" y="114">cuadrícula 0,005°</text><text class="s" x="16" y="140">objetos + imágenes</text>
+    <path class="a" d="M217 125H243"/>
+    <rect class="b" x="245" y="20" width="215" height="210" rx="12"/><text class="t" x="261" y="55">2 · Limpiar</text><text class="s" x="261" y="88">geometría, clase,</text><text class="s" x="261" y="114">fecha, secuencia</text><text class="s" x="261" y="140">hora local de Praga</text>
+    <path class="a" d="M462 125H488"/>
+    <rect class="b" x="490" y="20" width="215" height="210" rx="12"/><text class="t" x="506" y="55">3 · Reconstruir</text><text class="s" x="506" y="88">≤15 s y ≤60 m</text><text class="s" x="506" y="114">ajuste a la red (OSRM)</text><text class="s" x="506" y="140">modo por velocidad</text>
+    <path class="a" d="M707 125H733"/>
+    <rect class="b" x="735" y="20" width="215" height="210" rx="12"/><text class="t" x="751" y="55">4 · Derivar</text><text class="s" x="751" y="88">277 clases →</text><text class="s" x="751" y="114">7 categorías</text><text class="s" x="751" y="140">CSV + JSON (≈ 2,4 MB)</text>
+    <path class="a" d="M952 125H978"/>
+    <rect class="b" x="980" y="20" width="200" height="210" rx="12"/><text class="t" x="996" y="55">5 · Mostrar</text><text class="s" x="996" y="88">deck.gl + MapLibre</text><text class="s" x="996" y="114">3 capas</text><text class="s" x="996" y="140">filtros enlazados</text>
+  </svg>
+  <p class="muted" style="margin-top:.2in">Todo el pipeline es reproducible con los scripts 01–05 del repositorio.</p>
+  <div class="foot"><span>Praga a pie de calle</span><span>4</span></div>
+</section>
+
+<section>
+  <h2>La aplicación</h2>
+  <div class="row">
+    <div class="wide"><img src="img_talk/talk1.png" alt="Aplicación: capa de objetos"></div>
+    <div>
+      <h3>Tres capas</h3><p><span class="pill">Objetos</span><span class="pill">Densidad 3D</span><span class="pill">Trayectorias</span></p>
+      <h3>Filtros enlazados</h3><p>Año · hora · categoría · modo. Cada histograma muestra qué se pierde al estrechar la selección.</p>
+      <h3>Recorrido guiado</h3><p>Seis preguntas; cada paso fija la vista y muestra un hallazgo calculado.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Praga a pie de calle</span><span>5</span></div>
+</section>
+
+<section>
+  <h2>¿Cuándo se capturó la ciudad?</h2>
+  <div class="row">
+    <div><img src="img_talk/talk2.png" alt="Detecciones de 2022"></div>
+    <div>
+      <svg viewBox="0 0 620 214" width="100%"><rect x="2.0" y="189.5" width="43.7" height="0.5" rx="2" fill="#7cc4ff"/><text x="23.8" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2014</text><rect x="49.7" y="176.1" width="43.7" height="13.9" rx="2" fill="#7cc4ff"/><text x="71.5" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2015</text><rect x="97.4" y="139.1" width="43.7" height="50.9" rx="2" fill="#7cc4ff"/><text x="119.2" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2016</text><rect x="145.1" y="168.1" width="43.7" height="21.9" rx="2" fill="#7cc4ff"/><text x="166.9" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2017</text><rect x="192.8" y="180.8" width="43.7" height="9.2" rx="2" fill="#7cc4ff"/><text x="214.6" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2018</text><rect x="240.5" y="176.5" width="43.7" height="13.5" rx="2" fill="#7cc4ff"/><text x="262.3" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2019</text><rect x="288.2" y="85.3" width="43.7" height="104.7" rx="2" fill="#7cc4ff"/><text x="310.0" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2020</text><rect x="335.8" y="184.6" width="43.7" height="5.4" rx="2" fill="#7cc4ff"/><text x="357.7" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2021</text><rect x="383.5" y="10.0" width="43.7" height="180.0" rx="2" fill="#ffd166"/><text x="405.4" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2022</text><rect x="431.2" y="115.4" width="43.7" height="74.6" rx="2" fill="#7cc4ff"/><text x="453.1" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2023</text><rect x="478.9" y="163.2" width="43.7" height="26.8" rx="2" fill="#7cc4ff"/><text x="500.8" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2024</text><rect x="526.6" y="90.7" width="43.7" height="99.3" rx="2" fill="#7cc4ff"/><text x="548.5" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2025</text><rect x="574.3" y="109.0" width="43.7" height="81.0" rx="2" fill="#7cc4ff"/><text x="596.2" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">2026</text></svg>
+      <p style="margin-top:6pt"><b class="acc">2022</b> concentra el <b>26,4 %</b> de las detecciones; 2020, el 15,4 %; 2025, el 14,6 %.</p>
+      <p class="muted">Un solo año filtrado revela una campaña que recorre pocos ejes. 2014 y 2021 casi no aportan.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Praga a pie de calle</span><span>6</span></div>
+</section>
+
+<section>
+  <h2>¿Qué elementos dominan?</h2>
+  <div class="row">
+    <div class="narrow"><svg viewBox="0 0 560 252" width="100%"><text x="0" y="23" fill="#e8eefb" font-size="16">Señalización vertical</text><rect x="215" y="7" width="260.0" height="21" rx="3" fill="#E69F00"/><text x="483.0" y="23" fill="#a3b1cc" font-size="14">13.601</text><text x="0" y="59" fill="#e8eefb" font-size="16">Alumbrado y postes</text><rect x="215" y="43" width="189.4" height="21" rx="3" fill="#F0E442"/><text x="412.4" y="59" fill="#a3b1cc" font-size="14">9.908</text><text x="0" y="95" fill="#e8eefb" font-size="16">Comercio y publicidad</text><rect x="215" y="79" width="89.0" height="21" rx="3" fill="#CC79A7"/><text x="312.0" y="95" fill="#a3b1cc" font-size="14">4.655</text><text x="0" y="131" fill="#e8eefb" font-size="16">Marcas viales</text><rect x="215" y="115" width="69.4" height="21" rx="3" fill="#56B4E9"/><text x="292.4" y="131" fill="#a3b1cc" font-size="14">3.632</text><text x="0" y="167" fill="#e8eefb" font-size="16">Infraestructura y registros</text><rect x="215" y="151" width="62.8" height="21" rx="3" fill="#0072B2"/><text x="285.8" y="167" fill="#a3b1cc" font-size="14">3.286</text><text x="0" y="203" fill="#e8eefb" font-size="16">Mobiliario urbano</text><rect x="215" y="187" width="46.8" height="21" rx="3" fill="#009E73"/><text x="269.8" y="203" fill="#a3b1cc" font-size="14">2.450</text><text x="0" y="239" fill="#e8eefb" font-size="16">Semáforos</text><rect x="215" y="223" width="33.2" height="21" rx="3" fill="#D55E00"/><text x="256.2" y="239" fill="#a3b1cc" font-size="14">1.737</text></svg></div>
+    <div>
+      <img src="img_talk/talk3.png" alt="Objetos por categoría">
+      <p style="margin-top:8pt">Señalización y alumbrado suman <b class="acc">59,4 %</b>. El mobiliario urbano es solo el 6,2 %.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Praga a pie de calle</span><span>7</span></div>
+</section>
+
+<section>
+  <h2>¿Dónde se concentra la actividad?</h2>
+  <div class="row">
+    <div class="wide"><img src="img_talk/talk4.png" alt="Densidad 3D"></div>
+    <div>
+      <div class="kpi"><div class="big">39,5 %</div>de las detecciones cae en el <b>10 %</b> de las celdas de ~100 m</div>
+      <p style="margin-top:10pt" class="muted">1.565 celdas ocupadas. Hexágonos 3D: altura y color = número de detecciones.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Praga a pie de calle</span><span>8</span></div>
+</section>
+
+<section>
+  <h2>¿Cómo se desplaza quien captura?</h2>
+  <div class="row">
+    <div class="wide"><img src="img_talk/talk5.png" alt="Trayectorias con reloj de 24 h"></div>
+    <div>
+      <p><b class="acc">62,6 %</b> vehículo · 24,6 % bici/scooter · 12,8 % a pie <span class="muted">(inferido por velocidad)</span></p>
+      <svg viewBox="0 0 620 214" width="100%"><rect x="2.0" y="190.0" width="21.8" height="0.0" rx="2" fill="#7cc4ff"/><text x="12.9" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">0</text><rect x="27.8" y="190.0" width="21.8" height="0.0" rx="2" fill="#7cc4ff"/><rect x="53.7" y="190.0" width="21.8" height="0.0" rx="2" fill="#7cc4ff"/><rect x="79.5" y="187.3" width="21.8" height="2.7" rx="2" fill="#7cc4ff"/><text x="90.4" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">3</text><rect x="105.3" y="190.0" width="21.8" height="0.0" rx="2" fill="#7cc4ff"/><rect x="131.2" y="183.3" width="21.8" height="6.7" rx="2" fill="#7cc4ff"/><rect x="157.0" y="190.0" width="21.8" height="0.0" rx="2" fill="#7cc4ff"/><text x="167.9" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">6</text><rect x="182.8" y="185.9" width="21.8" height="4.1" rx="2" fill="#7cc4ff"/><rect x="208.7" y="181.4" width="21.8" height="8.6" rx="2" fill="#7cc4ff"/><rect x="234.5" y="144.0" width="21.8" height="46.0" rx="2" fill="#7cc4ff"/><text x="245.4" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">9</text><rect x="260.3" y="111.6" width="21.8" height="78.4" rx="2" fill="#7cc4ff"/><rect x="286.2" y="143.2" width="21.8" height="46.8" rx="2" fill="#7cc4ff"/><rect x="312.0" y="100.1" width="21.8" height="89.9" rx="2" fill="#7cc4ff"/><text x="322.9" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">12</text><rect x="337.8" y="10.0" width="21.8" height="180.0" rx="2" fill="#ffd166"/><rect x="363.7" y="99.6" width="21.8" height="90.4" rx="2" fill="#7cc4ff"/><rect x="389.5" y="92.5" width="21.8" height="97.5" rx="2" fill="#7cc4ff"/><text x="400.4" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">15</text><rect x="415.3" y="118.7" width="21.8" height="71.3" rx="2" fill="#7cc4ff"/><rect x="441.2" y="129.7" width="21.8" height="60.3" rx="2" fill="#7cc4ff"/><rect x="467.0" y="113.6" width="21.8" height="76.4" rx="2" fill="#7cc4ff"/><text x="477.9" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">18</text><rect x="492.8" y="183.5" width="21.8" height="6.5" rx="2" fill="#7cc4ff"/><rect x="518.7" y="186.5" width="21.8" height="3.5" rx="2" fill="#7cc4ff"/><rect x="544.5" y="189.2" width="21.8" height="0.8" rx="2" fill="#7cc4ff"/><text x="555.4" y="208" fill="#a3b1cc" font-size="13" text-anchor="middle">21</text><rect x="570.3" y="190.0" width="21.8" height="0.0" rx="2" fill="#7cc4ff"/><rect x="596.2" y="190.0" width="21.8" height="0.0" rx="2" fill="#7cc4ff"/></svg>
+      <p class="muted" style="margin-top:4pt">Trayectorias por hora de inicio. Pico a las <b>13:00 h</b>; casi nada de noche.</p>
+    </div>
+  </div>
+  <p class="muted" style="margin-top:6pt">Reloj de 24 h: cada viaje aparece a la hora real en que se capturó (todas las fechas superpuestas).</p>
+  <div class="foot"><span>Praga a pie de calle</span><span>9</span></div>
+</section>
+
+<section>
+  <h2>Hallazgo transversal</h2>
+  <p class="quote" style="font-size:26pt">El volumen de imágenes y el de detecciones <b class="acc">no coinciden</b> en el tiempo.</p>
+  <div class="row" style="margin-top:.4in">
+    <div class="kpi"><h3>2020</h3><div class="big">15.259</div>imágenes · 6.076 detecciones<br><span class="muted">≈ 0,4 detecciones por imagen</span></div>
+    <div class="kpi"><h3>2022</h3><div class="big">7.770</div>imágenes · 10.446 detecciones<br><span class="muted">≈ 1,3 detecciones por imagen</span></div>
+  </div>
+  <p style="margin-top:.3in">¿Dispositivo, procesamiento o ruta? Pregunta abierta para la versión final.</p>
+  <div class="foot"><span>Praga a pie de calle</span><span>10</span></div>
+</section>
+
+<section>
+  <h2>Decisiones de diseño</h2>
+  <ul>
+    <li><b>Mapa + panel:</b> el contexto espacial es la pregunta central.</li>
+    <li><b>Hexágonos 3D</b> en lugar de mapa de calor: conservan las diferencias de magnitud.</li>
+    <li><b>Crossfilter:</b> cada histograma ignora su propio filtro para mostrar qué se pierde.</li>
+    <li><b>Color:</b> Okabe-Ito (seguro para daltonismo) para categorías; <i>inferno</i> para densidad.</li>
+    <li><b>Recorrido guiado:</b> convierte el panel de controles en una narrativa.</li>
+    <li><b>Accesibilidad:</b> teclado, ARIA, movimiento reducido y diseño adaptable.</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>11</span></div>
+</section>
+
+<section>
+  <h2>Límites y lectura prudente</h2>
+  <ul>
+    <li>Cobertura geográfica parcial de las detecciones (lotes 3–5 pendientes).</li>
+    <li>Las trayectorias se <b>reconstruyen</b> desde detecciones, no desde la secuencia completa de fotos.</li>
+    <li>El modo de transporte es una inferencia por velocidad.</li>
+    <li>El reloj de 24 h superpone todas las fechas: muestra el ciclo diario, no un día concreto.</li>
+    <li>Pocas campañas dominan algunos años: <b>sesgo de quién captura</b>.</li>
+  </ul>
+  <div class="foot"><span>Praga a pie de calle</span><span>12</span></div>
+</section>
+
+<section class="cover">
+  <h2 style="font-size:34pt">Conclusión</h2>
+  <p class="quote">Mapillary describe mejor a quien captura que a la ciudad capturada. Antes de leer una ciudad en datos colaborativos, pregunta: <b class="acc">¿quién, cuándo y con qué?</b></p>
+  <p style="margin-top:.5in"><b>Próximos pasos:</b> completar los lotes 3–5 · explicar la discrepancia por dispositivo · comparar dos años · pruebas con usuarios · paper, videos y póster.</p>
+  <p class="muted" style="margin-top:.3in">Repositorio: github.com/jeffHQ/NewMapillaryVisualization · Datos © contribuyentes de Mapillary (CC BY-SA)</p>
+  <div class="foot"><span>¡Gracias! · Preguntas</span><span>13</span></div>
+</section>
+</body></html>
