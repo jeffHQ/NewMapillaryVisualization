@@ -78,7 +78,7 @@ img { width:100%; border:1px solid #2b3a57; border-radius:8px; display:block; }
     <div class="wide"><img src="img_talk/talk1.png" alt="Aplicación: capa de objetos"></div>
     <div>
       <h3>Tres capas</h3><p><span class="pill">Objetos</span><span class="pill">Densidad 3D</span><span class="pill">Trayectorias</span></p>
-      <h3>Filtros enlazados</h3><p>Año · hora · categoría · modo. Cada histograma muestra qué se pierde al estrechar la selección.</p>
+      <h3>Series de tiempo enlazadas</h3><p>Mes y hora, con selección por arrastre. Cada serie muestra qué se pierde al estrechar la selección. La leyenda es también el filtro.</p>
       <h3>Recorrido guiado</h3><p>Seis preguntas; cada paso fija la vista y muestra un hallazgo calculado.</p>
     </div>
   </div>
@@ -111,12 +111,12 @@ img { width:100%; border:1px solid #2b3a57; border-radius:8px; display:block; }
 </section>
 
 <section>
-  <h2>¿Dónde se concentra la actividad?</h2>
+  <h2>¿Dónde se concentra el recorrido?</h2>
   <div class="row">
     <div class="wide"><img src="img_talk/talk4.png" alt="Densidad 3D"></div>
     <div>
-      <div class="kpi"><div class="big">39,5 %</div>de las detecciones cae en el <b>10 %</b> de las celdas de ~100 m</div>
-      <p style="margin-top:10pt" class="muted">1.565 celdas ocupadas. Hexágonos 3D: altura y color = número de detecciones.</p>
+      <div class="kpi"><div class="big">40,6 %</div>del recorrido cae en el <b>10 %</b> de las celdas de ~100 m</div>
+      <p style="margin-top:10pt" class="muted">1.289 celdas recorridas, ≈ 1.331 km reconstruidos. Se mide con trayectorias, no con puntos: los puntos indican dónde hay datos, no dónde hay tráfico.</p>
     </div>
   </div>
   <div class="foot"><span>Praga a pie de calle</span><span>8</span></div>
@@ -152,8 +152,8 @@ img { width:100%; border:1px solid #2b3a57; border-radius:8px; display:block; }
   <ul>
     <li><b>Mapa + panel:</b> el contexto espacial es la pregunta central.</li>
     <li><b>Hexágonos 3D</b> en lugar de mapa de calor: conservan las diferencias de magnitud.</li>
-    <li><b>Crossfilter:</b> cada histograma ignora su propio filtro para mostrar qué se pierde.</li>
-    <li><b>Color:</b> Okabe-Ito (seguro para daltonismo) para categorías; <i>inferno</i> para densidad.</li>
+    <li><b>Series enlazadas:</b> cada serie ignora su propio filtro para mostrar qué se pierde; la de horas muestra solo el periodo elegido.</li>
+    <li><b>Color:</b> Okabe-Ito solo para categorías; otros tonos para modos y una rampa neutra para la densidad. Fondo claro.</li>
     <li><b>Recorrido guiado:</b> convierte el panel de controles en una narrativa.</li>
     <li><b>Accesibilidad:</b> teclado, ARIA, movimiento reducido y diseño adaptable.</li>
   </ul>

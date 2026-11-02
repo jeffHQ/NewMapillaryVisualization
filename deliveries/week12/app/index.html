@@ -33,7 +33,9 @@
       <button type="button" data-layer="trips" aria-pressed="false">Trayectorias</button>
     </div>
 
-    <div id="legend" class="legend" aria-label="Leyenda"></div>
+    <!-- La leyenda es también el filtro de categoría / modo -->
+    <div id="legend" class="legend" aria-label="Leyenda y filtros"></div>
+
     <div id="clock" class="clock" hidden>
       <div class="clock-title" id="clock-title">Reloj diario (24 h)</div>
       <div class="clock-time" id="clock-display" aria-live="off">00:00</div>
@@ -41,12 +43,23 @@
       <input type="range" id="clock-scrub" class="scrub" min="0" max="1439" step="1" value="0" aria-label="Mover el reloj">
       <div class="clock-row"><span>Trayectorias activas</span><b id="clock-active">0</b></div>
       <div class="clock-row" id="clock-hour-row" hidden><span>Hora de inicio más frecuente</span><b id="clock-hour">—</b></div>
+      <div class="play-row">
+        <button type="button" id="play" class="btn small primary" aria-pressed="true">Pausar</button>
+        <label>Velocidad
+          <select id="speed">
+            <option value="2">0.5×</option>
+            <option value="4" selected>1×</option>
+            <option value="8">2×</option>
+          </select>
+        </label>
+      </div>
       <div class="clock-modes" role="group" aria-label="Tipo de reloj">
         <button type="button" class="btn small" data-clock="day" aria-pressed="true">Día 24 h</button>
         <button type="button" class="btn small" data-clock="rel" aria-pressed="false">Relativo 60 s</button>
       </div>
       <p class="hint" id="clock-note"></p>
     </div>
+
     <div id="tooltip" class="tooltip" role="status" hidden></div>
     <div id="loading" class="loading" role="status">Cargando datos…</div>
   </section>
@@ -68,61 +81,37 @@
       </div>
     </section>
 
-    <!-- 2. Filtros enlazados -->
+    <!-- 2. Series de tiempo enlazadas -->
     <section class="card" aria-labelledby="filters-h">
-      <h2 id="filters-h">Filtros enlazados</h2>
+      <h2 id="filters-h">Series de tiempo enlazadas</h2>
       <p id="result-count" class="result" aria-live="polite"></p>
 
-      <fieldset>
-        <legend>Año de captura</legend>
-        <svg id="chart-year" class="chart" role="img" aria-label="Histograma por año de captura"></svg>
-        <div class="range-row">
-          <label>Desde <select id="year-from"></select></label>
-          <label>Hasta <select id="year-to"></select></label>
+      <div class="series">
+        <div class="series-head">
+          <h3>Mes de captura</h3>
+          <span id="time-range" class="readout"></span>
         </div>
-        <p class="hint">Arrastra sobre el gráfico para seleccionar un periodo.</p>
-      </fieldset>
+        <svg id="chart-time" class="chart" tabindex="0" role="group"
+             aria-label="Serie mensual. Arrastra para elegir un periodo; flechas para mover, Mayús más flechas para cambiar el final, Escape para restablecer."></svg>
+      </div>
 
-      <fieldset>
-        <legend>Hora del día (hora local de Praga)</legend>
-        <svg id="chart-hour" class="chart" role="img" aria-label="Histograma por hora del día"></svg>
-        <div class="range-row">
-          <label>Desde <select id="hour-from"></select></label>
-          <label>Hasta <select id="hour-to"></select></label>
+      <div class="series">
+        <div class="series-head">
+          <h3>Hora del día <span class="muted">(Praga)</span></h3>
+          <span id="hour-range" class="readout"></span>
         </div>
-      </fieldset>
+        <svg id="chart-hour" class="chart" tabindex="0" role="group"
+             aria-label="Serie por hora. Arrastra para elegir un rango de horas; flechas para mover, Escape para restablecer."></svg>
+        <p class="hint">La serie de horas muestra solo el periodo elegido arriba. Arrastra los bordes para ajustar; doble clic restablece.</p>
+      </div>
 
-      <fieldset id="cat-fieldset">
-        <legend>Categoría de objeto</legend>
-        <ul id="cat-list" class="cat-list"></ul>
-        <div class="range-row">
-          <button type="button" class="btn small" id="cat-all">Todas</button>
-          <button type="button" class="btn small" id="cat-none">Ninguna</button>
-        </div>
-      </fieldset>
-
-      <fieldset id="mode-fieldset" hidden>
-        <legend>Modo de desplazamiento (inferido)</legend>
-        <ul id="mode-list" class="cat-list"></ul>
-        <div class="play-row">
-          <button type="button" id="play" class="btn primary" aria-pressed="true">Pausar</button>
-          <label>Velocidad
-            <select id="speed">
-              <option value="2">0.5×</option>
-              <option value="4" selected>1×</option>
-              <option value="8">2×</option>
-            </select>
-          </label>
-        </div>
-      </fieldset>
-
-      <button type="button" class="btn" id="reset">Restablecer filtros</button>
+      <button type="button" class="btn" id="reset">Restablecer todo</button>
     </section>
 
     <!-- 3. Detalle -->
-    <section class="card" aria-labelledby="detail-h">
+    <section class="card" id="top-card" aria-labelledby="detail-h">
       <h2 id="detail-h">Elementos más frecuentes</h2>
-      <p class="hint" id="top-hint">Según los filtros activos.</p>
+      <p class="hint">Según los filtros activos.</p>
       <ol id="top-list" class="top-list"></ol>
     </section>
 
@@ -132,8 +121,9 @@
       <p>Fuente: <a href="https://www.mapillary.com/developer/api-documentation" target="_blank" rel="noopener">Mapillary API v4</a> (CC BY-SA). Zona cubierta: lon 14.350–14.415, lat 50.050–50.130 (~4,6 × 8,9 km, oeste de Praga).</p>
       <ul class="notes">
         <li>Los objetos provienen de <code>map_features</code>: detecciones automáticas, no un censo.</li>
-        <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de esas detecciones y se ajustan a la red vial (OSRM). El modo se infiere solo por la velocidad media (&lt;7, 7–25, &gt;25&nbsp;km/h).</li>
-        <li>El reloj de 24&nbsp;h superpone trayectorias de todas las fechas (2014–2026) según la hora del día en que se capturaron: muestra el ciclo diario, no un día concreto. También hay un reloj relativo de 60&nbsp;s.</li>
+        <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de esas detecciones y se ajustan a la red vial (OSRM, perfil de automóvil). El modo se infiere solo por la velocidad media (&lt;7, 7–25, &gt;25&nbsp;km/h).</li>
+        <li>La densidad 3D mide recorrido reconstruido (muestras cada ~40&nbsp;m de trayectoria), no puntos de detección. No hay datos de edificios: la altura solo codifica el valor.</li>
+        <li>El reloj de 24&nbsp;h superpone trayectorias de todas las fechas (2014–2026) según la hora del día en que se capturaron: muestra el ciclo diario, no un día concreto.</li>
         <li>La cobertura depende de quién captura: una campaña concentrada puede dominar un año entero.</li>
         <li>4 detecciones con fecha de 2006 se omiten de la app por inconsistencia de fecha.</li>
       </ul>

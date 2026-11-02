@@ -18,32 +18,36 @@
 <h1>Peer Critique Response</h1>
 <p>Praga a pie de calle · DS5343 Data Visualization · Semana 12 (28 de octubre de 2026)</p>
 
-<div class="note"><b>Plantilla pendiente de completar.</b> Esta tabla debe contener la retroalimentación <u>real</u> recibida en la revisión de diseño del 14 de octubre (formato “I like… / I wish… / What if…?”). No se ha inventado ningún comentario. Cada fila debe decir si la sugerencia se implementó, se aplazó o se rechazó, con justificación.</div>
-
-<h2>1. Resumen de la retroalimentación recibida</h2>
-<p class="todo">[Completar: quién dio feedback (por rol o curso, sin nombres si no hay consentimiento), cuántos comentarios y temas principales.]</p>
-
-<h2>2. Registro de respuestas</h2>
+<div class="note"><b>Fuente de esta versión.</b> La tabla recoge la retroalimentación del profesor sobre el prototipo. La de los compañeros (formato “I like… / I wish… / What if…?”) debe añadirse en la sección 3; no se ha inventado ningún comentario.</div>
+<h2>1. Retroalimentación del profesor y respuesta</h2>
 <table>
-<tr><th style="width:4%">#</th><th style="width:13%">Tipo</th><th style="width:30%">Comentario recibido</th><th style="width:11%">Decisión</th><th style="width:42%">Justificación / cambio realizado</th></tr>
-<tr class="todo"><td>1</td><td>I like…</td><td>[Completar]</td><td>—</td><td>[Qué se conserva]</td></tr>
-<tr class="todo"><td>2</td><td>I wish…</td><td>[Completar]</td><td>Implementada / Aplazada / Rechazada</td><td>[Completar]</td></tr>
-<tr class="todo"><td>3</td><td>What if…?</td><td>[Completar]</td><td>Implementada / Aplazada / Rechazada</td><td>[Completar]</td></tr>
-<tr class="todo"><td>4</td><td>[Completar]</td><td>[Completar]</td><td></td><td></td></tr>
-<tr class="todo"><td>5</td><td>[Completar]</td><td>[Completar]</td><td></td><td></td></tr>
+<tr><th style="width:4%">#</th><th style="width:32%">Comentario recibido</th><th style="width:12%">Decisión</th><th style="width:52%">Justificación / cambio realizado</th></tr>
+<tr><td>1</td><td>Las trayectorias no se desvanecen: minutos después la curva sigue ahí y parece que “siempre hay tráfico”.</td><td>Implementada</td><td>Se eliminó la capa de líneas permanentes. Solo hay estelas que se desvanecen; con el reloj de 24 h cada trayectoria aparece a su hora real y desaparece.</td></tr>
+<tr><td>2</td><td>Reutilizar el ejemplo de flujo de taxis de deck.gl transformando los datos a su estructura (ruta y marcas de tiempo).</td><td>Implementada</td><td>Las trayectorias ya tienen camino y marcas de tiempo; el reloj calcula los tiempos a partir de la hora real de captura.</td></tr>
+<tr><td>3</td><td>Las zonas de más tráfico no pueden mostrarse con puntos; hay que usar trayectorias. Los puntos sirven para ver cuánta información hay a lo largo de los años.</td><td>Implementada</td><td>La densidad 3D se calcula con muestras cada ~40 m de trayectoria (km recorridos por celda). Los puntos quedan en la capa de objetos.</td></tr>
+<tr><td>4</td><td>El filtro por año con listas desplegables aporta poco; usar una serie de tiempo con selección (p. ej. mediados de 2020 a 2022).</td><td>Implementada</td><td>Serie mensual 2014–2026 con selección por arrastre, bordes ajustables y teclado. Se eliminaron los selectores Desde/Hasta.</td></tr>
+<tr><td>5</td><td>Serie temporal anidada: al elegir un periodo aparece otra serie con las horas del día, también filtrable; aprovechar mejor el espacio.</td><td>Implementada</td><td>La serie por hora muestra solo el periodo elegido y filtra a su vez; ambas están enlazadas y se liberó espacio del panel.</td></tr>
+<tr><td>6</td><td>Fondo blanco.</td><td>Implementada</td><td>Interfaz y mapa base claros (Positron).</td></tr>
+<tr><td>7</td><td>El mismo color no puede significar cosas distintas (el amarillo de “alumbrado” frente al amarillo de “más detecciones”); mantener la paleta.</td><td>Implementada</td><td>Okabe-Ito solo para categorías; otros tonos para los modos; rampa neutra azul-grisácea para la densidad.</td></tr>
+<tr><td>8</td><td>Con muchas categorías es difícil distinguir al acercar; permitir grupos o dejar el resto en gris.</td><td>Implementada</td><td>Leyenda-filtro con casillas, «solo», «las 3 mayores» y opción de mostrar el resto en gris. Las 277 subcategorías quedan como trabajo futuro.</td></tr>
+<tr><td>9</td><td>Redundancia: el histograma y los selectores hacen lo mismo; la lista de categorías repite la leyenda.</td><td>Implementada</td><td>Se fusionaron la leyenda y el filtro de categoría/modo; se quitaron los selectores.</td></tr>
+<tr><td>10</td><td>El 3D solo es real si se dispone de información de edificios.</td><td>Decisión del equipo</td><td>Se mantiene la densidad en 3D por legibilidad de magnitudes; la altura solo codifica el valor, y la app lo indica (no hay datos de edificios).</td></tr>
+<tr><td>11</td><td>El cambio de tamaño de los puntos al hacer zoom está bien.</td><td>Sin cambios</td><td>—</td></tr>
 </table>
-
-<h2>3. Cambios ya realizados desde el prototipo (a contrastar con el feedback)</h2>
-<p>Estos cambios son decisiones del equipo tomadas al refinar el prototipo; conviene vincular cada uno con el comentario que lo motivó, si existe.</p>
+<h2>2. Resumen</h2>
+<p>De los 11 comentarios, 9 se implementaron, 1 es una decisión de diseño del equipo (mantener el 3D) y 1 no requería cambios.</p>
+<h2>3. Retroalimentación de compañeros</h2>
 <table>
-<tr><th>Cambio</th><th>Dónde</th></tr>
-<tr><td>Filtros enlazados año · hora · categoría · modo con histogramas que se actualizan entre sí</td><td>App, panel “Filtros enlazados”</td></tr>
-<tr><td>Recorrido guiado de seis preguntas con hallazgos calculados de los datos</td><td>App, panel “Recorrido guiado”</td></tr>
-<tr><td>Capa de objetos urbanos y capa de densidad 3D además de las trayectorias</td><td>App, selector de capa</td></tr>
-<tr><td>Bloque de datos y límites; leyenda por capa; accesibilidad y diseño adaptable</td><td>App</td></tr>
+<tr><th style="width:4%">#</th><th style="width:13%">Tipo</th><th style="width:30%">Comentario recibido</th><th style="width:11%">Decisión</th><th style="width:42%">Justificación</th></tr>
+<tr class="todo"><td>1</td><td>I like…</td><td>[Completar]</td><td></td><td></td></tr>
+<tr class="todo"><td>2</td><td>I wish…</td><td>[Completar]</td><td></td><td></td></tr>
+<tr class="todo"><td>3</td><td>What if…?</td><td>[Completar]</td><td></td><td></td></tr>
 </table>
-
 <h2>4. Sugerencias abiertas para la semana 15</h2>
-<p class="todo">[Completar con las sugerencias aplazadas y su responsable.]</p>
+<ul>
+<li>Explorar las 277 subcategorías como nivel de detalle bajo cada categoría.</li>
+<li>Comparar dos periodos lado a lado con la serie de tiempo.</li>
+<li>Evaluar con usuarios la serie enlazada y la leyenda-filtro.</li>
+</ul>
 </body>
 </html>

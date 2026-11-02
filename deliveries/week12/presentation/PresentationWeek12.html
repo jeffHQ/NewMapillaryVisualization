@@ -60,7 +60,7 @@
     <tr><th>Semana 10</th><th>Semana 12</th></tr>
     <tr><td>Un HTML generado desde Python</td><td>App estática con datos separados y recorrido guiado</td></tr>
     <tr><td>Solo trayectorias</td><td>Objetos, densidad 3D y trayectorias</td></tr>
-    <tr><td>Filtros independientes</td><td>Filtros enlazados: año · hora · categoría · modo</td></tr>
+    <tr><td>Filtros independientes</td><td>Series de tiempo enlazadas (mes y hora) y leyenda que filtra</td></tr>
     <tr><td>Sin contexto ni límites</td><td>Narrativa, hallazgos con cifras y bloque de límites</td></tr>
     <tr><td>Sin accesibilidad</td><td>Teclado, ARIA, paleta segura para daltonismo, responsive</td></tr>
   </table>
@@ -85,9 +85,9 @@
   <div class="row">
     <div><img src="img/step4.png" alt="Densidad 3D"></div>
     <div>
-      <p><b>39,5 %</b> de las detecciones en el <b>10 %</b> de las celdas de ~100 m.</p>
+      <p><b>40,6 %</b> del recorrido reconstruido en el <b>10 %</b> de las celdas de ~100 m.</p>
       <p>Dominan señalización (34 %) y alumbrado (25 %); mobiliario urbano solo 6 %.</p>
-      <p class="muted">Hexágonos 3D + filtro de categoría para ver dónde está cada tipo.</p>
+      <p class="muted">Hexágonos 3D de recorrido (trayectorias), no de puntos.</p>
     </div>
   </div>
   <div class="foot"><span>Praga a pie de calle</span><span>6</span></div>
@@ -112,7 +112,7 @@
     <li><b>Mapa + panel:</b> el contexto espacial es la pregunta central.</li>
     <li><b>Hexágonos 3D</b> en lugar de mapa de calor: conservan diferencias de magnitud.</li>
     <li><b>Crossfilter:</b> cada histograma ignora su propio filtro para mostrar qué se pierde al estrechar.</li>
-    <li><b>Okabe-Ito</b> para categorías; <i>inferno</i> para densidad.</li>
+    <li><b>Okabe-Ito</b> solo para categorías; otros tonos para modos y densidad.</li>
     <li><b>Recorrido guiado</b> para pasar de “colección de gráficos” a narrativa.</li>
   </ul>
   <div class="foot"><span>Praga a pie de calle</span><span>8</span></div>

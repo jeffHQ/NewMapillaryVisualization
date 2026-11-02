@@ -18,6 +18,8 @@ trips.csv,duration_s,Duración del tramo,float,segundos,
 trips.csv,n_points,Puntos del trazado ajustado (OSRM),int,,
 trips.csv,start,Inicio del tramo,datetime,ISO 8601 hora de Praga,
 trips.csv,year,Año de inicio,int,,
+trips.csv,month,Mes de inicio,int,1-12,
+trips.csv,minute_of_day,Minuto del día (hora local) en que inicia el tramo,float,0-1439.9,usado por el reloj de 24 h
 trips.csv,hour,Hora local de inicio,int,0-23,
 trips.csv,lon_start/lat_start/lon_end/lat_end,Extremos del tramo,float,grados WGS84,
 category_summary.csv,category/label/value/count,Conteo de detecciones por clase y categoría,mixed,,

@@ -15,7 +15,7 @@
     "width_km": 4.6,
     "height_km": 8.9
   },
-  "generated_at": "2026-10-25",
+  "generated_at": "2026-11-02",
   "n_detections": 39564,
   "n_sequences_detections": 1096,
   "n_trips": 6379,
@@ -210,6 +210,11 @@
   "concentration": {
     "occupied_cells_100m": 1565,
     "top10pct_cells_share": 0.395
+  },
+  "trip_concentration": {
+    "occupied_cells_100m": 1289,
+    "top10pct_cells_share": 0.406,
+    "km_total": 1330.9
   },
   "peak_trip_hour": 13,
   "source_split": {

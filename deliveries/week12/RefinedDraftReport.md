@@ -42,7 +42,7 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 | 1 | ¿Qué tan completa es la cobertura? | Puntos por categoría | 39.564 detecciones en 1.096 secuencias; la cobertura sigue ejes viales concretos y deja amplias zonas vacías. |
 | 2 | ¿Cuándo se capturó la ciudad? | Histograma por año enlazado | Captura muy desigual: 2022 concentra el 26,4 % de las detecciones (10.446), 2020 el 15,4 % y 2025 el 14,6 %; 2014 y 2021 casi no aportan (27 y 316). |
 | 3 | ¿Qué elementos dominan? | Filtro por categoría + ranking | Señalización vertical 34,4 %, alumbrado y postes 25,0 %, comercio y publicidad 11,8 %; mobiliario urbano solo 6,2 %. |
-| 4 | ¿Dónde se concentra la actividad? | Hexágonos 3D | El 39,5 % de las detecciones cae en el 10 % de las celdas de ~100 m ocupadas (1.565 celdas). |
+| 4 | ¿Dónde se concentra el recorrido? | Hexágonos 3D de recorrido | Con ≈ 1.331 km de trayectoria reconstruida, el 40,6 % cae en el 10 % de las celdas de ~100 m recorridas (1.289 celdas). Con puntos de detección el valor es similar (39,5 %), pero los puntos miden dónde hubo datos, no tráfico. |
 | 5 | ¿Cómo se desplaza quien captura? | Trayectorias animadas | 62,6 % vehículo, 24,6 % bici/scooter, 12,8 % a pie; pico a las 13:00 h (20,7 % de las trayectorias) y casi nada de noche. |
 | 6 | ¿Qué límites tiene la lectura? | Vista libre | Ver §6. |
 
@@ -51,10 +51,12 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 ## 4. Decisiones de diseño
 
 - **Mapa como lienzo principal + panel lateral.** El contexto espacial es la pregunta central; el panel agrupa narrativa, filtros y detalle.
-- **Tres capas, un mismo conjunto de filtros.** *Objetos* (puntos) responde "qué y dónde"; *Densidad 3D* (hexágonos) resuelve el solapamiento de decenas de miles de puntos y permite comparar zonas; *Trayectorias* responde "cómo". Alternativa descartada: mapa de calor 2D, porque ocultaba las diferencias de magnitud entre celdas.
-- **Filtros enlazados (crossfilter).** Cada histograma muestra el recuento con *todos los demás* filtros aplicados salvo el suyo, de modo que se ve qué se pierde al estrechar la selección. Selección por arrastre, con selectores `Desde/Hasta` equivalentes para teclado.
+- **Tres capas, un mismo conjunto de filtros.** *Objetos* (puntos) responde "qué y dónde"; *Densidad 3D* (hexágonos) mide **recorrido reconstruido** —muestras cada ~40 m de trayectoria—, no puntos, porque los puntos solo indican dónde hay datos y no dónde hay tráfico; *Trayectorias* responde "cómo". Alternativa descartada: mapa de calor 2D, porque ocultaba las diferencias de magnitud entre celdas.
+- **Series de tiempo enlazadas (crossfilter).** Una serie mensual (2014–2026) y una serie por hora, ambas con selección por arrastre, bordes ajustables y teclado (flechas, Mayús+flechas, Escape). La serie de horas muestra solo el periodo elegido arriba (serie anidada) y cada serie ignora su propio filtro para mostrar qué se pierde al estrechar. Sustituyen al histograma anual y a los selectores `Desde/Hasta`, que eran redundantes.
 - **Recorrido guiado.** Convierte el panel de controles en una narrativa; cada paso es reversible y deja todos los filtros activos.
-- **Color.** Paleta categórica Okabe-Ito (segura ante daltonismo) para categorías y modos; rampa secuencial *inferno* para densidad. Los colores de categoría y de modo se reutilizan, pero nunca aparecen a la vez en el mapa.
+- **Color.** Okabe-Ito (seguro ante daltonismo) reservado a las categorías de objeto. Los modos usan otros tonos (índigo, frambuesa, verde azulado) y la densidad una rampa neutra azul-grisácea, así que ningún color significa dos cosas. Fondo de mapa y de interfaz claros.
+- **Leyenda = filtro.** Se fusionaron la leyenda y la lista de categorías: casillas, «solo», «las 3 mayores» y opción de mostrar el resto en gris.
+- **Trayectorias que se desvanecen.** Se eliminó la capa de líneas permanentes; solo se dibujan estelas que desaparecen, con reloj de 24 h.
 - **Detalle bajo demanda.** Tooltip por punto, hexágono o trayectoria; lista de las 8 clases más frecuentes que se recalcula con los filtros.
 - **Accesibilidad y adaptación.** Estructura semántica, `aria-pressed` y `aria-live` en controles y recuentos, foco visible, contraste AA sobre fondo oscuro, animación pausada si el sistema pide movimiento reducido, diseño de una columna en pantallas < 900 px.
 - **Tecnología.** deck.gl 8.9 + MapLibre; HTML/CSS/JS sin framework ni *build*. *Decisión del equipo: la versión final se mantiene en deck.gl; D3 no se usa en esta etapa.*
@@ -64,7 +66,7 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 | Prototipo (semana 10) | Versión actual |
 |---|---|
 | Un único `HTML` generado desde Python, con trayectorias y un doughnut | Aplicación estática con datos separados (`app/data/*.json`), tres capas y recorrido guiado |
-| Filtros independientes (modo y hora) | Filtros enlazados año · hora · categoría · modo, con histogramas que se actualizan entre sí |
+| Filtros independientes (modo y hora) | Series de tiempo enlazadas (mes y hora) y leyenda que filtra por categoría y modo |
 | Sin objetos urbanos | Capa de 39 mil objetos con 7 categorías analíticas |
 | Sin contexto ni límites visibles | Introducción, hallazgos con cifras reales y bloque "Datos y límites" |
 | Texto con tildes rotas y sin accesibilidad | HTML semántico, teclado, `aria-*`, responsive |
@@ -82,7 +84,21 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 
 ## 7. Retroalimentación de la revisión de diseño y respuesta
 
-Ver [`critique/PeerCritiqueResponse.pdf`](critique/PeerCritiqueResponse.pdf). **[Completar]** con la retroalimentación real recibida el 14 de octubre.
+Ver [`critique/PeerCritiqueResponse.pdf`](critique/PeerCritiqueResponse.pdf). Resumen de la retroalimentación del profesor y de la respuesta:
+
+| Comentario | Decisión |
+|---|---|
+| Las trayectorias no se desvanecen, parece que «siempre hay tráfico» | Implementada: sin líneas permanentes, solo estelas que se desvanecen |
+| Las zonas de tráfico deben medirse con trayectorias, no con puntos | Implementada: la densidad 3D usa muestras de trayectoria (~40 m) |
+| Filtro temporal como serie de tiempo en vez de selectores; serie anidada año/mes/hora | Implementada: serie mensual con selección + serie por hora enlazada |
+| Redundancia entre histograma y selectores; entre leyenda y filtros | Implementada: se eliminaron los selectores y se fusionó leyenda y filtro |
+| Mantener la paleta: un color no puede significar dos cosas | Implementada: paletas separadas para categorías, modos y densidad |
+| Muchas categorías son difíciles de distinguir; permitir grupos o gris | Implementada: «solo», «las 3 mayores» y resto en gris |
+| Fondo blanco | Implementada: interfaz y mapa base claros |
+| El 3D solo es real con datos de edificios | Decisión del equipo: se mantiene la densidad en 3D; la altura solo codifica el valor y se aclara en la app |
+| El tamaño de los puntos al hacer zoom está bien | Sin cambios |
+
+**[Completar]** con la retroalimentación de los compañeros, si la hubo.
 
 ## 8. Trabajo restante y responsables (semanas 13–15)
 

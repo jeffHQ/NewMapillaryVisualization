@@ -118,12 +118,29 @@ features_json = {
     "cat": [cat_index[rows[i]["category"]] for i in app_idx],
     "val": [value_index[rows[i]["value"]] for i in app_idx],
     "year": [rows[i]["year"] for i in app_idx],
+    "month": [rows[i]["month"] for i in app_idx],
     "hour": [rows[i]["hour"] for i in app_idx],
 }
 with open(os.path.join(APP_DATA, "features.json"), "w", encoding="utf-8") as f:
     json.dump(features_json, f, separators=(",", ":"))
 
 # ------------------------------------------------------------------ trips
+SAMPLE_M = 40  # una muestra cada ~40 m de recorrido: sirve para medir "kilómetros recorridos" por celda
+KM_LON = 111.32 * 0.6411  # km por grado de longitud a ~50° N
+KM_LAT = 111.2
+
+
+def sample_path(path, step_m=SAMPLE_M):
+    """Puntos [lon, lat] espaciados ~step_m a lo largo de la trayectoria (incluye el último vértice)."""
+    out = []
+    for (x1, y1, _), (x2, y2, _) in zip(path, path[1:]):
+        dist_m = ((x2 - x1) * KM_LON * 1000) ** 2 + ((y2 - y1) * KM_LAT * 1000) ** 2
+        n = max(1, int((dist_m ** 0.5) // step_m))
+        out.extend([round(x1 + (x2 - x1) * k / n, 5), round(y1 + (y2 - y1) * k / n, 5)] for k in range(n))
+    out.append([round(path[-1][0], 5), round(path[-1][1], 5)])
+    return out
+
+
 with open(os.path.join(INTERIM, "trips_matched.json"), encoding="utf-8") as f:
     trips_raw = json.load(f)
 trips = []
@@ -136,7 +153,7 @@ for t in trips_raw["trips"]:
     trips.append({
         "sequence": t["sequence"], "mode": MODE_ID[t["mode"]], "avg_speed_kmh": t["avg_speed_kmh"],
         "duration_s": round(t["max_time"], 1), "n_points": len(t["path"]),
-        "start": dt.isoformat(timespec="seconds"), "year": dt.year, "hour": dt.hour,
+        "start": dt.isoformat(timespec="seconds"), "year": dt.year, "hour": dt.hour, "month": dt.month,
         "minute_of_day": round(dt.hour * 60 + dt.minute + dt.second / 60, 1),
         "lon_start": round(t["path"][0][0], 6), "lat_start": round(t["path"][0][1], 6),
         "lon_end": round(t["path"][-1][0], 6), "lat_end": round(t["path"][-1][1], 6),
@@ -151,6 +168,7 @@ for t, raw in zip([x for x in trips_raw["trips"] if (x.get("abs_start_ts") or 0)
     trips_json.append({
         "m": raw["mode"], "s": raw["avg_speed_kmh"], "y": raw["year"], "h": raw["hour"], "d": raw["duration_s"],
         "t": raw["minute_of_day"],  # minuto del día (hora local) en que inicia el tramo
+        "o": raw["month"], "s": sample_path(t["path"]),
         "p": [[round(x, 6), round(y, 6), round(tt, 1)] for x, y, tt in t["path"]],
     })
 with open(os.path.join(APP_DATA, "trips.json"), "w", encoding="utf-8") as f:
@@ -199,6 +217,14 @@ concentration = {
     "occupied_cells_100m": len(cell_counts),
     "top10pct_cells_share": round(sum(cell_counts[:top_n]) / len(rows), 3),
 }
+trip_cells = Counter((int(x / 0.0013), int(y / 0.0009)) for tj in trips_json for x, y in tj["s"])
+tc = sorted(trip_cells.values(), reverse=True)
+trip_total = sum(tc)
+trip_concentration = {
+    "occupied_cells_100m": len(tc),
+    "top10pct_cells_share": round(sum(tc[:max(1, len(tc) // 10)]) / trip_total, 3),
+    "km_total": round(trip_total * SAMPLE_M / 1000, 1),
+}
 summary = {
     "area": {"lon": [LON_MIN, LON_MAX], "lat": [LAT_MIN, LAT_MAX],
              "center": [round((LON_MIN + LON_MAX) / 2, 4), round((LAT_MIN + LAT_MAX) / 2, 4)],
@@ -219,6 +245,7 @@ summary = {
     "top_values": top_values,
     "categories": {c: by_cat[c] for c in cat_ids},
     "concentration": concentration,
+    "trip_concentration": trip_concentration,
     "peak_trip_hour": max(hour_counts, key=hour_counts.get),
     "source_split": dict(Counter(r["source"] for r in rows)),
 }
