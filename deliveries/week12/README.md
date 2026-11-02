@@ -10,8 +10,8 @@ Fecha de entrega: 28 de octubre de 2026.
 | Aplicación refinada y enlace de despliegue | [`app/`](app/) · URL: **[Completar tras activar GitHub Pages]** (esperada: `https://jeffhq.github.io/NewMapillaryVisualization/`) |
 | Datos procesados (CSV/JSON) y scripts de reproducción | [`data/processed/`](data/processed/), [`data/data_dictionary.csv`](data/data_dictionary.csv), [`code/`](code/) |
 | `RefinedDraftReport.md` | [`RefinedDraftReport.md`](RefinedDraftReport.md) |
-| `PresentationWeek12.pdf` | [`presentation/PresentationWeek12.pdf`](presentation/PresentationWeek12.pdf) (fuente HTML en la misma carpeta) |
-| `PeerCritiqueResponse.pdf` | [`critique/PeerCritiqueResponse.pdf`](critique/PeerCritiqueResponse.pdf) — **plantilla: falta la retroalimentación real** |
+| `PresentationWeek12.pdf` | [`PresentationWeek12.pdf`](PresentationWeek12.pdf) (fuente HTML en [`presentation/`](presentation/)) |
+| `PeerCritiqueResponse.pdf` | [`PeerCritiqueResponse.pdf`](PeerCritiqueResponse.pdf) (fuente HTML en [`critique/`](critique/)) — recoge la retroalimentación del profesor; **faltan los comentarios de los compañeros** |
 | Borrador del paper (fuente + PDF) | [`paper/paper.html`](paper/paper.html) → [`paper/PaperDraft.pdf`](paper/PaperDraft.pdf) |
 | Página del proyecto inicial | [`app/project.html`](app/project.html) |
 | README actualizado | [README raíz](../../README.md) y este archivo |

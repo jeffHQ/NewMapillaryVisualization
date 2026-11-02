@@ -11,7 +11,7 @@ Mapillary reúne fotografías de calle aportadas por voluntarios y detecta en el
 | **Entrega vigente** | [`deliveries/week12/`](deliveries/week12/) (borrador refinado y crítica de pares, 28 oct 2026) |
 | **Informe** | [`RefinedDraftReport.md`](deliveries/week12/RefinedDraftReport.md) |
 | **Paper (borrador)** | [`PaperDraft.pdf`](deliveries/week12/paper/PaperDraft.pdf) |
-| **Presentación** | [`PresentationWeek12.pdf`](deliveries/week12/presentation/PresentationWeek12.pdf) |
+| **Presentación** | [`PresentationWeek12.pdf`](deliveries/week12/PresentationWeek12.pdf) · exposición del proyecto: [`Presentacion_Proyecto.pdf`](deliveries/week12/paper/Presentacion_Proyecto.pdf) |
 | **Lineamientos** | [`docs/Lineamientos_del_Proyecto.pdf`](docs/Lineamientos_del_Proyecto.pdf) |
 
 ## Ver la visualización
@@ -22,7 +22,7 @@ python -m http.server 8000
 # abrir http://localhost:8000
 ```
 
-Requiere conexión a internet (deck.gl, MapLibre y el mapa base se cargan por CDN). Tiene tres capas —**Objetos**, **Densidad 3D** y **Trayectorias**—, filtros enlazados por año, hora, categoría y modo, y un **recorrido guiado** de seis preguntas.
+Requiere conexión a internet (deck.gl, MapLibre y el mapa base se cargan por CDN). Tiene tres capas —**Objetos**, **Densidad 3D** y **Trayectorias**—, series de tiempo enlazadas por mes y hora, una leyenda que funciona como filtro y un **recorrido guiado** de seis preguntas.
 
 ## Estructura del repositorio
 
@@ -31,18 +31,25 @@ Requiere conexión a internet (deck.gl, MapLibre y el mapa base se cargan por CD
 ├── README.md
 ├── requirements.txt
 ├── docs/                         # lineamientos del curso
-├── deliveries/
-│   └── week12/                   # entrega vigente (se agrega weekNN/ por hito)
+├── deliveries/                   # una carpeta por hito, con el formato pedido en los lineamientos
+│   ├── week04/                   # dataset: README, acquisition.md, data_dictionary.csv, data/
+│   ├── week05/                   # propuesta (PDF + fuente) y presentación
+│   ├── week06/                   # DataAnalysis.md, data/processed, code, sketches, papers
+│   ├── week07/                   # Delivery1Report, bocetos, arquitectura, datos y código
+│   ├── week10/                   # prototipo funcional, PrototypeReport, presentación
+│   └── week12/                   # entrega vigente
 │       ├── app/                  # aplicación deck.gl + página del proyecto + datos JSON
 │       ├── code/                 # pipeline: 01 extraer → 05 construir datos procesados
 │       ├── data/                 # raw (ignorado) · interim · processed · data_dictionary.csv
 │       ├── paper/  presentation/  critique/
-│       └── RefinedDraftReport.md
+│       └── RefinedDraftReport.md · PresentationWeek12.pdf · PeerCritiqueResponse.pdf
 ├── .github/workflows/pages.yml   # despliegue en GitHub Pages
 └── dust/                         # descartado/legado (ignorado por git)
 ```
 
-`dust/` contiene los experimentos de Miraflores (V1/V2), el prototipo de la semana 10 y los HTML de prueba. No se versiona.
+`dust/` contiene los experimentos de Miraflores (V1/V2), la entrega original de la semana 10 sobre Miraflores y los HTML de prueba. No se versiona.
+
+> Las carpetas `week04`–`week10` se completaron el 2 de noviembre de 2026 con el estado del proyecto a esa fecha; cada README lo indica.
 
 ## Datos
 
@@ -72,9 +79,12 @@ Sin token puede ejecutarse solo `05`, que parte de los intermedios versionados e
 
 | Hito | Fecha | Estado |
 |---|---|---|
-| Datasets, propuesta, análisis y Delivery 1 | Sem 4–7 | No incluidos en este repositorio |
-| Prototipo funcional | Sem 10 · 14 oct | Entregado (versión Miraflores en `dust/`) |
-| **Borrador refinado y crítica de pares** | **Sem 12 · 28 oct** | **`deliveries/week12/`** |
+| Selección del dataset | Sem 4 · 2 sep | [`deliveries/week04/`](deliveries/week04/) |
+| Propuesta de proyecto | Sem 5 · 9 sep | [`deliveries/week05/`](deliveries/week05/) |
+| Análisis de datos y bocetos | Sem 6 · 16 sep | [`deliveries/week06/`](deliveries/week06/) (faltan los PDF de los artículos) |
+| Delivery 1 | Sem 7 · 23 sep | [`deliveries/week07/`](deliveries/week07/) |
+| Prototipo funcional | Sem 10 · 14 oct | [`deliveries/week10/`](deliveries/week10/) |
+| **Borrador refinado y crítica de pares** | **Sem 12 · 28 oct** | **[`deliveries/week12/`](deliveries/week12/)** |
 | Entrega final, paper, videos, póster | Sem 15 · 18 nov | Pendiente |
 
 ## Equipo y responsabilidades

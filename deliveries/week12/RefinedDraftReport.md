@@ -58,7 +58,7 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 - **Leyenda = filtro.** Se fusionaron la leyenda y la lista de categorías: casillas, «solo», «las 3 mayores» y opción de mostrar el resto en gris.
 - **Trayectorias que se desvanecen.** Se eliminó la capa de líneas permanentes; solo se dibujan estelas que desaparecen, con reloj de 24 h.
 - **Detalle bajo demanda.** Tooltip por punto, hexágono o trayectoria; lista de las 8 clases más frecuentes que se recalcula con los filtros.
-- **Accesibilidad y adaptación.** Estructura semántica, `aria-pressed` y `aria-live` en controles y recuentos, foco visible, contraste AA sobre fondo oscuro, animación pausada si el sistema pide movimiento reducido, diseño de una columna en pantallas < 900 px.
+- **Accesibilidad y adaptación.** Estructura semántica, `aria-pressed` y `aria-live` en controles y recuentos, foco visible, contraste alto sobre fondo claro, animación pausada si el sistema pide movimiento reducido, diseño de una columna en pantallas < 900 px.
 - **Tecnología.** deck.gl 8.9 + MapLibre; HTML/CSS/JS sin framework ni *build*. *Decisión del equipo: la versión final se mantiene en deck.gl; D3 no se usa en esta etapa.*
 
 ## 5. Cambios respecto al prototipo de la semana 10
@@ -75,7 +75,7 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 
 1. **Cobertura geográfica incompleta de `map_features`.** Solo están extraídos los lotes 1 y 2 (lon 14,350–14,415) de los 5 que cubren el recuadro planeado (hasta 14,500). Las imágenes sí se descargaron completas, pero el informe y la app se restringen a la zona con detecciones. Los lotes 3–5 pueden descargarse con `01_extract_features.py` (retoma lotes faltantes) y reconstruir el resto con `03`–`05`.
 2. **Las trayectorias son una reconstrucción.** Se derivan de marcas de tiempo de *detecciones*, no de la secuencia de imágenes; tramos largos o con pausas se cortan. 5 puntos por trayectoria en promedio.
-3. **El modo de transporte es una inferencia por velocidad**; un vehículo detenido aparece como "a pie".
+3. **El modo de transporte es una inferencia débil.** Los tramos duran 2,1 s de mediana (el 62 % ≤ 3 s), el 25 % supera los 80 km/h y el máximo llega a 5.050 km/h; además la posición de cada punto es la del objeto detectado, no la de la cámara. El reparto por modo (62,6 % «vehículo») no debe leerse como un hecho.
 4. **Reloj diario superpuesto.** La animación usa un reloj de 24 h en el que cada trayectoria aparece a la hora local real de su captura, pero se superponen todas las fechas (2014–2026): muestra el ciclo diario, no un día concreto. Cada viaje se ensancha visualmente a 10 min de reloj para poder verse. Existe también un reloj relativo de 60 s.
 5. **Sesgo de quién captura.** Pocas campañas dominan algunos años (2022).
 6. **Fechas.** 4 detecciones de 2006 se excluyen de la app por ser incompatibles con la cobertura (probable error de reloj de cámara).
@@ -84,7 +84,7 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 
 ## 7. Retroalimentación de la revisión de diseño y respuesta
 
-Ver [`critique/PeerCritiqueResponse.pdf`](critique/PeerCritiqueResponse.pdf). Resumen de la retroalimentación del profesor y de la respuesta:
+Ver [`PeerCritiqueResponse.pdf`](PeerCritiqueResponse.pdf). Resumen de la retroalimentación del profesor y de la respuesta:
 
 | Comentario | Decisión |
 |---|---|

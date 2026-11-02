@@ -121,7 +121,7 @@
       <p>Fuente: <a href="https://www.mapillary.com/developer/api-documentation" target="_blank" rel="noopener">Mapillary API v4</a> (CC BY-SA). Zona cubierta: lon 14.350–14.415, lat 50.050–50.130 (~4,6 × 8,9 km, oeste de Praga).</p>
       <ul class="notes">
         <li>Los objetos provienen de <code>map_features</code>: detecciones automáticas, no un censo.</li>
-        <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de esas detecciones y se ajustan a la red vial (OSRM, perfil de automóvil). El modo se infiere solo por la velocidad media (&lt;7, 7–25, &gt;25&nbsp;km/h).</li>
+        <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de esas detecciones y se ajustan a la red vial (OSRM, perfil de automóvil). El modo se infiere solo por la velocidad media (&lt;7, 7–25, &gt;25&nbsp;km/h) y es poco fiable: los tramos duran ~2&nbsp;s de mediana y el 25&nbsp;% supera los 80&nbsp;km/h.</li>
         <li>La densidad 3D mide recorrido reconstruido (muestras cada ~40&nbsp;m de trayectoria), no puntos de detección. No hay datos de edificios: la altura solo codifica el valor.</li>
         <li>El reloj de 24&nbsp;h superpone trayectorias de todas las fechas (2014–2026) según la hora del día en que se capturaron: muestra el ciclo diario, no un día concreto.</li>
         <li>La cobertura depende de quién captura: una campaña concentrada puede dominar un año entero.</li>

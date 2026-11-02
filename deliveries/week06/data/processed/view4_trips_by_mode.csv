@@ -1,0 +1,4 @@
+mode,trips,mean_speed_kmh,mean_duration_s
+micro,1568,15.9,6.4
+vehicle,3994,96.0,2.5
+walk,817,2.8,6.4
