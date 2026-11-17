@@ -17,6 +17,7 @@
 [hidden] { display: none !important; }
 html, body { height: 100%; }
 html { overflow-x: hidden; }
+@media (min-width: 901px) { html, body { overflow: hidden; } }   /* el diseño ocupa exactamente la ventana: nada debe crear una barra de página */
 .layout, .panel, .card { min-width: 0; }
 body {
   margin: 0; background: var(--bg); color: var(--text);
@@ -124,7 +125,7 @@ select {
 .legend .foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
 .legend .foot .hint { margin: 0; }
 .legend .cls { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: center; padding: 1px 0; }
-.legend .cls .swatch { width: 22px; height: 12px; }
+.legend .cls .line { display: block; width: 26px; border-radius: 3px; }
 .swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, .3); display: inline-block; }
 .ramp { height: 10px; width: 100%; border-radius: 3px; border: 1px solid rgba(0, 0, 0, .15); }
 .ramp-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 11.5px; margin-top: 2px; }

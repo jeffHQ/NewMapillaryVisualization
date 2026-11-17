@@ -61,9 +61,8 @@
     { id: 'afternoon', label: 'Tarde', range: '11:00–17:59', lo: 660, hi: 1080 },
     { id: 'night', label: 'Noche', range: '18:00–23:59', lo: 1080, hi: 1440 },
   ];
-  // Insights: celdas hexagonales coloreadas por tráfico (km de recorrido), amarillo → naranja → rojo (YlOrRd, 5 clases)
-  const INS_RAMP = ['#ffffb2', '#fecc5c', '#fd8d3c', '#f03b20', '#bd0026'];
-  const INS_R = 120;   // radio de la celda hexagonal en metros
+  // Insights: tramos de calle coloreados por tráfico (nº de trayectorias), amarillo → naranja → rojo (YlOrRd, 5 clases)
+  const INS_RAMP = ['#ffd84d', '#fdae3b', '#f26b21', '#e0301e', '#a50f15'];
   // Ventana de hora de inicio elegida en la serie por hora, en minutos desde 00:00
   const startWindow = () => [state.hours[0] * 60, Math.min(1440, (state.hours[1] + 1) * 60)];
   const hhmm = (m) => `${hh(Math.floor(m / 60) % 24)}:${hh(Math.floor(m % 60))}`;
@@ -332,9 +331,9 @@
           <span class="swatch" style="background:${CAT_COLORS[c.id]}"></span><span>${c.label}</span><span class="n">${fmt(c.count)}</span></label></div>`).join('')}
         ${legendFoot}</div>`;
     } else if (state.layer === 'insights') {
-      el.innerHTML = `<div class="group"><h4>Tráfico por celda (km de recorrido)</h4>
+      el.innerHTML = `<div class="group"><h4>Tráfico por tramo de calle</h4>
         <div id="ins-classes"></div>
-        <div class="hint">Cada celda es un hexágono de ~240 m. Amarillo = poco recorrido, rojo = mucho. La escala es la misma en las tres franjas, así que los colores se comparan directamente. De 00:00 a 04:00 no se muestra.</div></div>
+        <div class="hint">Cada línea es un tramo de calle: color y grosor indican cuántas trayectorias reconstruidas pasan por él (amarillo = pocas, rojo = muchas). La escala es la misma en las tres franjas, así que se comparan directamente. De 00:00 a 04:00 no se muestra.</div></div>
         <div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}${legendFoot}</div>`;
     } else if (state.layer === 'density') {
       el.innerHTML = `<div class="group"><h4>Recorrido reconstruido por celda</h4>
@@ -536,9 +535,11 @@
         if (v == null) return;
         const x = i * c.bw + c.bw / 2;
         tip.textContent = opts.tipFn ? opts.tipFn(i, v, c.total) : String(v);
-        tip.style.left = Math.max(50, Math.min(c.W - 50, x)) + svg.offsetLeft + 'px';
-        tip.style.top = svg.offsetTop + 14 + 'px';
-        guide.style.left = x + svg.offsetLeft + 'px'; guide.style.top = svg.offsetTop + c.padT + 'px';
+        const hr = host.getBoundingClientRect(), sr = svg.getBoundingClientRect();   // los SVG no tienen offsetLeft/offsetTop
+        const offX = sr.left - hr.left, offY = sr.top - hr.top;
+        tip.style.left = (Math.max(50, Math.min(c.W - 50, x)) + offX) + 'px';
+        tip.style.top = (offY + 14) + 'px';
+        guide.style.left = (x + offX) + 'px'; guide.style.top = (offY + c.padT) + 'px';
         guide.style.height = (c.H - c.padT - c.padB) + 'px';
         tip.hidden = false; guide.hidden = false;
         return;
@@ -753,42 +754,35 @@
       },
     ];
   }
-  // ---------------------------------------------------------------- insights: tres mapas de celdas coloreadas por tráfico
-  const LAT0 = 50.09, LON0 = 14.38;
-  const MX = 111320 * Math.cos(LAT0 * Math.PI / 180), MY = 110574;           // metros por grado de longitud y latitud
+  // ---------------------------------------------------------------- insights: tres mapas de tramos de calle coloreados por tráfico
   const INS_RGB = INS_RAMP.map(hex2rgb);
-  // Hexágonos de lados planos (coordenadas axiales); R = radio en metros
-  function hexOf(lon, lat, R) {
-    const x = (lon - LON0) * MX, y = (lat - LAT0) * MY;
-    const q = (2 / 3 * x) / R, r = (-1 / 3 * x + Math.sqrt(3) / 3 * y) / R;
-    let rx = Math.round(q), rz = Math.round(r), ry = Math.round(-q - r);
-    const dx = Math.abs(rx - q), dy = Math.abs(ry + q + r), dz = Math.abs(rz - r);
-    if (dx > dy && dx > dz) rx = -ry - rz; else if (dy > dz) ry = -rx - rz; else rz = -rx - ry;
-    return [rx, rz];
-  }
-  function hexCenter(q, r, R) {
-    return [LON0 + (R * 1.5 * q) / MX, LAT0 + (R * Math.sqrt(3) * (r + q / 2)) / MY];
-  }
-  function binCells(points) {
+  const INS_W = [2.4, 3.2, 4.2, 5.4, 6.8];   // grosor en píxeles de cada clase
+  // Tramos entre vértices consecutivos de las trayectorias ajustadas a la red vial; cada trayectoria suma 1 al tramo que recorre.
+  // Los vértices son los de OSRM, así que el mismo tramo de calle coincide entre trayectorias (clave sin orden).
+  function binSegments(trips) {
     const m = new Map();
-    for (const p of points) {
-      const [q, r] = hexOf(p[0], p[1], INS_R), k = q + ',' + r;
-      const c = m.get(k);
-      if (c) c.n++; else m.set(k, { q, r, n: 1 });
+    const key = (x, y) => Math.round(x * 1e5) + ',' + Math.round(y * 1e5);
+    for (const d of trips) {
+      const p = d.p;
+      for (let i = 0; i + 1 < p.length; i++) {
+        const a = key(p[i][0], p[i][1]), b = key(p[i + 1][0], p[i + 1][1]);
+        if (a === b) continue;
+        const k = a < b ? a + '|' + b : b + '|' + a, c = m.get(k);
+        if (c) c.n++; else m.set(k, { path: [[p[i][0], p[i][1]], [p[i + 1][0], p[i + 1][1]]], n: 1 });
+      }
     }
     return [...m.values()];
   }
-  // Cortes de clase compartidos por las tres franjas (percentiles de las celdas con recorrido)
-  function classBreaks(allKm) {
-    if (!allKm.length) return [0.1, 0.2, 0.4, 0.8];
-    const v = allKm.slice().sort((a, b) => a - b);
+  // Cortes enteros compartidos por las tres franjas (percentiles de los tramos recorridos)
+  function classBreaks(allN) {
+    if (!allN.length) return [1, 2, 3, 4];
+    const v = allN.slice().sort((a, b) => a - b);
     const at = (p) => v[Math.min(v.length - 1, Math.floor(p * v.length))];
-    const nice = (x) => (x < 1 ? Math.max(0.1, Math.round(x * 10) / 10) : Math.round(x));
-    const b = [at(0.5), at(0.75), at(0.9), at(0.97)].map(nice);
-    for (let i = 1; i < b.length; i++) if (b[i] <= b[i - 1]) b[i] = +(b[i - 1] + (b[i - 1] < 1 ? 0.1 : 1)).toFixed(1);
+    const b = [at(0.5), at(0.8), at(0.93), at(0.985)];
+    for (let i = 1; i < b.length; i++) if (b[i] <= b[i - 1]) b[i] = b[i - 1] + 1;
     return b;
   }
-  const fkm = (x) => (x < 1 ? x.toFixed(1) : String(Math.round(x))).replace('.', ',');
+  const range = (lo, hi) => (lo === hi ? String(lo) : `${lo}–${hi}`);
   let insPanes = null, insView = null, insTips = [];
   function ensureInsights() {
     if (insPanes) return;
@@ -803,7 +797,8 @@
         onHover: (info) => {
           try {
             if (!info || !info.object) { tip.hidden = true; return; }
-            tip.innerHTML = `<b>≈ ${fkm(info.object.km)} km</b> de recorrido<br>en esta celda (~240 m)<br><span class="muted">${b.label} ${b.range}</span>`;
+            const n = info.object.n;
+            tip.innerHTML = `<b>${fmt(n)} ${n === 1 ? 'trayectoria' : 'trayectorias'}</b> por este tramo<br><span class="muted">${b.label} ${b.range}</span>`;
             tip.style.left = Math.min(info.x + 12, host.clientWidth - 200) + 'px';
             tip.style.top = Math.max(info.y - 10, 4) + 'px';
             tip.hidden = false;
@@ -816,26 +811,26 @@
     ensureInsights();
     const trips = getTrips();
     const per = BANDS.map((b) => trips.filter((d) => d.t >= b.lo && d.t < b.hi));
-    const cells = per.map((tr) => binCells(tr.flatMap((d) => d.s)));
-    cells.forEach((cs) => cs.forEach((c) => { c.km = c.n * SAMPLE_KM; }));
-    const br = classBreaks(cells.flatMap((cs) => cs.map((c) => c.km)));
-    const cls = (km) => (km > br[3] ? 4 : km > br[2] ? 3 : km > br[1] ? 2 : km > br[0] ? 1 : 0);
+    const segs = per.map(binSegments);
+    const br = classBreaks(segs.flatMap((ss) => ss.map((x) => x.n)));
+    const cls = (n) => (n > br[3] ? 4 : n > br[2] ? 3 : n > br[1] ? 2 : n > br[0] ? 1 : 0);
     const kms = per.map((tr) => tr.reduce((a, d) => a + d.s.length, 0) * SAMPLE_KM);
     const totKm = kms.reduce((a, b) => a + b, 0) || 1;
     BANDS.forEach((b, i) => {
-      const data = cells[i].map((c) => ({ pos: hexCenter(c.q, c.r, INS_R), km: c.km, cls: cls(c.km) }));
+      const data = segs[i].map((x) => ({ path: x.path, n: x.n, cls: cls(x.n) })).sort((p, q) => p.n - q.n);   // lo más transitado, encima
       insPanes[i].setProps({
-        layers: [new deck.ColumnLayer({
-          id: 'ins-' + b.id, data, pickable: true, extruded: false, diskResolution: 6, radius: INS_R * 0.98,
-          getPosition: (d) => d.pos, getFillColor: (d) => [...INS_RGB[d.cls], 235], updateTriggers: { getFillColor: [br.join()] },
+        layers: [new deck.PathLayer({
+          id: 'ins-' + b.id, data, pickable: true, getPath: (d) => d.path, getColor: (d) => [...INS_RGB[d.cls], 235],
+          getWidth: (d) => INS_W[d.cls], widthUnits: 'pixels', capRounded: true, jointRounded: true,
+          updateTriggers: { getColor: [br.join()], getWidth: [br.join()] },
         })],
       });
       $('ins-stats-' + i).textContent = `${fmt(per[i].length)} trayectorias · ≈ ${fmt(Math.round(kms[i]))} km · ${pct(kms[i] / totKm)}`;
     });
     const box = $('ins-classes');
     if (box) {
-      const lab = [`≤ ${fkm(br[0])} km`, `${fkm(br[0])} – ${fkm(br[1])} km`, `${fkm(br[1])} – ${fkm(br[2])} km`, `${fkm(br[2])} – ${fkm(br[3])} km`, `> ${fkm(br[3])} km`];
-      box.innerHTML = lab.map((t, k) => `<div class="cls"><span class="swatch" style="background:${INS_RAMP[k]}"></span><span>${t}${k === 0 ? ' <span class="muted">(poco)</span>' : k === 4 ? ' <span class="muted">(mucho)</span>' : ''}</span></div>`).join('');
+      const lab = [br[0] === 1 ? '1 trayectoria' : `hasta ${br[0]}`, range(br[0] + 1, br[1]), range(br[1] + 1, br[2]), range(br[2] + 1, br[3]), `más de ${br[3]}`];
+      box.innerHTML = lab.map((t, k) => `<div class="cls"><span class="line" style="height:${Math.max(3, INS_W[k])}px;background:${INS_RAMP[k]}"></span><span>${t}${k === 0 ? ' <span class="muted">(poco)</span>' : k === 4 ? ' <span class="muted">(mucho)</span>' : ''}</span></div>`).join('');
     }
   }
   // Estadísticas de una franja con todos los datos (para el texto del recorrido guiado)

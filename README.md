@@ -28,7 +28,7 @@ Cuatro vistas, un mismo conjunto de filtros:
 - **Objetos:** puntos coloreados por categoría (paleta Okabe-Ito); clic para activar o desactivar, doble clic para dejar solo esa categoría, y el resto en gris.
 - **Densidad 3D:** hexágonos de ~180 m con altura y tono proporcionales a los **kilómetros de trayectoria** reconstruida.
 - **Trayectorias:** estelas que se desvanecen con un **reloj de 24 h**; cada trayectoria aparece a su hora de inicio.
-- **Insights:** tres mapas —mañana 04:00–10:59, tarde 11:00–17:59 y noche 18:00–23:59— de celdas hexagonales coloreadas del amarillo al rojo según el tráfico (km de recorrido), con la misma escala en las tres franjas y cámaras sincronizadas.
+- **Insights:** tres mapas —mañana 04:00–10:59, tarde 11:00–17:59 y noche 18:00–23:59— de tramos de calle dibujados como líneas, coloreadas del amarillo al rojo según cuántas trayectorias pasan por cada tramo, con la misma escala en las tres franjas y cámaras sincronizadas.
 
 Además: **series de tiempo enlazadas** (mes → hora) en una barra inferior, con selección por arrastre, tooltip y un menú ⚙ (escala raíz/log/lineal, atajos y recorrido animado), con los **filtros activos como chips** que se quitan con un clic; una **leyenda que funciona como filtro**; y un **recorrido guiado** de siete pasos con cifras calculadas de los datos. Enlaces directos: `index.html#step=4` y `index.html#step=5&hours=11-17`.
 
