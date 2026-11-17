@@ -21,6 +21,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Versionar recursos (evita que el navegador use CSS/JS en caché obsoletos)
+        run: sed -i "s/__VER__/${GITHUB_SHA::7}/g" deliveries/week15/app/index.html deliveries/week15/app/project.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
