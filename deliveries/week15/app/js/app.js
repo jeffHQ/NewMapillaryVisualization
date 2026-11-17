@@ -92,7 +92,7 @@
   const usesTrips = () => state.layer !== 'objects';
 
   // ---------------------------------------------------------------- datos
-  Promise.all(['features', 'trips', 'summary'].map((n) => `data/${CITY_ID}/${n}.json`).map((u) =>
+  Promise.all(['features', 'trips', 'summary'].map((n) => `data/${CITY_ID}/${n}.json?v=__VER__`).map((u) =>
     fetch(u).then((r) => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); })
   )).then(([f, t, s]) => {
     F = f; T = t; S = s;

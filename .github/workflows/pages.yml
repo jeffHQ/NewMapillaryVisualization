@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Versionar recursos (evita que el navegador use CSS/JS en caché obsoletos)
-        run: sed -i "s/__VER__/${GITHUB_SHA::7}/g" deliveries/week15/app/index.html deliveries/week15/app/project.html
+        run: sed -i "s/__VER__/${GITHUB_SHA::7}/g" deliveries/week15/app/index.html deliveries/week15/app/project.html deliveries/week15/app/js/app.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
