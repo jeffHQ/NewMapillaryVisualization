@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, __import__('os').path.dirname(__import__('os').path.abspath(__file__)))
 from cities import current as CITY
+from mapillary_api import fetch_bbox
 import os
 import time
 import requests
@@ -41,61 +42,15 @@ def generate_grid(min_lon, min_lat, max_lon, max_lat, step=0.005):
 # 3. EXTRACCIÓN ENRIQUECIDA
 # ==========================================
 def extract_enriched_map_features(bbox, token):
-    url = "https://graph.mapillary.com/map_features"
-    
+    """Descarga robusta (reintentos + subdivisión de celdas que fallan); ver mapillary_api.py."""
     fields = [
-        "id",
-        "geometry",
-        "object_value",
-        "object_type",
-        "aligned_direction",
-        "first_seen_at",
-        "last_seen_at",
-        "images.id",
-        "images.captured_at",
-        "images.compass_angle",
-        "images.creator",
-        "images.is_pano",
-        "images.quality_score",
-        "images.thumb_1024_url",
-        "images.thumb_2048_url",
-        "images.geometry",
-        "images.sequence"
+        "id", "geometry", "object_value", "object_type", "aligned_direction", "first_seen_at", "last_seen_at",
+        "images.id", "images.captured_at", "images.compass_angle", "images.creator", "images.is_pano",
+        "images.quality_score", "images.thumb_1024_url", "images.thumb_2048_url", "images.geometry", "images.sequence",
     ]
-    
-    params = {
-        "access_token": token,
-        "bbox": bbox,
-        "fields": ",".join(fields),
-        "limit": 1000
-    }
-    
-    features = []
-    next_url = url
-    is_first_page = True
-    
-    try:
-        while next_url:
-            if is_first_page:
-                response = requests.get(next_url, params=params)
-                is_first_page = False
-            else:
-                response = requests.get(next_url)
-                
-            if response.status_code == 200:
-                data = response.json()
-                items = data.get("data", [])
-                features.extend(items)
-                
-                next_url = data.get("paging", {}).get("next")
-                if next_url:
-                    time.sleep(0.05)
-            else:
-                print(f"Error {response.status_code} en cuadrante {bbox}.")
-                break
-    except Exception as e:
-        print(f"Error procesando bbox {bbox}: {e}")
-        
+    params = {"access_token": token, "fields": ",".join(fields), "limit": 1000}
+    features = fetch_bbox("https://graph.mapillary.com/map_features", params, bbox,
+                          failed_log=os.path.join(OUTPUT_DIR, "failed_cells.txt"))
     return features
 
 
@@ -127,7 +82,13 @@ if __name__ == "__main__":
             global_idx = batch_idx + idx + 1
             print(f"Procesando cuadrante [{global_idx}/{total_cuadrantes}]: {grid_bbox}...")
             
-            items = extract_enriched_map_features(grid_bbox, ACCESS_TOKEN)
+            cache = os.path.join(OUTPUT_DIR, 'cells', grid_bbox.replace(',', '_') + '.json')      # caché por celda: permite reanudar
+            if os.path.exists(cache):
+                items = json.load(open(cache, encoding='utf-8'))
+            else:
+                items = extract_enriched_map_features(grid_bbox, ACCESS_TOKEN)
+                os.makedirs(os.path.dirname(cache), exist_ok=True)
+                json.dump(items, open(cache, 'w', encoding='utf-8'))
             
             for item in items:
                 feat_id = item["id"]

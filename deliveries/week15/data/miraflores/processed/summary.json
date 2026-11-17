@@ -7,8 +7,8 @@
     "view_zoom": 13.0
   },
   "trip_quality": {
-    "median_duration_s": 2.8,
-    "share_over_80kmh": 0.145
+    "median_duration_s": 2.6,
+    "share_over_80kmh": 0.141
   },
   "cell_deg": [
     0.000852,
@@ -32,187 +32,187 @@
     "height_km": 5.0
   },
   "generated_at": "2026-11-17",
-  "n_detections": 33426,
-  "n_sequences_detections": 2574,
-  "n_trips": 5737,
-  "n_images": 18764,
-  "n_distinct_values": 162,
+  "n_detections": 36071,
+  "n_sequences_detections": 2897,
+  "n_trips": 6284,
+  "n_images": 43845,
+  "n_distinct_values": 166,
   "year_range": [
     2016,
     2026
   ],
   "detections_by_year": {
-    "2016": 6317,
-    "2017": 176,
-    "2018": 6,
-    "2019": 44,
-    "2022": 10836,
-    "2023": 422,
-    "2024": 14978,
-    "2025": 449,
-    "2026": 198
+    "2016": 6931,
+    "2017": 207,
+    "2018": 5,
+    "2019": 45,
+    "2022": 11377,
+    "2023": 461,
+    "2024": 16358,
+    "2025": 501,
+    "2026": 186
   },
   "trips_by_year": {
-    "2016": 1234,
-    "2017": 25,
-    "2019": 4,
-    "2022": 1758,
-    "2023": 73,
-    "2024": 2513,
-    "2025": 92,
-    "2026": 38
+    "2016": 1331,
+    "2017": 28,
+    "2019": 2,
+    "2022": 1925,
+    "2023": 88,
+    "2024": 2773,
+    "2025": 106,
+    "2026": 31
   },
   "trips_by_mode": {
-    "vehicle": 3183,
-    "walk": 714,
-    "micro": 1840
+    "micro": 2118,
+    "vehicle": 3400,
+    "walk": 766
   },
   "trips_by_hour": {
     "0": 0,
-    "1": 6,
-    "2": 0,
-    "3": 15,
-    "4": 26,
-    "5": 49,
-    "6": 4,
-    "7": 390,
-    "8": 690,
-    "9": 546,
-    "10": 653,
-    "11": 543,
-    "12": 300,
-    "13": 433,
-    "14": 349,
-    "15": 575,
-    "16": 707,
-    "17": 341,
-    "18": 75,
-    "19": 15,
+    "1": 11,
+    "2": 7,
+    "3": 19,
+    "4": 23,
+    "5": 34,
+    "6": 18,
+    "7": 393,
+    "8": 835,
+    "9": 635,
+    "10": 765,
+    "11": 601,
+    "12": 263,
+    "13": 437,
+    "14": 368,
+    "15": 590,
+    "16": 767,
+    "17": 389,
+    "18": 92,
+    "19": 18,
     "20": 18,
     "21": 0,
-    "22": 2,
+    "22": 1,
     "23": 0
   },
   "images_by_year": {
-    "2016": 3516,
-    "2017": 224,
-    "2018": 12,
-    "2019": 197,
-    "2022": 4962,
-    "2023": 251,
-    "2024": 8662,
-    "2025": 750,
-    "2026": 190
+    "2016": 7979,
+    "2017": 520,
+    "2018": 20,
+    "2019": 419,
+    "2022": 14187,
+    "2023": 356,
+    "2024": 19024,
+    "2025": 1094,
+    "2026": 246
   },
   "device_makes_top": [
     [
       "Desconocido",
-      12372
+      29321
     ],
     [
       "Garmin",
-      3660
+      8293
     ],
     [
       "Gopro",
-      1277
+      3947
     ],
     [
       "Apple",
-      541
+      894
     ],
     [
       "Samsung",
-      483
+      687
     ],
     [
       "Xiaomi",
-      368
+      596
     ],
     [
       "Motorola",
-      57
+      64
     ],
     [
-      "Crosscall",
-      6
+      "Lge",
+      33
     ]
   ],
   "top_values": [
     {
       "value": "object--support--utility-pole",
-      "count": 7257,
+      "count": 7638,
       "category": "lighting"
     },
     {
       "value": "object--street-light",
-      "count": 5281,
+      "count": 5685,
       "category": "lighting"
     },
     {
       "value": "object--sign--advertisement",
-      "count": 2356,
+      "count": 2546,
       "category": "commerce"
     },
     {
       "value": "object--sign--store",
-      "count": 2149,
+      "count": 2305,
       "category": "commerce"
     },
     {
       "value": "object--traffic-sign--front",
-      "count": 2098,
+      "count": 2254,
       "category": "signage"
     },
     {
       "value": "object--support--pole",
-      "count": 1796,
+      "count": 2027,
       "category": "lighting"
     },
     {
       "value": "marking--discrete--crosswalk-zebra",
-      "count": 1191,
+      "count": 1303,
       "category": "marking"
     },
     {
       "value": "object--traffic-sign--direction-front",
-      "count": 1025,
+      "count": 1160,
       "category": "signage"
     },
     {
       "value": "construction--flat--driveway",
-      "count": 1000,
+      "count": 1042,
       "category": "utilities"
     },
     {
       "value": "object--manhole",
-      "count": 809,
+      "count": 885,
       "category": "utilities"
     }
   ],
   "categories": {
-    "signage": 5205,
-    "lighting": 14393,
-    "commerce": 4786,
-    "marking": 3865,
-    "furniture": 1177,
-    "utilities": 2202,
-    "traffic_light": 823,
-    "other": 975
+    "signage": 5640,
+    "lighting": 15417,
+    "commerce": 5169,
+    "marking": 4256,
+    "furniture": 1259,
+    "utilities": 2349,
+    "traffic_light": 938,
+    "other": 1043
   },
   "concentration": {
-    "occupied_cells_100m": 1428,
-    "top10pct_cells_share": 0.407
+    "occupied_cells_100m": 1582,
+    "top10pct_cells_share": 0.409
   },
   "trip_concentration": {
-    "occupied_cells_100m": 1181,
-    "top10pct_cells_share": 0.462,
-    "km_total": 1155.4
+    "occupied_cells_100m": 1317,
+    "top10pct_cells_share": 0.473,
+    "km_total": 1255.4
   },
-  "peak_trip_hour": 16,
+  "peak_trip_hour": 8,
   "source_split": {
-    "trafficsign": 1514,
-    "mvd_fast": 6871,
-    "panoptic": 25041
+    "trafficsign": 1628,
+    "mvd_fast": 7652,
+    "panoptic": 26791
   }
 }

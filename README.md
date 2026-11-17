@@ -28,9 +28,9 @@ La aplicación tiene **dos pestañas de ciudad**, con el selector **«Praga | Mi
 | | Praga | Miraflores (Lima) |
 |---|---|---|
 | Zona | oeste de Praga, ~4,6 × 8,9 km (2 de 5 lotes) | distrito completo, ~5,4 × 5,0 km (lon -77,060 a -77,010; lat -12,145 a -12,100) |
-| Detecciones de objetos | 39.564 (277 clases, 1.096 secuencias) | 33.426 (162 clases, 2.574 secuencias) |
-| Trayectorias reconstruidas | 6.379 (≈ 1.331 km) | 5.737 (≈ 1.155 km) |
-| Imágenes en la zona | 76.225 | 18.764 |
+| Detecciones de objetos | 39.564 (277 clases, 1.096 secuencias) | 36.071 (166 clases, 2.897 secuencias) |
+| Trayectorias reconstruidas | 6.379 (≈ 1.331 km) | 6.284 (≈ 1.255 km) |
+| Imágenes en la zona | 76.225 | 43.845 |
 | Periodo | 2014–2026 | 2016–2026 (2016, 2022 y 2024 concentran el 96 % de las detecciones) |
 | Zona horaria de las horas | Europe/Prague | America/Lima |
 | Acceso a la API | 20 y 21 de octubre de 2026 | 16 de noviembre de 2026 |
@@ -73,7 +73,7 @@ python 03_clean_features.py --city $CITY && python 04_match_trips.py --city $CIT
 python 05_build_processed_data.py --city $CITY
 ```
 
-Sin token puede ejecutarse solo `05`, que parte de los intermedios versionados en `deliveries/week15/data/<ciudad>/interim/`. El token (*Client Access Token*) se obtiene en el [dashboard de desarrolladores de Mapillary](https://www.mapillary.com/dashboard/developers); **nunca lo escribas en el código**. Las descargas crudas (~650 MB por ciudad) no se versionan. Descargar Miraflores tarda unos 20 minutos (detecciones) y la reconstrucción de trayectorias unos 3 minutos.
+Sin token puede ejecutarse solo `05`, que parte de los intermedios versionados en `deliveries/week15/data/<ciudad>/interim/`. El token (*Client Access Token*) se obtiene en el [dashboard de desarrolladores de Mapillary](https://www.mapillary.com/dashboard/developers); **nunca lo escribas en el código**. La descarga **reintenta y subdivide** las celdas que la API rechaza (error 500 o tiempo agotado), pidiendo páginas más pequeñas, y guarda cada celda para poder reanudar; las celdas que no se recuperan quedan anotadas en `raw/features/failed_cells.txt` (`retry_failed_cells.py` las reintenta). Las descargas crudas (~700 MB por ciudad) no se versionan. Descargar Miraflores tarda unos 20 minutos (detecciones) y la reconstrucción de trayectorias unos 3 minutos.
 
 **Regenerar el paper, el póster y la presentación** (PDF a partir de las fuentes HTML):
 
@@ -96,14 +96,14 @@ python build_pdfs.py             # requiere Chrome, Edge o Chromium (variable op
 
 ## Limitaciones conocidas
 
-1. **Cobertura parcial.** Solo se descargaron 2 de los 5 lotes de `map_features` planeados (lon 14,350–14,415 de 14,500); la zona de estudio es de ~4,6 × 8,9 km y no representa toda Praga.
+1. **Cobertura parcial.** Solo se descargaron 2 de los 5 lotes de `map_features` planeados (lon 14,350–14,415 de 14,500); la zona de estudio es de ~4,6 × 8,9 km y no representa toda Praga. Además, **la descarga de Praga se hizo con una versión anterior del script que descartaba en silencio las celdas que la API rechazaba (error 500)**: una comprobación posterior recuperó ≈ 9.100 detecciones en 13 celdas del centro (lon 14,370–14,410; lat 50,070–50,110) que figuran casi vacías en los datos actuales. Los datos de Praga y los documentos que se basan en ellos (paper, póster, presentación, videos) no se han regenerado; Miraflores sí se descargó con el pipeline corregido.
 2. **Las trayectorias son una reconstrucción**, no un dato observado: los tramos duran 2,1 s de mediana, la posición es la del *objeto* detectado y no la de la cámara, y el 25 % de las velocidades supera los 80 km/h. **El modo de transporte (63 % «vehículo») es una inferencia débil.**
 3. Las detecciones son automáticas; no son un censo de la infraestructura.
 4. El reloj de 24 h superpone todas las fechas: muestra un ciclo diario, no un día concreto.
 5. El 3D no incluye edificios: la altura solo codifica el valor.
 6. Se usa el perfil de automóvil de OSRM para todos los modos.
 7. Hay 4 detecciones con fecha de 2006 (inconsistentes) excluidas de la aplicación (Praga).
-8. **Miraflores:** una sola descarga del distrito; los tramos de trayectoria duran 2,8 s de mediana y el 14 % de las velocidades supera los 80 km/h, así que el modo de transporte (55 % «vehículo») también es una inferencia débil. Tres años concentran el 96 % de las detecciones y la mayor parte de la captura ocurre entre las 07:00 y las 18:00. Los datos viejos de `dust/` (2.186 detecciones sin secuencia) no se usan.
+8. **Miraflores:** una sola descarga del distrito; los tramos de trayectoria duran 2,6 s de mediana y el 14 % de las velocidades supera los 80 km/h, así que el modo de transporte (54 % «vehículo») también es una inferencia débil. Tres años (2016, 2022 y 2024) concentran el 96 % de las detecciones. Los datos viejos de `dust/` (2.186 detecciones sin secuencia) no se usan.
 
 ## Contribution statement
 

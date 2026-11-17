@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, __import__('os').path.dirname(__import__('os').path.abspath(__file__)))
 from cities import current as CITY
+from mapillary_api import fetch_bbox
 import os
 import time
 import requests
@@ -59,44 +60,10 @@ def generate_grid(min_lon, min_lat, max_lon, max_lat, step=0.005):
 # 3. EXTRACCIÓN POR MICRO-CUADRANTE
 # ==========================================
 def extract_images_from_bbox(bbox, token):
-    url = "https://graph.mapillary.com/images"
-    
-    params = {
-        "access_token": token,
-        "bbox": bbox,
-        "fields": ",".join(FIELDS),
-        "limit": 1000
-    }
-    
-    features = []
-    next_url = url
-    is_first_page = True
-    
-    try:
-        while next_url:
-            if is_first_page:
-                response = requests.get(next_url, params=params, timeout=15)
-                is_first_page = False
-            else:
-                response = requests.get(next_url, timeout=15)
-                
-            if response.status_code == 200:
-                data = response.json()
-                items = data.get("data", [])
-                features.extend(items)
-                
-                next_url = data.get("paging", {}).get("next")
-                if next_url:
-                    time.sleep(0.05)
-            else:
-                print(f"  ⚠️ Error {response.status_code} en cuadrante {bbox}.")
-                break
-    except requests.exceptions.Timeout:
-        print(f"  ⏳ Timeout en cuadrante {bbox} (Servidor lento). Saltando...")
-    except Exception as e:
-        print(f"  ❌ Error en cuadrante {bbox}: {e}")
-        
-    return features
+    """Descarga robusta (reintentos + subdivisión de celdas que fallan); ver mapillary_api.py."""
+    params = {"access_token": token, "fields": ",".join(FIELDS), "limit": 1000}
+    return fetch_bbox("https://graph.mapillary.com/images", params, bbox,
+                      failed_log=os.path.join(OUTPUT_DIR, "failed_cells.txt"))
 
 
 def convert_to_geojson(images_list):

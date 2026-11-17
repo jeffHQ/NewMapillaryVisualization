@@ -62,9 +62,13 @@ def to_dt(ms):
 
 # ------------------------------------------------------------------ features
 features = []
+seen_ids = set()   # un mismo objeto puede venir en más de un lote (p. ej. celdas recuperadas en un reintento)
 for path in sorted(glob.glob(os.path.join(INTERIM, "*_clean.geojson"))):
     with open(path, encoding="utf-8") as f:
-        features.extend(json.load(f)["features"])
+        for ft in json.load(f)["features"]:
+            if ft["properties"]["id"] not in seen_ids:
+                seen_ids.add(ft["properties"]["id"])
+                features.append(ft)
 print(f"Detecciones cargadas: {len(features):,}")
 
 rows = []
