@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Praga a pie de calle · Mapillary</title>
+  <meta name="description" content="Exploración interactiva de 39 mil objetos urbanos y 6 mil trayectorias de captura de Mapillary en el oeste de Praga.">
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/deck.gl@8.9.35/dist.min.js"></script>
+</head>
+<body>
+<a class="skip" href="#panel">Saltar al panel de controles</a>
+
+<header class="top">
+  <div>
+    <h1>Praga a pie de calle</h1>
+    <p class="tagline">¿Cómo se captura la ciudad y qué muestran las imágenes colaborativas de Mapillary?</p>
+  </div>
+  <nav aria-label="Navegación del proyecto">
+    <a href="project.html">Página del proyecto</a>
+  </nav>
+</header>
+
+<main class="layout">
+  <aside id="panel" class="panel" aria-label="Insights y leyenda">
+
+    <!-- 1. Recorrido guiado (insights) -->
+    <section class="card tour" aria-labelledby="tour-h">
+      <div class="tour-head">
+        <h2 id="tour-h">Recorrido guiado</h2>
+        <span id="tour-count" class="muted">1 / 6</span>
+      </div>
+      <h3 id="tour-q"></h3>
+      <p id="tour-text"></p>
+      <p id="tour-hint" class="hint"></p>
+      <div class="tour-nav">
+        <button type="button" id="tour-prev" class="btn">← Anterior</button>
+        <button type="button" id="tour-next" class="btn primary">Siguiente →</button>
+      </div>
+    </section>
+
+    <!-- 2. Leyenda = filtro -->
+    <section class="card" aria-labelledby="legend-h">
+      <h2 id="legend-h">Leyenda y filtros</h2>
+      <div id="legend" class="legend" aria-label="Leyenda y filtros"></div>
+    </section>
+
+    <!-- 3. Elementos más frecuentes (insights) -->
+    <section class="card" id="top-card" aria-labelledby="detail-h">
+      <h2 id="detail-h">Elementos más frecuentes</h2>
+      <p class="hint">Según los filtros activos.</p>
+      <ol id="top-list" class="top-list"></ol>
+    </section>
+
+    <!-- 4. Datos y límites (plegado) -->
+    <details class="card about">
+      <summary>Datos y límites</summary>
+      <p>Fuente: <a href="https://www.mapillary.com/developer/api-documentation" target="_blank" rel="noopener">Mapillary API v4</a> (CC BY-SA). Zona cubierta: lon 14.350–14.415, lat 50.050–50.130 (~4,6 × 8,9 km, oeste de Praga).</p>
+      <ul class="notes">
+        <li>Los objetos provienen de <code>map_features</code>: detecciones automáticas, no un censo.</li>
+        <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de esas detecciones y se ajustan a la red vial (OSRM, perfil de automóvil). El modo se infiere solo por la velocidad media (&lt;7, 7–25, &gt;25&nbsp;km/h) y es poco fiable: los tramos duran ~2&nbsp;s de mediana y el 25&nbsp;% supera los 80&nbsp;km/h.</li>
+        <li>La densidad 3D mide recorrido reconstruido (muestras cada ~40&nbsp;m de trayectoria), no puntos de detección. No hay datos de edificios: la altura solo codifica el valor.</li>
+        <li>El reloj de 24&nbsp;h superpone trayectorias de todas las fechas (2014–2026) según la hora del día en que se capturaron: muestra el ciclo diario, no un día concreto.</li>
+        <li>La cobertura depende de quién captura: una campaña concentrada puede dominar un año entero.</li>
+        <li>4 detecciones con fecha de 2006 se omiten de la app por inconsistencia de fecha.</li>
+      </ul>
+    </details>
+  </aside>
+
+  <div class="stage">
+  <section class="map-wrap" aria-label="Mapa interactivo de Praga">
+    <div id="map" role="application" aria-label="Mapa. Arrastra para mover, rueda para acercar, Ctrl + arrastrar para inclinar."></div>
+
+    <div class="layer-switch" role="group" aria-label="Capa visible">
+      <button type="button" data-layer="objects" aria-pressed="true">Objetos</button>
+      <button type="button" data-layer="density" aria-pressed="false">Densidad 3D</button>
+      <button type="button" data-layer="trips" aria-pressed="false">Trayectorias</button>
+      <button type="button" data-layer="insights" aria-pressed="false">Insights</button>
+    </div>
+
+    <!-- La leyenda es también el filtro de categoría / modo -->
+
+    <!-- Insights: tres mapas de calor del recorrido (mañana, tarde, noche), con vistas sincronizadas -->
+    <div id="insights" class="insights" hidden>
+      <section class="pane" aria-label="Mañana, de 04:00 a 10:59">
+        <header class="pane-head"><h3>Mañana <span class="muted">04:00 – 10:59</span></h3><p id="ins-stats-0" class="pane-stats"></p></header>
+        <div id="ins-map-0" class="pane-map"></div>
+      </section>
+      <section class="pane" aria-label="Tarde, de 11:00 a 17:59">
+        <header class="pane-head"><h3>Tarde <span class="muted">11:00 – 17:59</span></h3><p id="ins-stats-1" class="pane-stats"></p></header>
+        <div id="ins-map-1" class="pane-map"></div>
+      </section>
+      <section class="pane" aria-label="Noche, de 18:00 a 23:59">
+        <header class="pane-head"><h3>Noche <span class="muted">18:00 – 23:59</span></h3><p id="ins-stats-2" class="pane-stats"></p></header>
+        <div id="ins-map-2" class="pane-map"></div>
+      </section>
+    </div>
+
+    <div id="clock" class="clock" hidden>
+      <div class="clock-title" id="clock-title">Reloj diario (24 h)</div>
+      <div class="clock-time" id="clock-display" aria-live="off">00:00</div>
+      <div class="clock-bar" aria-hidden="true"><span id="clock-win" class="win"></span><span id="clock-fill"></span></div>
+      <input type="range" id="clock-scrub" class="scrub" min="0" max="1439" step="1" value="0" aria-label="Mover el reloj">
+      <div class="clock-row"><span>Trayectorias activas</span><b id="clock-active">0</b></div>
+      <div class="clock-row" id="clock-window-row"><span>Hora de inicio</span><b id="clock-window">Todo el día</b></div>
+      <button type="button" class="btn small" id="clock-clear-hours" hidden>Quitar filtro de hora</button>
+      <div class="clock-row" id="clock-hour-row" hidden><span>Hora de inicio más frecuente</span><b id="clock-hour">—</b></div>
+      <div class="play-row">
+        <button type="button" id="play" class="btn small primary" aria-pressed="true">Pausar</button>
+        <label>Velocidad
+          <select id="speed">
+            <option value="2">0.5×</option>
+            <option value="4" selected>1×</option>
+            <option value="8">2×</option>
+          </select>
+        </label>
+      </div>
+      <div class="clock-modes" role="group" aria-label="Tipo de reloj">
+        <button type="button" class="btn small" data-clock="day" aria-pressed="true">Día 24 h</button>
+        <button type="button" class="btn small" data-clock="rel" aria-pressed="false">Relativo 60 s</button>
+      </div>
+      <p class="hint" id="clock-note"></p>
+    </div>
+
+    <div id="tooltip" class="tooltip" role="status" hidden></div>
+    <div id="loading" class="loading" role="status">Cargando datos…</div>
+  </section>
+
+    <!-- Series de tiempo enlazadas: barra inferior -->
+    <section class="timebar" aria-labelledby="filters-h">
+      <div class="timebar-head">
+        <h2 id="filters-h">Series de tiempo enlazadas</h2>
+        <p id="result-count" class="result" aria-live="polite"></p>
+        <button type="button" class="btn small" id="reset">Restablecer todo</button>
+      </div>
+      <div class="timebar-charts">
+        <div class="series series-time">
+          <div class="series-head">
+            <h3>Mes de captura</h3>
+            <div class="series-tools" role="group" aria-label="Herramientas de la serie mensual">
+              <span class="seg" role="group" aria-label="Escala vertical">
+                <button type="button" data-scale="linear" aria-pressed="false" title="Altura proporcional al valor">Lineal</button>
+                <button type="button" data-scale="sqrt" aria-pressed="true" title="Raíz cuadrada: realza los meses pequeños">Raíz</button>
+                <button type="button" data-scale="log" aria-pressed="false" title="Logarítmica: máximo realce de los meses pequeños">Log</button>
+              </span>
+              <button type="button" class="btn small" id="t-all">Todo</button>
+              <button type="button" class="btn small" id="t-peak" title="Selecciona el año con más datos">Mayor año</button>
+              <button type="button" class="btn small" id="t-last12">12 m</button>
+              <button type="button" class="btn small" id="t-play" aria-pressed="false" title="Desliza una ventana por los meses">▶ Recorrer</button>
+            </div>
+            <span id="time-range" class="readout"></span>
+          </div>
+          <svg id="chart-time" class="chart" tabindex="0" role="group"
+               aria-label="Serie mensual. Arrastra para elegir un periodo; flechas para mover, Mayús más flechas para cambiar el final, Escape para restablecer."></svg>
+        </div>
+        <div class="series series-hour">
+          <div class="series-head"><h3>Hora del día <span class="muted">(Praga)</span></h3><span id="hour-range" class="readout"></span></div>
+          <svg id="chart-hour" class="chart" tabindex="0" role="group"
+               aria-label="Serie por hora. Arrastra para elegir un rango de horas; flechas para mover, Escape para restablecer."></svg>
+        </div>
+      </div>
+      <p class="hint">Eje vertical: nº de detecciones (o trayectorias) · cursor = valor · arrastra o ajusta los bordes · clic en el eje = año o franja · doble clic = todo.</p>
+    </section>
+  </div>
+</main>
+
+<noscript><p class="noscript">Esta visualización requiere JavaScript.</p></noscript>
+<script src="js/app.js"></script>
+</body>
+</html>

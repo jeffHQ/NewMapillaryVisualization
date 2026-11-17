@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><title>Praga a pie de calle — Presentación final</title>
+<style>
+@page { size: 13.333in 7.5in; margin: 0; }
+* { box-sizing: border-box; }
+body { margin:0; font: 20pt/1.35 "Segoe UI", Arial, sans-serif; color:#14202e; background:#fff; }
+section { width:13.333in; height:7.5in; padding:.5in .7in; page-break-after:always; position:relative; overflow:hidden; background:#fff; }
+h1 { font-size:46pt; margin:0 0 10pt; line-height:1.08; } h2 { font-size:28pt; margin:0 0 12pt; color:#0b5fb8; }
+h3 { font-size:19pt; margin:0 0 4pt; }
+p, li { margin:0 0 8pt; } ul { margin:0; padding-left:24pt; }
+.muted { color:#556579; font-size:14pt; } .acc { color:#0b5fb8; }
+.row { display:flex; gap:.4in; align-items:flex-start; } .row > * { flex:1; } .row > .wide { flex:1.9; } .row > .narrow { flex:.8; }
+img { width:100%; border:1px solid #d3dbe6; border-radius:8px; display:block; }
+.kpi { background:#eef4ff; border:1px solid #c7d6ee; border-radius:12px; padding:14pt 16pt; }
+.big { font-size:50pt; font-weight:700; color:#0b5fb8; line-height:1; margin-bottom:4pt; }
+.pill { display:inline-block; background:#eef2f7; border:1px solid #d3dbe6; border-radius:999px; padding:2pt 12pt; font-size:14pt; margin:0 6pt 6pt 0; }
+.foot { position:absolute; bottom:.22in; left:.7in; right:.7in; font-size:11pt; color:#556579; display:flex; justify-content:space-between; }
+.cover { display:flex; flex-direction:column; justify-content:center; background:linear-gradient(135deg,#0b2a55 55%,#134a8f); color:#fff; }
+.cover h1, .cover .muted { color:#fff; } .cover .muted { color:#cfe0fb; }
+.quote { font-size:30pt; line-height:1.25; border-left:6px solid #0b5fb8; padding-left:20pt; }
+table { border-collapse:collapse; width:100%; font-size:15pt; } td,th { border-bottom:1px solid #d3dbe6; padding:6pt 8pt; text-align:left; }
+code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
+.warn { background:#fff8dc; border-left:6px solid #d9a400; padding:8pt 14pt; border-radius:6px; }
+.tm { position:absolute; top:.22in; right:.7in; font-size:11pt; color:#8a97aa; }
+</style></head><body>
+
+<section class="cover">
+  <p class="muted" style="letter-spacing:2px;text-transform:uppercase">DS5343 Data Visualization · UTEC · 2026-2 · Presentación final</p>
+  <h1>Praga a pie de calle</h1>
+  <p style="font-size:26pt;max-width:9.8in">¿Qué muestran las imágenes colaborativas de Mapillary sobre quién captura la ciudad?</p>
+  <p class="muted" style="margin-top:.6in">Jeffry Arturo Hilario Quintana</p>
+  <p class="muted">Aplicación: jeffhq.github.io/NewMapillaryVisualization</p>
+</section>
+
+<section>
+  <span class="tm">Bloque 1 · problema, audiencia y datos (2 min)</span>
+  <h2>El problema</h2>
+  <p class="quote">Usamos los datos colaborativos como si describieran <b class="acc">la ciudad</b>…<br>pero describen, sobre todo, <b class="acc">a quien la captura</b>.</p>
+  <ul style="margin-top:.4in">
+    <li>Cada dato existe porque alguien pasó con una cámara: depende de <b>quién</b>, <b>cuándo</b> y <b>con qué dispositivo</b>.</li>
+    <li><b>Audiencia:</b> analistas y estudiantes de datos geoespaciales y de movilidad urbana.</li>
+    <li><b>Pregunta guía:</b> ¿puedo confiar en estos datos para mi análisis?</li>
+  </ul>
+</section>
+
+<section>
+  <span class="tm">Bloque 1</span>
+  <h2>Los datos</h2>
+  <div class="row">
+    <div class="kpi"><div class="big">39.564</div>detecciones de objetos · 277 clases</div>
+    <div class="kpi"><div class="big">6.379</div>trayectorias reconstruidas</div>
+    <div class="kpi"><div class="big">76.225</div>imágenes con metadatos de cámara</div>
+  </div>
+  <ul style="margin-top:.35in">
+    <li><b>Mapillary API v4</b> (CC BY-SA) · oeste de Praga, ~4,6 × 8,9 km · 2014–2026.</li>
+    <li><b>Pipeline reproducible:</b> cuadrícula → limpieza → trayectorias ajustadas a la red (OSRM) → 7 categorías → JSON de ≈ 3 MB.</li>
+    <li>Sin nombres de contribuyentes; dispositivos agregados por fabricante.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="tm">Bloque 2 · visualización, interacciones y hallazgos (6 min)</span>
+  <h2>La aplicación</h2>
+  <div class="row">
+    <div class="wide"><img src="img/overview.png" alt="Aplicación"></div>
+    <div>
+      <h3>Cuatro vistas</h3><p><span class="pill">Objetos</span><span class="pill">Densidad 3D</span><span class="pill">Trayectorias</span><span class="pill">Insights</span></p>
+      <h3>Panel izquierdo</h3><p>Recorrido guiado y leyenda, que es el filtro.</p>
+      <h3>Barra inferior</h3><p>Series de tiempo enlazadas (mes → hora).</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="tm">Bloque 2</span>
+  <h2>Decisión de diseño: series de tiempo para datos asimétricos</h2>
+  <div class="row">
+    <div class="wide"><img src="img/overview.png" alt="Series de tiempo" style="object-fit:cover;object-position:bottom;height:3.9in"></div>
+    <div>
+      <p>Un solo mes aporta el <b class="acc">26 %</b> de las detecciones: con escala lineal el resto se ve plano.</p>
+      <ul style="font-size:17pt"><li>Escala <b>raíz</b>, log o lineal</li><li>Tooltip con valor y %</li><li>Selección por arrastre y bordes</li><li>Clic en el eje: año o franja</li><li>Recorrido animado de meses</li></ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="tm">Bloque 2</span>
+  <h2>¿Qué elementos dominan?</h2>
+  <div class="row">
+    <div class="wide"><img src="img/objects.png" alt="Objetos"></div>
+    <div>
+      <p><b class="acc">71 %</b> son señalización (34 %), alumbrado (25 %) y comercio (12 %).</p>
+      <p>El mobiliario urbano es el 6 %.</p>
+      <p class="muted">Color = categoría (Okabe-Ito). El resto, en gris.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="tm">Bloque 2</span>
+  <h2>¿Dónde se concentra el recorrido?</h2>
+  <div class="row">
+    <div class="wide"><img src="img/density.png" alt="Densidad 3D"></div>
+    <div>
+      <div class="kpi"><div class="big">41 %</div>del recorrido cae en el <b>10 %</b> de las celdas</div>
+      <p style="margin-top:10pt" class="muted">≈ 1.331 km reconstruidos. Se mide con trayectorias, no con puntos: los puntos indican dónde hay datos, no dónde hay tráfico.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="tm">Bloque 2</span>
+  <h2>¿Cómo cambia el recorrido durante el día?</h2>
+  <div class="row">
+    <div class="wide"><img src="img/insights.png" alt="Insights"></div>
+    <div>
+      <p><b class="acc">73 %</b> en la tarde · 16 % mañana · 11 % noche.</p>
+      <p class="muted">Tres mapas de calor con cámara sincronizada. Cada franja se normaliza por separado; el peso va en el encabezado.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="tm">Bloque 2</span>
+  <h2>Trayectorias con reloj de 24 h</h2>
+  <div class="row">
+    <div class="wide"><img src="img/trips.png" alt="Trayectorias"></div>
+    <div>
+      <p>Cada trayectoria aparece a su hora de inicio y <b>se desvanece</b>.</p>
+      <p>La serie por hora filtra la hora de inicio; el reloj recorre solo esa ventana.</p>
+      <p class="muted">Todas las fechas se superponen: es el ciclo diario, no un día concreto.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="tm">Bloque 2</span>
+  <h2>Cómo llegamos aquí: feedback e iteraciones</h2>
+  <table>
+    <tr><th>Comentario del profesor</th><th>Cambio</th></tr>
+    <tr><td>Las trayectorias no se desvanecen</td><td>Solo estelas; sin líneas permanentes</td></tr>
+    <tr><td>El tráfico no se mide con puntos</td><td>Densidad con trayectorias (km por celda)</td></tr>
+    <tr><td>Filtro por año poco útil</td><td>Series de tiempo enlazadas con selección</td></tr>
+    <tr><td>Un color no puede significar dos cosas</td><td>Paletas separadas: categorías, modos, densidad</td></tr>
+    <tr><td>El histograma se ve muy plano</td><td>Escala raíz/log, tooltip, atajos y recorrido</td></tr>
+  </table>
+</section>
+
+<section>
+  <span class="tm">Bloque 3 · conclusiones, límites y trabajo futuro (2 min)</span>
+  <h2>Límites</h2>
+  <div class="warn"><ul style="font-size:18pt">
+    <li>Solo 2 de 5 lotes de detecciones: la zona es parcial.</li>
+    <li>Las trayectorias se reconstruyen desde detecciones (tramos de ~2 s): <b>el modo de transporte es una inferencia débil</b>.</li>
+    <li>Las detecciones son automáticas, no un censo. El 3D no incluye edificios.</li>
+  </ul></div>
+  <h3 style="margin-top:.3in">Trabajo futuro</h3>
+  <ul style="font-size:18pt"><li>Recalcular velocidades con las posiciones y horas de las <b>imágenes</b>.</li><li>Explicar por qué 2020 tiene más imágenes y 2022 más detecciones.</li><li>Comparar dos periodos y evaluar con usuarios.</li></ul>
+</section>
+
+<section class="cover">
+  <h2 style="font-size:34pt;color:#fff">Conclusión</h2>
+  <p class="quote" style="border-color:#7cc4ff;color:#fff">Mapillary describe mejor a quien captura que a la ciudad capturada. Antes de leer una ciudad en datos colaborativos, pregunta: <b style="color:#7cc4ff">¿quién, cuándo y con qué?</b></p>
+  <p class="muted" style="margin-top:.5in">Aplicación, paper, póster y código: jeffhq.github.io/NewMapillaryVisualization · github.com/jeffHQ/NewMapillaryVisualization</p>
+  <p class="muted">Datos © contribuyentes de Mapillary (CC BY-SA) · Mapa base © CARTO, © OpenStreetMap contributors · Código desarrollado con asistencia de IA, revisado por el autor</p>
+</section>
+</body></html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Praga a pie de calle — Paper final</title>
+<style>
+  @page { size: Letter; margin: 15mm 14mm; }
+  body { font: 9.2pt/1.31 "Times New Roman", Georgia, serif; color: #000; margin: 0; }
+  header { text-align: center; margin-bottom: 5pt; }
+  h1 { font: bold 16.5pt "Times New Roman", serif; margin: 0 0 3pt; line-height: 1.15; }
+  .authors { font-size: 10pt; } .aff { font-size: 8.8pt; color: #333; }
+  .abstract { margin: 5pt 0 6pt; font-size: 8.9pt; text-align: justify; }
+  .keys { font-size: 8.5pt; margin-bottom: 5pt; }
+  .cols { column-count: 2; column-gap: 7mm; text-align: justify; hyphens: auto; }
+  h2 { font: bold 10pt "Times New Roman", serif; text-transform: uppercase; margin: 7pt 0 2pt; break-after: avoid; }
+  h3 { font: italic bold 9.2pt "Times New Roman", serif; margin: 4pt 0 1pt; break-after: avoid; }
+  p { margin: 0 0 4pt; }
+  figure { margin: 3pt 0 5pt; break-inside: avoid; }
+  figure img { width: 100%; border: 1px solid #888; display: block; }
+  figcaption { font-size: 8pt; margin-top: 2pt; text-align: left; }
+  table { border-collapse: collapse; width: 100%; font-size: 8pt; margin: 3pt 0 5pt; }
+  th, td { border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 1.5pt 3pt; text-align: left; }
+  .ga { column-span: all; margin: 3pt 0 6pt; }
+  .ga svg { width: 100%; height: auto; border: 1px solid #888; display: block; }
+  ol.refs { font-size: 8pt; padding-left: 13pt; margin: 0; text-align: left; }
+  .note { font-size: 8pt; color: #444; }
+  code { font-size: 8.2pt; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Praga a pie de calle: qué muestran las imágenes colaborativas de Mapillary sobre quién captura la ciudad</h1>
+  <div class="authors">Jeffry Arturo Hilario Quintana</div>
+  <div class="aff">Data Science Program · Universidad de Ingeniería y Tecnología (UTEC) · DS5343 Data Visualization, 2026-2</div>
+</header>
+
+<div class="abstract"><b>Resumen.</b> Los datos colaborativos de fotografía a nivel de calle suelen leerse como si describieran la ciudad, pero cada registro existe porque alguien pasó por allí con una cámara. Presentamos una aplicación web interactiva (deck.gl) que permite explorar, en el oeste de Praga (~4,6 × 8,9 km), 39.564 detecciones de objetos urbanos y 6.379 trayectorias reconstruidas a partir de Mapillary. La aplicación combina cuatro vistas —objetos, densidad de recorrido en 3D, trayectorias con reloj de 24 h y tres mapas de calor por franja horaria—, series de tiempo enlazadas con escala ajustable, una leyenda que funciona como filtro y un recorrido guiado de siete pasos. Los datos muestran una captura muy concentrada: un solo mes (octubre de 2022) aporta el 26,0 % de las detecciones y el 10 % de las celdas más recorridas reúne el 40,6 % del recorrido, mientras que la tarde concentra el 73 % del recorrido reconstruido. Concluimos que estos datos describen mejor a quien captura que a la ciudad capturada, y que cualquier análisis urbano debe empezar por preguntar quién, cuándo y con qué.</div>
+<div class="keys"><b>Palabras clave:</b> visualización geoespacial, datos colaborativos, Mapillary, trayectorias, series de tiempo, deck.gl.</div>
+
+<div class="ga">
+<svg viewBox="0 0 1000 170" role="img" aria-label="Resumen gráfico: metodología y transformaciones">
+  <style>
+    .b{fill:#eef4ff;stroke:#2b4c7e;stroke-width:1.5} .t{font:700 13px 'Segoe UI',Arial;fill:#10233f} .s{font:11px 'Segoe UI',Arial;fill:#2b3d57}
+    .a{stroke:#2b4c7e;stroke-width:2;fill:none;marker-end:url(#h)} .g{font:600 11px 'Segoe UI',Arial;fill:#6b7280}
+  </style>
+  <defs><marker id="h" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2b4c7e"/></marker></defs>
+  <text class="g" x="6" y="16">DATOS</text><text class="g" x="402" y="16">TRANSFORMACIONES</text><text class="g" x="792" y="16">VISUALIZACIÓN</text>
+  <rect class="b" x="6" y="26" width="170" height="130" rx="8"/><text class="t" x="16" y="48">Mapillary API v4</text><text class="s" x="16" y="68">map_features: 39.564</text><text class="s" x="16" y="84">images: 76.225 (zona)</text><text class="s" x="16" y="100">cuadrícula de 0,005°</text><text class="s" x="16" y="116">CC BY-SA · 2014–2026</text>
+  <path class="a" d="M178 91H202"/>
+  <rect class="b" x="204" y="26" width="180" height="130" rx="8"/><text class="t" x="214" y="48">Limpieza</text><text class="s" x="214" y="68">geometría, clase, fecha</text><text class="s" x="214" y="84">hora local de Praga</text><text class="s" x="214" y="100">277 clases → 7 categorías</text><text class="s" x="214" y="116">4 fechas de 2006 excluidas</text>
+  <path class="a" d="M386 91H410"/>
+  <rect class="b" x="412" y="26" width="190" height="130" rx="8"/><text class="t" x="422" y="48">Trayectorias</text><text class="s" x="422" y="68">encadenar ≤15 s y ≤60 m</text><text class="s" x="422" y="84">ajuste a la red (OSRM)</text><text class="s" x="422" y="100">muestras cada ~40 m</text><text class="s" x="422" y="116">modo por velocidad (inferido)</text>
+  <path class="a" d="M604 91H628"/>
+  <rect class="b" x="630" y="26" width="150" height="130" rx="8"/><text class="t" x="640" y="48">Datos compactos</text><text class="s" x="640" y="68">CSV + JSON (≈ 3 MB)</text><text class="s" x="640" y="84">mes · hora · minuto</text><text class="s" x="640" y="100">categorías y resúmenes</text>
+  <path class="a" d="M782 91H806"/>
+  <rect class="b" x="808" y="26" width="186" height="130" rx="8"/><text class="t" x="818" y="48">Aplicación (deck.gl)</text><text class="s" x="818" y="68">objetos · densidad 3D</text><text class="s" x="818" y="84">trayectorias · insights</text><text class="s" x="818" y="100">series enlazadas</text><text class="s" x="818" y="116">leyenda-filtro · recorrido</text>
+</svg>
+</div>
+
+<div class="cols">
+<h2>1. Introducción</h2>
+<p>Mapillary reúne millones de fotografías de calle aportadas por voluntarios, empresas y municipios, y extrae de ellas objetos urbanos (farolas, señales, pasos de peatones) con visión por computador. Estos datos se usan en inventarios de infraestructura y en análisis de movilidad con una suposición implícita: que el mapa describe <i>la ciudad</i>. Sin embargo, cada dato existe porque alguien capturó ese lugar en ese momento y con un dispositivo concreto, de modo que la cobertura puede estar muy sesgada [1].</p>
+<p><b>Problema y audiencia.</b> Queremos hacer visible ese sesgo en una zona concreta. La audiencia son analistas y estudiantes de datos geoespaciales y de movilidad urbana que consideran usar datos colaborativos; el propósito es <i>evaluar</i>, no decidir: ¿puedo confiar en estos datos para mi análisis, y para qué zonas, periodos y objetos? <b>Contribuciones:</b> (i) un pipeline reproducible de extracción, limpieza y reconstrucción de trayectorias; (ii) una aplicación con cuatro vistas coordinadas y series de tiempo diseñadas para datos muy asimétricos; (iii) un recorrido guiado que traduce siete preguntas analíticas en estados de la interfaz con cifras calculadas de los datos; y (iv) una discusión explícita de lo que estos datos <i>no</i> permiten afirmar.</p>
+
+<h2>2. Trabajo relacionado</h2>
+<p><b>Principios de interacción.</b> El mantra de Shneiderman —visión general primero, zoom y filtro, detalles bajo demanda— [2] y la taxonomía de dinámicas interactivas de Heer y Shneiderman [3] (filtrar, seleccionar, coordinar vistas, guiar) estructuran nuestra interfaz: mapa general, filtros enlazados y tooltips.</p>
+<p><b>Exploración de movimiento urbano.</b> Ferreira et al. [4] combinan consultas espacio-temporales y mapas para explorar viajes de taxi en Nueva York; nuestra combinación de filtro temporal, reloj y mapa sigue esa idea con datos mucho más escasos. Andrienko y Andrienko [5] muestran que agregar movimiento en celdas reduce el desorden frente a dibujar todas las líneas, lo que motiva nuestra densidad de recorrido por celdas hexagonales y los mapas de calor por franja.</p>
+<p><b>Ajuste a la red vial y datos voluntarios.</b> El <i>map matching</i> probabilístico de Newson y Krumm [6], implementado en motores como OSRM [7], permite alinear trazas ruidosas a las calles; también explica por qué datos escasos producen trazados poco fiables. Goodchild [1] describe la información geográfica voluntaria y sus particularidades de calidad y cobertura, y el conjunto Mapillary Vistas [8] documenta la taxonomía de objetos que agrupamos en categorías.</p>
+
+<h2>3. Datos y métodos</h2>
+<p><b>Fuente.</b> Mapillary API v4 (<code>map_features</code> e <code>images</code>; CC BY-SA), consultada el 20 y 21 de octubre de 2026 sobre una cuadrícula de 0,005°. Se obtuvieron 39.564 detecciones (277 clases, 1.096 secuencias, 2014–2026; 4 fechas de 2006 se excluyen de la aplicación) en lon 14,350–14,415 y lat 50,050–50,130 (~4,6 × 8,9 km, oeste de Praga), y 76.225 imágenes con metadatos de cámara en la misma zona.</p>
+<p><b>Transformaciones.</b> Año, mes y hora se calculan en hora local de Praga. Las 277 clases se agrupan en siete categorías analíticas por prefijo. Las trayectorias se reconstruyen encadenando detecciones consecutivas de una misma secuencia con ≤ 15 s y ≤ 60 m entre sí; cada tramo se ajusta a la red vial con OSRM (radio de 25 m), se muestrea cada ~40 m y se clasifica por velocidad media (&lt; 7, 7–25, &gt; 25 km/h). El resultado son 6.379 trayectorias y ≈ 1.331 km reconstruidos. Todo el proceso es reproducible con cinco scripts y los datos procesados caben en ≈ 3 MB de JSON.</p>
+<p><b>Implementación.</b> Aplicación estática (HTML, CSS y JavaScript sin <i>build</i>) con deck.gl 8.9 y MapLibre GL 3.6; las series de tiempo son SVG propio. Se publica en GitHub Pages.</p>
+
+<h2>4. Diseño de la visualización</h2>
+<p><b>Disposición.</b> El mapa es el lienzo principal. Un panel izquierdo contiene solo <i>insights</i> (recorrido guiado y ranking de clases) y la leyenda, que es también el filtro; las series de tiempo ocupan una barra inferior de altura fija para que el mapa no se desplace al filtrar.</p>
+<p><b>Vistas.</b> <i>Objetos</i>: puntos coloreados por categoría con el resto en gris opcional. <i>Densidad 3D</i>: hexágonos de ~180 m con altura y tono proporcionales a los kilómetros de trayectoria, no a puntos (los puntos indican dónde hay datos, no dónde hay tráfico). <i>Trayectorias</i>: estelas que se desvanecen, para no sugerir tráfico permanente, con un reloj de 24 h en el que cada trayectoria aparece a su hora de inicio. <i>Insights</i>: tres mapas de calor sincronizados para mañana (04:00–10:59), tarde (11:00–17:59) y noche (18:00–23:59).</p>
+<p><b>Codificación de color.</b> La paleta categórica de Okabe e Ito [9], segura para daltonismo, se reserva a las categorías de objeto; los modos de desplazamiento usan otros tonos y la densidad una rampa neutra, de forma que ningún color significa dos cosas.</p>
+<p><b>Series enlazadas.</b> Una serie mensual (2014–2026) y una serie por hora filtran el mapa mediante selección por arrastre con bordes ajustables y teclado; la serie por hora muestra solo el periodo elegido. Cada serie ignora su propio filtro al calcular los recuentos, de modo que se ve qué se pierde al estrechar la selección. Como un solo mes domina los datos, la serie mensual ofrece escala raíz (por defecto), logarítmica o lineal, tooltip con valor y porcentaje, atajos («Todo», «Mayor año», «12 m»), clic en el eje para elegir un año completo y un recorrido animado de una ventana de meses.</p>
+<figure><img src="img/overview.png" alt="Aplicación completa"><figcaption>Fig. 1. La aplicación: recorrido guiado y leyenda a la izquierda, mapa al centro y series de tiempo enlazadas en la barra inferior.</figcaption></figure>
+
+<h2>5. Resultados</h2>
+<h3>5.1 La captura está muy concentrada en el tiempo</h3>
+<p>2022 aporta 10.446 detecciones (26,4 %), 2020 6.076 (15,4 %) y 2025 5.764 (14,6 %); 2014 y 2021 casi no aportan (27 y 316). Por mes, octubre de 2022 concentra el 26,0 % y los cinco meses mayores suman el 52,3 %. Con escala lineal el resto de la serie queda plano, lo que motivó la escala raíz. Por hora, el 23 % de las detecciones ocurre a las 13:00 y casi no hay capturas entre las 22:00 y las 08:00.</p>
+<h3>5.2 Dominan pocos tipos de objeto</h3>
+<p>La señalización vertical (34,4 %), el alumbrado y los postes (25,0 %) y el comercio y la publicidad (11,8 %) suman el 71,2 %; el mobiliario urbano es el 6,2 %.</p>
+<table>
+<tr><th>Categoría</th><th>Detecciones</th><th>%</th><th>Categoría</th><th>Detecciones</th><th>%</th></tr>
+<tr><td>Señalización</td><td>13.601</td><td>34,4</td><td>Infraestructura</td><td>3.286</td><td>8,3</td></tr>
+<tr><td>Alumbrado y postes</td><td>9.908</td><td>25,0</td><td>Mobiliario urbano</td><td>2.450</td><td>6,2</td></tr>
+<tr><td>Comercio y publicidad</td><td>4.655</td><td>11,8</td><td>Semáforos</td><td>1.737</td><td>4,4</td></tr>
+<tr><td>Marcas viales</td><td>3.632</td><td>9,2</td><td>Otros</td><td>295</td><td>0,7</td></tr>
+</table>
+<figure><img src="img/objects.png" alt="Objetos: tres categorías mayores"><figcaption>Fig. 2. Las tres categorías mayores resaltadas; el resto en gris.</figcaption></figure>
+<h3>5.3 El recorrido se concentra en pocas calles</h3>
+<p>Medido con trayectorias (≈ 1.331 km), el 40,6 % del recorrido cae en el 10 % de las celdas de ~100 m recorridas (1.289 celdas). Con puntos de detección el valor es similar (39,5 %), pero los puntos miden dónde hubo datos y no dónde hubo tráfico.</p>
+<h3>5.4 El día se reparte de forma muy desigual</h3>
+<p>Entre 04:00 y 24:00 se reconstruyen ≈ 1.327 km: la tarde concentra el 73 % (4.665 trayectorias, ≈ 966 km), la mañana el 16 % (1.054; ≈ 217 km) y la noche el 11 % (640; ≈ 144 km). Dentro de cada franja, el 10 % de las celdas más recorridas reúne el 37 % (mañana), el 41 % (tarde) y el 38 % (noche) del recorrido. Cada mapa se normaliza por separado, así que el color compara zonas dentro de la franja y el peso de cada una se lee en su encabezado. Veinte trayectorias ocurren entre 00:00 y 04:00 y no se muestran.</p>
+<figure><img src="img/insights.png" alt="Tres mapas de calor por franja horaria"><figcaption>Fig. 3. Insights: mapas de calor del recorrido por mañana, tarde y noche con cámara sincronizada.</figcaption></figure>
+<h3>5.5 Imágenes y detecciones no evolucionan igual</h3>
+<p>2020 es el año con más imágenes en la zona (15.259) pero 2022 el de más detecciones (10.446 con 7.770 imágenes): la razón detecciones por imagen va de ≈ 0,4 a ≈ 1,3. Por fabricante, Samsung aporta el 27,2 % de las imágenes, Mosaic51 el 19,9 % y «desconocido» el 12,6 %. No podemos atribuir la diferencia a un dispositivo, a un cambio de procesamiento o a una ruta distinta; es una pregunta abierta.</p>
+<figure><img src="img/trips.png" alt="Trayectorias con reloj de 24 h filtradas de 11:00 a 17:59"><figcaption>Fig. 4. Trayectorias con el reloj de 24 h y filtro de hora de inicio (11:00–17:59).</figcaption></figure>
+
+<h2>6. Discusión</h2>
+<p><b>Qué aprendimos.</b> La cobertura es resultado de campañas puntuales más que de una observación sistemática: pocos meses, pocas calles y unas horas del día concentran los datos. Por eso la pregunta previa a cualquier lectura urbana es «¿quién capturó, cuándo y con qué?». <b>Fortalezas.</b> Las vistas coordinadas y la leyenda-filtro permiten pasar de la visión general al detalle sin cambiar de pantalla, y las escalas ajustables resuelven un problema de legibilidad real de los datos.</p>
+<p><b>Evaluación informal.</b> No se realizó un estudio con usuarios. La única evidencia es la revisión de diseño con el profesor, cuyos comentarios llevaron a doce cambios: eliminar las líneas permanentes de trayectoria, medir el tráfico con trayectorias y no con puntos, sustituir los selectores por series de tiempo con selección, separar las paletas de color, fusionar leyenda y filtros, usar fondo claro y hacer más interactiva una serie «muy plana». Todos los cambios se documentan en el repositorio.</p>
+<p><b>Limitaciones.</b> (i) Solo se descargaron 2 de los 5 lotes de <code>map_features</code> planeados, por lo que el área es menor y no es representativa de toda Praga. (ii) Las trayectorias son una reconstrucción a partir de detecciones: los tramos duran 2,1 s de mediana, la posición es la del <i>objeto</i> y no la de la cámara, y el 25 % de las velocidades supera los 80 km/h; por tanto el modo de desplazamiento (63 % «vehículo») es una inferencia débil y no un hecho. (iii) Las detecciones son automáticas y no un censo. (iv) Se usa el perfil de automóvil de OSRM para todos los modos. (v) El reloj superpone todas las fechas y muestra un ciclo diario, no un día concreto. (vi) Las visualizaciones 3D no incluyen edificios; la altura solo codifica el valor.</p>
+
+<h2>7. Trabajo futuro y conclusión</h2>
+<p>Pendientes: completar la descarga de los lotes restantes; recalcular las velocidades con las posiciones y horas de las imágenes (<code>computed_geometry</code>, <code>captured_at</code>), que corresponden a la cámara; explicar la discrepancia entre imágenes y detecciones por dispositivo; comparar dos periodos lado a lado; explorar las 277 subcategorías; y evaluar con usuarios. <b>Conclusión:</b> los datos colaborativos de calle describen, ante todo, a quienes capturan; una visualización que muestra su concentración en el tiempo, el espacio y el día ayuda a juzgar para qué análisis son fiables.</p>
+
+<h2>Agradecimientos</h2>
+<p class="note">Datos © contribuyentes de Mapillary (CC BY-SA). Mapa base © CARTO y © OpenStreetMap contributors. Ajuste a la red con OSRM. Bibliotecas: deck.gl y MapLibre GL. El código fue desarrollado con asistencia de herramientas de IA, revisado y comprendido por el autor. Repositorio: github.com/jeffHQ/NewMapillaryVisualization.</p>
+
+<h2>Referencias</h2>
+<ol class="refs">
+<li>M. F. Goodchild, «Citizens as sensors: the world of volunteered geography», <i>GeoJournal</i> 69(4), 211–221, 2007.</li>
+<li>B. Shneiderman, «The eyes have it: a task by data type taxonomy for information visualizations», <i>IEEE Symposium on Visual Languages</i>, 1996.</li>
+<li>J. Heer, B. Shneiderman, «Interactive dynamics for visual analysis», <i>Communications of the ACM</i> 55(4), 2012.</li>
+<li>N. Ferreira, J. Poco, H. T. Vo, J. Freire, C. T. Silva, «Visual exploration of big spatio-temporal urban data: a study of New York City taxi trips», <i>IEEE TVCG</i> 19(12), 2013.</li>
+<li>N. Andrienko, G. Andrienko, «Spatial generalization and aggregation of massive movement data», <i>IEEE TVCG</i> 17(2), 2011.</li>
+<li>P. Newson, J. Krumm, «Hidden Markov map matching through noise and sparseness», <i>ACM SIGSPATIAL GIS</i>, 2009.</li>
+<li>D. Luxen, C. Vetter, «Real-time routing with OpenStreetMap data», <i>ACM SIGSPATIAL GIS</i>, 2011.</li>
+<li>G. Neuhold, T. Ollmann, S. Rota Bulò, P. Kontschieder, «The Mapillary Vistas dataset for semantic understanding of street scenes», <i>ICCV</i>, 2017.</li>
+<li>M. Okabe, K. Ito, «Color Universal Design (CUD): how to make figures and presentations that are friendly to colorblind people», 2008.</li>
+</ol>
+</div>
+</body>
+</html>

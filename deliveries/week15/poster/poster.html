@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Praga a pie de calle — Póster</title>
+<style>
+  @page { size: 594mm 841mm; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; width: 594mm; height: 841mm; font: 22pt/1.28 "Segoe UI", Arial, sans-serif; color: #14202e; background: #f4f6fa; position: relative; overflow: hidden; }
+  .head { background: #0b2a55; color: #fff; padding: 12mm 20mm 9mm; }
+  .head h1 { margin: 0; font-size: 66pt; line-height: 1.05; letter-spacing: -.5pt; }
+  .head .sub { font-size: 28pt; margin-top: 4mm; color: #cfe0fb; max-width: 470mm; }
+  .head .by { font-size: 20pt; margin-top: 4mm; color: #a9c3ee; }
+  .grid { zoom: 1.1; padding: 8mm 13mm 0; display: grid; gap: 6mm; grid-template-columns: 1fr 1fr; }
+  .box { background: #fff; border: 1.2mm solid #d3dbe6; border-radius: 5mm; padding: 5mm 8mm; }
+  .box h2 { margin: 0 0 3mm; font-size: 29pt; color: #0b5fb8; }
+  .box p { margin: 0 0 3mm; } .box ul { margin: 0; padding-left: 9mm; } .box li { margin-bottom: 2mm; }
+  .full { grid-column: 1 / -1; }
+  .quote { font-size: 30pt; line-height: 1.22; border-left: 3mm solid #0b5fb8; padding-left: 8mm; margin: 0 0 4mm; font-weight: 600; }
+  .acc { color: #0b5fb8; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; margin-bottom: 4mm; }
+  .kpi { background: #eef4ff; border-radius: 4mm; padding: 3mm 5mm; }
+  .big { font-size: 46pt; font-weight: 700; color: #0b5fb8; line-height: 1; }
+  .kpi small { display: block; font-size: 17pt; color: #3d4857; margin-top: 1mm; }
+  .shots { display: grid; grid-template-columns: 1.25fr 1fr; gap: 5mm; align-items: start; }
+  .thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .thumbs .cap { font-size: 15pt; }
+  .pills { margin-top: 3mm; font-size: 19pt; }
+  .pills span { display: inline-block; background: #eef4ff; border: .6mm solid #9db8dc; border-radius: 99mm; padding: 0 5mm; margin: 0 2mm 1.5mm 0; }
+  .shots img, .row3 img { width: 100%; border: .8mm solid #b8c4d3; border-radius: 3mm; display: block; }
+  .shots .stack { display: grid; gap: 5mm; }
+  .cap { font-size: 16pt; color: #4a5a70; margin-top: 1.5mm; }
+  .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6mm; margin-top: 6mm; }
+  .pipe { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5mm; }
+  .step { background: #eef4ff; border: .8mm solid #9db8dc; border-radius: 4mm; padding: 3mm 4mm; font-size: 18pt; line-height: 1.25; }
+  .step b { display: block; color: #0b2a55; font-size: 21pt; margin-bottom: 1mm; }
+  .find { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5mm; }
+  .access { display: grid; grid-template-columns: 62mm 1fr; gap: 8mm; align-items: center; }
+  .access img { width: 62mm; height: 62mm; border: 1mm solid #14202e; background: #fff; padding: 2mm; }
+  .url { font-size: 22pt; font-weight: 700; color: #0b5fb8; word-break: break-all; }
+  .small { font-size: 16pt; color: #3d4857; line-height: 1.3; }
+  .warn { background: #fff8dc; border-left: 3mm solid #d9a400; padding: 3mm 5mm; font-size: 19pt; border-radius: 2mm; }
+  .foot { position: absolute; left: 0; right: 0; bottom: 0; background: #0b2a55; color: #cfe0fb; font-size: 15pt; padding: 4mm 14mm; }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>Praga a pie de calle</h1>
+  <div class="sub">¿Qué muestran las imágenes colaborativas de Mapillary sobre quién captura la ciudad?</div>
+  <div class="by">Jeffry Arturo Hilario Quintana · DS5343 Data Visualization · UTEC · 2026-2</div>
+</div>
+
+<div class="grid">
+  <section class="box">
+    <h2>Problema y audiencia</h2>
+    <p class="quote">Usamos los datos colaborativos como si describieran <span class="acc">la ciudad</span>, pero describen sobre todo a <span class="acc">quien la captura</span>.</p>
+    <ul>
+      <li>Cada dato existe porque alguien pasó con una cámara.</li>
+      <li><b>Audiencia:</b> analistas y estudiantes de datos geoespaciales y de movilidad urbana.</li>
+      <li><b>Pregunta:</b> ¿puedo confiar en estos datos para mi análisis?</li>
+    </ul>
+  </section>
+
+  <section class="box">
+    <h2>Datos</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="big">39.564</div><small>detecciones de objetos</small></div>
+      <div class="kpi"><div class="big">6.379</div><small>trayectorias</small></div>
+      <div class="kpi"><div class="big">76.225</div><small>imágenes</small></div>
+    </div>
+    <p><b>Mapillary API v4</b> (CC BY-SA) · oeste de Praga, ~4,6 × 8,9 km · 2014–2026 · 277 clases de objeto agrupadas en 7 categorías.</p>
+  </section>
+
+  <section class="box full">
+    <h2>De la API a la pantalla</h2>
+    <div class="pipe">
+      <div class="step"><b>1 · Extraer</b>cuadrícula de 0,005° · objetos e imágenes</div>
+      <div class="step"><b>2 · Limpiar</b>fechas en hora de Praga · categorías</div>
+      <div class="step"><b>3 · Reconstruir</b>tramos ≤15 s y ≤60 m · ajuste a la red (OSRM)</div>
+      <div class="step"><b>4 · Derivar</b>muestras cada ~40 m · CSV y JSON (≈ 3 MB)</div>
+      <div class="step"><b>5 · Mostrar</b>deck.gl + MapLibre · series enlazadas</div>
+    </div>
+  </section>
+
+  <section class="box full">
+    <h2>La aplicación: cuatro vistas, un mismo filtro</h2>
+    <div class="shots">
+      <div><img src="overview.png" alt="Aplicación completa"><div class="cap">Recorrido guiado y leyenda-filtro (izquierda) · mapa · series de tiempo enlazadas (abajo).</div></div>
+      <div class="thumbs">
+        <div><img src="trips.png" alt="Trayectorias"><div class="cap">Trayectorias con reloj de 24 h</div></div>
+        <div><img src="density.png" alt="Densidad 3D"><div class="cap">Densidad de recorrido 3D</div></div>
+        <div><img src="insights.png" alt="Insights"><div class="cap">Insights: mañana, tarde, noche</div></div>
+        <div><img src="objects.png" alt="Objetos"><div class="cap">Objetos: 3 categorías mayores</div></div>
+      </div>
+    </div>
+    <div class="pills"><b>Interacciones clave:</b> <span>series con selección por arrastre</span> <span>escala raíz / log / lineal</span> <span>leyenda = filtro</span> <span>cámaras sincronizadas</span> <span>recorrido guiado de 7 pasos</span></div>
+  </section>
+
+  <section class="box full">
+    <h2>Hallazgos</h2>
+    <div class="find">
+      <div class="kpi"><div class="big">26 %</div><small>de las detecciones son de un solo mes (octubre de 2022); los 5 meses mayores suman el 52 %</small></div>
+      <div class="kpi"><div class="big">41 %</div><small>del recorrido reconstruido cae en el 10 % de las celdas de ~100 m</small></div>
+      <div class="kpi"><div class="big">73 %</div><small>del recorrido ocurre de 11:00 a 17:59 (mañana 16 %, noche 11 %)</small></div>
+      <div class="kpi"><div class="big">71 %</div><small>de los objetos son señalización, alumbrado y comercio; el mobiliario urbano solo el 6 %</small></div>
+    </div>
+    <p style="margin:3mm 0 0"><b>Conclusión:</b> estos datos describen mejor a quien captura que a la ciudad capturada. Antes de leer una ciudad en datos colaborativos hay que preguntar <span class="acc"><b>¿quién, cuándo y con qué?</b></span></p>
+  </section>
+
+  <section class="box">
+    <h2>Límites</h2>
+    <div class="warn">
+      <ul class="small" style="font-size:21pt;padding-left:7mm">
+        <li>Solo 2 de 5 lotes de detecciones descargados: zona parcial.</li>
+        <li>Las trayectorias se reconstruyen: tramos de ~2 s; <b>el modo de transporte es una inferencia débil</b>.</li>
+        <li>Detecciones automáticas, no un censo.</li>
+        <li>El 3D no incluye edificios: la altura solo codifica el valor.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="box">
+    <h2>Acceso</h2>
+    <div class="access">
+      <img src="qr.svg" alt="Código QR a la aplicación publicada">
+      <div>
+        <div class="url">jeffhq.github.io/ NewMapillaryVisualization</div>
+        <p class="small" style="margin-top:3mm">Aplicación, página del proyecto, paper, presentación y videos.<br>Código y datos: github.com/jeffHQ/NewMapillaryVisualization</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="foot">Datos © contribuyentes de Mapillary (CC BY-SA) · Mapa base © CARTO, © OpenStreetMap contributors · Ajuste a la red: OSRM · deck.gl, MapLibre GL · Paleta Okabe-Ito · Código desarrollado con asistencia de herramientas de IA, revisado por el autor.</div>
+</body>
+</html>

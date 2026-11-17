@@ -1,10 +1,10 @@
-# Publica la aplicación de la entrega vigente en GitHub Pages.
+# Publica la aplicación final (deliveries/week15/app) en GitHub Pages.
 # Requiere: Settings → Pages → Source: "GitHub Actions".
 name: Deploy app to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ["deliveries/week12/app/**", "deliveries/week12/paper/**", ".github/workflows/pages.yml"]
+    paths: ["deliveries/week15/app/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,14 +21,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Ensamblar sitio
-        run: |
-          mkdir site
-          cp -r deliveries/week12/app/. site/
-          mkdir -p site/paper && cp deliveries/week12/paper/PaperDraft.pdf site/paper/ || true
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: deliveries/week15/app
       - id: deployment
         uses: actions/deploy-pages@v4

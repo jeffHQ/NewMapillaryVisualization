@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Praga a pie de calle · Proyecto</title>
+  <meta name="description" content="Página del proyecto: visualización interactiva de capturas colaborativas de Mapillary en el oeste de Praga (DS5343, UTEC 2026-2).">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { display: block; height: auto; }
+    main.page { max-width: 880px; margin: 0 auto; padding: 24px 16px 64px; }
+    main.page h2 { margin-top: 34px; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 4px; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+    .links a, .links span { text-decoration: none; }
+    .pending { border-style: dashed; color: var(--muted); }
+    .hero { width: 100%; border: 1px solid var(--border); border-radius: 10px; margin: 8px 0 4px; display: block; }
+    figcaption { color: var(--muted); font-size: 12.5px; margin-bottom: 8px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { text-align: left; border-bottom: 1px solid var(--border); padding: 6px 8px; vertical-align: top; }
+    pre { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; overflow-x: auto; }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+    .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+    .kpi b { display: block; font-size: 24px; color: var(--accent); }
+    @media (max-width: 700px) { .grid3 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Praga a pie de calle</h1>
+    <p class="tagline">¿Qué muestran las imágenes colaborativas de Mapillary sobre quién captura la ciudad? · DS5343 Data Visualization · UTEC · 2026-2</p>
+  </div>
+  <nav aria-label="Navegación"><a href="index.html">Abrir la aplicación</a></nav>
+</header>
+
+<main class="page">
+  <h2>Equipo</h2>
+  <table>
+    <tr><th>Integrante</th><th>Responsabilidades</th></tr>
+    <tr><td>Jeffry Arturo Hilario Quintana</td><td>Extracción y limpieza de datos, reconstrucción de trayectorias, diseño y desarrollo de la visualización, informes, paper, póster, presentaciones y videos.</td></tr>
+  </table>
+
+  <h2>Resumen</h2>
+  <figure>
+    <a href="index.html"><img class="hero" src="img/overview.png" alt="La aplicación: recorrido guiado y leyenda a la izquierda, mapa al centro y series de tiempo enlazadas en la barra inferior"></a>
+    <figcaption>La aplicación: insights y leyenda a la izquierda, mapa al centro y series de tiempo enlazadas en la barra inferior.</figcaption>
+  </figure>
+  <p>Mapillary reúne fotografías de calle aportadas por voluntarios y detecta en ellas objetos urbanos. Cada dato existe porque alguien pasó por allí con una cámara, así que estos datos suelen describir mejor a <strong>quien captura</strong> que a la ciudad capturada. Este proyecto hace visible ese sesgo en el oeste de Praga (~4,6 × 8,9 km) con cuatro vistas —objetos, densidad de recorrido en 3D, trayectorias con reloj de 24 h y mapas de calor por franja horaria—, series de tiempo enlazadas, una leyenda que filtra y un recorrido guiado de siete pasos.</p>
+  <div class="grid3">
+    <div class="kpi"><b>39.564</b>detecciones de objetos urbanos</div>
+    <div class="kpi"><b>6.379</b>trayectorias reconstruidas</div>
+    <div class="kpi"><b>26 %</b>de las detecciones son de un solo mes (octubre de 2022)</div>
+  </div>
+
+  <div class="links">
+    <a class="btn primary" href="index.html">Abrir la aplicación</a>
+    <a class="btn" href="files/FinalPaper.pdf">Paper final (PDF)</a>
+    <a class="btn" href="files/FinalPoster.pdf">Póster (PDF)</a>
+    <a class="btn" href="files/PresentationFinal.pdf">Presentación final (PDF)</a>
+    <a class="btn" href="https://github.com/jeffHQ/NewMapillaryVisualization">Repositorio</a>
+  </div>
+
+  <h2>Videos</h2>
+  <div class="links">
+    <!-- Sustituir por los enlaces reales cuando estén publicados -->
+    <span class="btn pending" aria-disabled="true">Teaser (1 min) — enlace pendiente</span>
+    <span class="btn pending" aria-disabled="true">Presentación (máx. 5 min) — enlace pendiente</span>
+  </div>
+
+  <h2>Datos y metodología</h2>
+  <ul>
+    <li><a href="https://www.mapillary.com/developer/api-documentation">Mapillary API v4</a> (<code>map_features</code> e <code>images</code>), datos colaborativos bajo CC BY-SA. Se descargaron 2 de los 5 lotes de detecciones planeados (lon 14,350–14,415); las imágenes y detecciones usadas están en la zona común.</li>
+    <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de las detecciones y se ajustan a la red vial con OSRM. El modo de desplazamiento se infiere solo por la velocidad media y es poco fiable.</li>
+    <li>Pipeline, datos procesados y diccionario de datos en el <a href="https://github.com/jeffHQ/NewMapillaryVisualization/tree/main/deliveries/week15">repositorio</a>.</li>
+  </ul>
+
+  <h2>Agradecimientos y reconocimientos</h2>
+  <ul>
+    <li>Datos © contribuyentes de Mapillary (CC BY-SA). Mapa base © CARTO, © OpenStreetMap contributors.</li>
+    <li>Ajuste de trayectorias a la red vial: <a href="https://project-osrm.org/">OSRM</a> sobre datos de © OpenStreetMap contributors.</li>
+    <li>Bibliotecas: <a href="https://deck.gl/">deck.gl</a> 8.9 y <a href="https://maplibre.org/">MapLibre GL</a> 3.6.</li>
+    <li>Paleta categórica de Okabe &amp; Ito (segura para daltonismo).</li>
+    <li>Inspiración: la exploración de viajes de taxi de Ferreira et al. (IEEE TVCG, 2013) y el ejemplo de flujo de trayectorias de deck.gl (<code>TripsLayer</code>).</li>
+    <li>Código desarrollado con asistencia de herramientas de IA, revisado y comprendido por el autor.</li>
+    <li>Retroalimentación del profesor sobre el prototipo, documentada en <code>deliveries/week12/PeerCritiqueResponse.pdf</code>.</li>
+  </ul>
+
+  <h2>Ejecutar el software</h2>
+  <pre>git clone https://github.com/jeffHQ/NewMapillaryVisualization.git
+cd NewMapillaryVisualization/deliveries/week15/app
+python -m http.server 8000
+# abrir http://localhost:8000</pre>
+  <p>Hace falta conexión a internet (bibliotecas y mapa base por CDN). Los datos procesados ya están en <code>app/data/</code>. Para regenerarlos desde la API de Mapillary, ver el README del repositorio.</p>
+</main>
+</body>
+</html>
