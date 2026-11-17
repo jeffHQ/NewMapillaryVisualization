@@ -50,7 +50,7 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 4. **(2:05)** *Serie por hora.* Arrastra de 11 a 17. «La serie de horas muestra solo el periodo elegido y también filtra el mapa.»
 5. **(2:20)** *Densidad 3D* (`#step=4`). Inclina el mapa con Ctrl y arrastre. «La densidad se mide con kilómetros de trayectoria, no con puntos: los puntos indican dónde hay datos, no dónde hay tráfico. El 41 % del recorrido cae en el 10 % de las celdas.»
 6. **(2:45)** *Trayectorias* (`#step=5`). Reproduce el reloj de 24 h. «Cada trayectoria aparece a su hora de inicio y se desvanece. Puedo filtrar la hora y el reloj recorre solo esa ventana.»
-7. **(3:05)** *Insights* (`#step=6`). Mueve un mapa. «Tres mapas con líneas del amarillo al rojo según el tráfico: mañana, tarde y noche, con la misma escala y cámara sincronizada. La tarde concentra el 73 % del recorrido.»
+7. **(3:05)** *Insights* (`#step=6`). Mueve un mapa. «Tres mapas con líneas del amarillo al rojo según el tráfico: mañana, tarde y noche, con la misma escala y cámara sincronizada. La tarde concentra el 73 % del recorrido. Y si pulso «Cada 2 horas» veo el día en doce mapas pequeños: el pico es de 12 a 14 horas.»
 
 ### 3:20–4:05 · Decisiones de diseño
 *Imagen:* diapositiva «Cómo llegamos aquí: feedback e iteraciones».

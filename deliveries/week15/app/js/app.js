@@ -79,6 +79,7 @@
     modes: new Set(MODES.map((m) => m.id)),
     gray: true,                   // categorías no elegidas en gris en vez de ocultas
     scale: 'sqrt',                // escala vertical de la serie mensual: linear | sqrt | log
+    insMode: 'bands',             // Insights: 'bands' (3 franjas) | 'hours' (12 mini mapas, uno cada 2 horas)
   };
   let F, T, S, TIME_N = 0;
   let clockMode = 'day', dayMin = 0, time = 0, playing = true, speed = 4, lastTs = null, lastClock = 0;
@@ -157,6 +158,7 @@
     syncPlayButton();
     const h = new URLSearchParams(location.hash.slice(1));   // enlaces directos: #step=3
     goStep(h.has('step') ? +h.get('step') - 1 : 0);
+    if (h.get('mode') === 'hours') { state.insMode = 'hours'; syncInsightsMode(state.layer === 'insights'); render(); }   // enlace: #step=6&mode=hours
     if (h.has('hours')) {                                      // enlaces directos: #step=5&hours=11-17
       const [a, b] = h.get('hours').split('-').map(Number);
       if (a >= 0 && b <= 23 && a <= b) { state.hours = [a, b]; render(); }
@@ -333,7 +335,7 @@
     } else if (state.layer === 'insights') {
       el.innerHTML = `<div class="group"><h4>Tráfico por tramo de calle</h4>
         <div id="ins-classes"></div>
-        <div class="hint">Cada línea es un tramo de calle: color y grosor indican cuántas trayectorias reconstruidas pasan por él (amarillo = pocas, rojo = muchas). La escala es la misma en las tres franjas, así que se comparan directamente. De 00:00 a 04:00 no se muestra.</div></div>
+        <div class="hint">Cada línea es un tramo de calle: color y grosor indican cuántas trayectorias reconstruidas pasan por él (amarillo = pocas, rojo = muchas). La escala es la misma en todos los mapas, así que se comparan directamente.<span id="ins-note"></span></div></div>
         <div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}${legendFoot}</div>`;
     } else if (state.layer === 'density') {
       el.innerHTML = `<div class="group"><h4>Recorrido reconstruido por celda</h4>
@@ -428,7 +430,13 @@
       b.addEventListener('click', () => setLayer(b.dataset.layer)));
     bindLegend();
     bindChips();
-    window.addEventListener('resize', () => { if (charts['chart-time']) updateCharts(); });
+    window.addEventListener('resize', () => { if (charts['chart-time']) updateCharts(); if (state.layer === 'insights' && state.insMode === 'hours') renderMinis(); });
+    document.querySelectorAll('[data-insmode]').forEach((b) => b.addEventListener('click', () => {
+      state.insMode = b.dataset.insmode;
+      syncInsightsMode(true);
+      if (state.insMode === 'bands') window.dispatchEvent(new Event('resize'));   // los mapas ocultos recalculan su tamaño
+      render();
+    }));
     $('play').onclick = () => { playing = !playing; syncPlayButton(); };
     document.querySelectorAll('[data-scale]').forEach((b) => b.addEventListener('click', () => {
       state.scale = b.dataset.scale;
@@ -482,7 +490,7 @@
     $('clock').hidden = !isTrips();
     $('top-card').hidden = usesTrips();
     const ins = layer === 'insights';
-    $('insights').hidden = !ins;
+    syncInsightsMode(ins);
     $('map').style.visibility = ins ? 'hidden' : 'visible';    // se oculta sin quitarlo del layout (conserva su tamaño)
     $('chart-hour').setAttribute('aria-disabled', String(ins));
     if (ins) state.hours = [0, 23];                            // las franjas ya dividen el día
@@ -743,7 +751,7 @@
           const early = T.filter((d) => d.t < 240).length;
           return `Entre 04:00 y 24:00 se reconstruyen ≈ ${fmt.format(Math.round(tot))} km: la tarde concentra el ${pct(st[1].km / tot)}, la mañana el ${pct(st[0].km / tot)} y la noche el ${pct(st[2].km / tot)}. Dentro de cada franja, el 10 % de las celdas más recorridas reúne el ${pct(st[0].topShare)} (mañana), ${pct(st[1].topShare)} (tarde) y ${pct(st[2].topShare)} (noche) del recorrido. ${fmt.format(early)} trayectorias ocurren entre 00:00 y 04:00 y no se muestran.`;
         })(),
-        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Comparten escala de color: amarillo = poco recorrido, rojo = mucho.',
+        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Pulsa «Cada 2 horas» para ver el día en 12 mapas pequeños. Misma escala en todos: amarillo = pocas trayectorias, rojo = muchas.',
         apply: go('insights'),
       },
       {
@@ -807,7 +815,67 @@
       });
     });
   }
+  function syncInsightsMode(ins) {
+    $('ins-mode').hidden = !ins;
+    $('insights').hidden = !(ins && state.insMode === 'bands');
+    $('minis').hidden = !(ins && state.insMode === 'hours');
+    document.querySelectorAll('[data-insmode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.insmode === state.insMode)));
+  }
+  function setInsLegend(br, note) {
+    const box = $('ins-classes');
+    if (box) {
+      const lab = [br[0] === 1 ? '1 trayectoria' : `hasta ${br[0]}`, range(br[0] + 1, br[1]), range(br[1] + 1, br[2]), range(br[2] + 1, br[3]), `más de ${br[3]}`];
+      box.innerHTML = lab.map((t, k) => `<div class="cls"><span class="line" style="height:${Math.max(3, INS_W[k])}px;background:${INS_RAMP[k]}"></span><span>${t}${k === 0 ? ' <span class="muted">(poco)</span>' : k === 4 ? ' <span class="muted">(mucho)</span>' : ''}</span></div>`).join('');
+    }
+    const n = $('ins-note'); if (n) n.textContent = note || '';
+  }
+  // Mini mapas: un canvas 2D por cada 2 horas, sin mapa base (12 contextos WebGL serían demasiado pesados)
+  function drawMini(cv, base, segs, cls) {
+    const host = cv.parentElement, w = host.clientWidth, h = host.clientHeight, dpr = window.devicePixelRatio || 1;
+    if (!w || !h) return;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.width = w + 'px'; cv.style.height = h + 'px';
+    const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+    const [lon0, lon1] = S.area.lon, [lat0, lat1] = S.area.lat;
+    const kx = Math.cos(((lat0 + lat1) / 2) * Math.PI / 180), pad = 6;
+    const sc = Math.min((w - 2 * pad) / ((lon1 - lon0) * kx), (h - 2 * pad) / (lat1 - lat0));
+    const ox = (w - (lon1 - lon0) * kx * sc) / 2, oy = (h - (lat1 - lat0) * sc) / 2;
+    const X = (lon) => ox + (lon - lon0) * kx * sc, Y = (lat) => oy + (lat1 - lat) * sc;
+    g.lineCap = 'round'; g.lineJoin = 'round';
+    const stroke = (list, color, width) => {      // un solo trazado por clase
+      if (!list.length) return;
+      g.strokeStyle = color; g.lineWidth = width; g.beginPath();
+      for (const q of list) { g.moveTo(X(q.path[0][0]), Y(q.path[0][1])); g.lineTo(X(q.path[1][0]), Y(q.path[1][1])); }
+      g.stroke();
+    };
+    stroke(base, '#dde3ec', 1);                     // red recorrida a cualquier hora, como contexto
+    const byCls = [[], [], [], [], []];
+    for (const q of segs) byCls[cls(q.n)].push(q);
+    byCls.forEach((list, k) => stroke(list, INS_RAMP[k], Math.max(1.5, INS_W[k] * 0.6)));   // lo más transitado, encima
+  }
+  function renderMinis() {
+    const box = $('minis');
+    if (!box.children.length) {
+      box.innerHTML = Array.from({ length: 12 }, (_, i) => `<section class="mini" aria-label="${hh(2 * i)}:00 a ${hh(2 * i + 2)}:00"><header class="mini-head"><h3><span>${hh(2 * i)}–${hh(2 * i + 2)} h</span><span class="badge"></span></h3><p class="mini-stats"></p></header><div class="mini-cv"><canvas></canvas></div></section>`).join('');
+    }
+    const trips = getTrips();
+    const per = Array.from({ length: 12 }, (_, i) => trips.filter((d) => d.t >= i * 120 && d.t < (i + 1) * 120));
+    const segs = per.map(binSegments);
+    const br = classBreaks(segs.flatMap((ss) => ss.map((x) => x.n)));
+    const cls = (n) => (n > br[3] ? 4 : n > br[2] ? 3 : n > br[1] ? 2 : n > br[0] ? 1 : 0);
+    const base = binSegments(trips);
+    const kms = per.map((tr) => tr.reduce((a, d) => a + d.s.length, 0) * SAMPLE_KM);
+    const totKm = kms.reduce((a, b) => a + b, 0) || 1, maxN = Math.max(...per.map((p) => p.length));
+    box.querySelectorAll('.mini').forEach((el, i) => {
+      const peak = per[i].length === maxN && maxN > 0;
+      el.classList.toggle('peak', peak);
+      el.querySelector('.badge').textContent = peak ? 'pico' : '';
+      el.querySelector('.mini-stats').textContent = per[i].length ? `${fmt(per[i].length)} tray. · ≈ ${fmt(Math.round(kms[i]))} km · ${pct(kms[i] / totKm)}` : 'sin trayectorias';
+      drawMini(el.querySelector('canvas'), base, segs[i], cls);
+    });
+    setInsLegend(br, '');
+  }
   function renderInsights() {
+    if (state.insMode === 'hours') { renderMinis(); return; }
     ensureInsights();
     const trips = getTrips();
     const per = BANDS.map((b) => trips.filter((d) => d.t >= b.lo && d.t < b.hi));
@@ -827,11 +895,7 @@
       });
       $('ins-stats-' + i).textContent = `${fmt(per[i].length)} trayectorias · ≈ ${fmt(Math.round(kms[i]))} km · ${pct(kms[i] / totKm)}`;
     });
-    const box = $('ins-classes');
-    if (box) {
-      const lab = [br[0] === 1 ? '1 trayectoria' : `hasta ${br[0]}`, range(br[0] + 1, br[1]), range(br[1] + 1, br[2]), range(br[2] + 1, br[3]), `más de ${br[3]}`];
-      box.innerHTML = lab.map((t, k) => `<div class="cls"><span class="line" style="height:${Math.max(3, INS_W[k])}px;background:${INS_RAMP[k]}"></span><span>${t}${k === 0 ? ' <span class="muted">(poco)</span>' : k === 4 ? ' <span class="muted">(mucho)</span>' : ''}</span></div>`).join('');
-    }
+    setInsLegend(br, ' De 00:00 a 04:00 no se muestra.');
   }
   // Estadísticas de una franja con todos los datos (para el texto del recorrido guiado)
   function bandStat(b) {

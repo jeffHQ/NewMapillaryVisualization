@@ -83,6 +83,13 @@
     <!-- La leyenda es también el filtro de categoría / modo -->
 
     <!-- Insights: tres mapas de celdas coloreadas por tráfico (mañana, tarde, noche), con cámaras sincronizadas y misma escala -->
+    <!-- Insights: alternar entre 3 franjas (mapas con mapa base) y 12 mini mapas, uno cada 2 horas -->
+    <div id="ins-mode" class="ins-mode seg" role="group" aria-label="Detalle de Insights" hidden>
+      <button type="button" data-insmode="bands" aria-pressed="true" title="Mañana, tarde y noche">3 franjas</button>
+      <button type="button" data-insmode="hours" aria-pressed="false" title="Un mini mapa por cada 2 horas del día">Cada 2 horas</button>
+    </div>
+    <div id="minis" class="minis" hidden></div>
+
     <div id="insights" class="insights" hidden>
       <section class="pane" aria-label="Mañana, de 04:00 a 10:59">
         <header class="pane-head"><h3>Mañana <span class="muted">04:00 – 10:59</span></h3><p id="ins-stats-0" class="pane-stats"></p></header>
