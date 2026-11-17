@@ -294,6 +294,9 @@
 
   // ---------------------------------------------------------------- tooltip
   function onHover(info) {
+    try { onHover_(info); } catch (e) { $('tooltip').hidden = true; }   // un error del tooltip nunca debe bloquear la interacción
+  }
+  function onHover_(info) {
     const tip = $('tooltip');
     if (!info || !info.object) { tip.hidden = true; return; }
     let html = '';
@@ -302,10 +305,10 @@
       html = `<b>${prettyValue(F.values[F.val[i]])}</b><br>${F.categories[F.cat[i]].label}<br>${MES[F.month[i] - 1]} ${F.year[i]} · ${hh(F.hour[i])}:00 h`;
     } else if (state.layer === 'density') {
       const n = info.object.points ? info.object.points.length : 0;
-      html = `<b>≈ ${fmt1.format(n * SAMPLE_KM)} km</b> de recorrido<br>en esta celda (~180 m)<br><span class="muted">${fmt(n)} muestras de trayectoria</span>`;
+      html = `<b>≈ ${fmt1(n * SAMPLE_KM)} km</b> de recorrido<br>en esta celda (~180 m)<br><span class="muted">${fmt(n)} muestras de trayectoria</span>`;
     } else {
       const d = info.object, m = MODES.find((x) => x.id === d.m);
-      html = `<b>${m.label.split(' (')[0]}</b><br>${fmt1.format(d.s)} km/h · ${MES[d.o - 1]} ${d.y}<br>inicia ${hhmm(d.t)} h`;
+      html = `<b>${m.label.split(' (')[0]}</b><br>${fmt1(d.s)} km/h · ${MES[d.o - 1]} ${d.y}<br>inicia ${hhmm(d.t)} h`;
     }
     tip.innerHTML = html;
     tip.style.left = Math.min(info.x + 14, tip.parentElement.clientWidth - 250) + 'px';
