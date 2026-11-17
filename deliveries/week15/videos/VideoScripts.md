@@ -18,7 +18,7 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 | 0:00–0:08 | Pantalla negra → título «Praga a pie de calle» sobre un mapa lleno de puntos (`#step=1`) | «Miles de personas fotografían las calles del mundo. Y usamos esas imágenes como si describieran la ciudad.» |
 | 0:08–0:16 | Zoom lento sobre los puntos de colores; texto en pantalla: «39.564 objetos · 6.379 trayectorias» | «En el oeste de Praga, Mapillary detecta casi cuarenta mil objetos: farolas, señales, pasos de peatones.» |
 | 0:16–0:30 | Arrastrar sobre la serie mensual hasta octubre de 2022 (`#step=2`); el mapa se vacía; resaltar «26 %» | «Pero un solo mes, octubre de 2022, aporta la cuarta parte de todos los datos. El resto de la serie casi no se ve.» |
-| 0:30–0:45 | Vista Insights con los tres mapas de calor; mover un mapa y los otros dos se mueven (`#step=6`) | «Y el recorrido también es desigual: la tarde concentra el 73 % de lo que se reconstruye. Mañana, tarde y noche cuentan historias muy distintas.» |
+| 0:30–0:45 | Vista Insights con los tres mapas de colores (amarillo a rojo); mover un mapa y los otros dos se mueven (`#step=6`) | «Y el recorrido también es desigual: la tarde concentra el 73 % de lo que se reconstruye. Mañana, tarde y noche cuentan historias muy distintas.» |
 | 0:45–0:55 | Trayectorias con el reloj de 24 h avanzando; estelas que se desvanecen (`#step=5`) | «Cada trayectoria aparece a su hora y se desvanece. Explora el día entero.» |
 | 0:55–1:00 | Título final con QR y URL: «jeffhq.github.io/NewMapillaryVisualization» | «Estos datos describen mejor a quien captura que a la ciudad. Descúbrelo tú mismo.» |
 
@@ -44,13 +44,13 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 ### 1:00–3:20 · Demostración de la aplicación (`#step=1` … `#step=7`)
 *Imagen:* la aplicación en pantalla completa. Sigue el recorrido guiado con el botón «Siguiente».
 
-1. **(1:00)** *Vista general.* «A la izquierda el recorrido guiado y la leyenda, que también es el filtro; al centro el mapa; abajo, las series de tiempo enlazadas.»
-2. **(1:15)** *Objetos y leyenda* (`#step=3`). Pulsa «Las 3 mayores». «Señalización, alumbrado y comercio suman el 71 % de los objetos; el resto queda en gris.»
-3. **(1:35)** *Serie mensual* (`#step=2`). Cambia entre escala lineal y raíz, pasa el cursor y arrastra un periodo. «Un solo mes, octubre de 2022, aporta el 26 % de las detecciones. Con escala lineal el resto se ve plano, por eso añadí escala raíz y logarítmica, tooltip y atajos.»
+1. **(1:00)** *Vista general.* «A la izquierda el recorrido guiado y la leyenda, que también es el filtro; al centro el mapa; abajo, los filtros activos y las series de tiempo enlazadas.»
+2. **(1:15)** *Objetos y leyenda* (`#step=3`). Haz doble clic en una categoría para dejarla sola, o desmarca varias con un clic. «Señalización, alumbrado y comercio suman el 71 % de los objetos; el resto queda en gris.»
+3. **(1:35)** *Serie mensual* (`#step=2`). En ⚙ Opciones cambia entre escala lineal y raíz, pasa el cursor y arrastra un periodo. «Un solo mes, octubre de 2022, aporta el 26 % de las detecciones. Con escala lineal el resto se ve plano, por eso añadí escala raíz y logarítmica, tooltip y atajos.»
 4. **(2:05)** *Serie por hora.* Arrastra de 11 a 17. «La serie de horas muestra solo el periodo elegido y también filtra el mapa.»
 5. **(2:20)** *Densidad 3D* (`#step=4`). Inclina el mapa con Ctrl y arrastre. «La densidad se mide con kilómetros de trayectoria, no con puntos: los puntos indican dónde hay datos, no dónde hay tráfico. El 41 % del recorrido cae en el 10 % de las celdas.»
 6. **(2:45)** *Trayectorias* (`#step=5`). Reproduce el reloj de 24 h. «Cada trayectoria aparece a su hora de inicio y se desvanece. Puedo filtrar la hora y el reloj recorre solo esa ventana.»
-7. **(3:05)** *Insights* (`#step=6`). Mueve un mapa. «Tres mapas de calor, mañana, tarde y noche, con cámara sincronizada. La tarde concentra el 73 % del recorrido.»
+7. **(3:05)** *Insights* (`#step=6`). Mueve un mapa. «Tres mapas con celdas del amarillo al rojo según el tráfico: mañana, tarde y noche, con la misma escala y cámara sincronizada. La tarde concentra el 73 % del recorrido.»
 
 ### 3:20–4:05 · Decisiones de diseño
 *Imagen:* diapositiva «Cómo llegamos aquí: feedback e iteraciones».

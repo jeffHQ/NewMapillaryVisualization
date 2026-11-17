@@ -61,7 +61,9 @@
     { id: 'afternoon', label: 'Tarde', range: '11:00–17:59', lo: 660, hi: 1080 },
     { id: 'night', label: 'Noche', range: '18:00–23:59', lo: 1080, hi: 1440 },
   ];
-  const HEAT_RAMP = ['#c7d2e3', '#9db0cc', '#7189b0', '#4f6592', '#344a78', '#1f2d4d'];
+  // Insights: celdas hexagonales coloreadas por tráfico (km de recorrido), amarillo → naranja → rojo (YlOrRd, 5 clases)
+  const INS_RAMP = ['#ffffb2', '#fecc5c', '#fd8d3c', '#f03b20', '#bd0026'];
+  const INS_R = 120;   // radio de la celda hexagonal en metros
   // Ventana de hora de inicio elegida en la serie por hora, en minutos desde 00:00
   const startWindow = () => [state.hours[0] * 60, Math.min(1440, (state.hours[1] + 1) * 60)];
   const hhmm = (m) => `${hh(Math.floor(m / 60) % 24)}:${hh(Math.floor(m % 60))}`;
@@ -210,6 +212,7 @@
     if (state.layer === 'insights') renderInsights(); else deckgl.setProps({ layers: layers() });
     updateCharts();
     updateSummary();
+    renderChips();
     syncLegend();
     if (isTrips()) updateClock();
   }
@@ -233,7 +236,6 @@
     const [wlo, whi] = startWindow();
     const filtered = state.hours[0] > 0 || state.hours[1] < 23;
     $('clock-window-row').hidden = !day;
-    $('clock-clear-hours').hidden = !day || !filtered;
     if (day) {
       if (dayMin < wlo || dayMin > whi + DAY_SPAN + DAY_TRAIL) dayMin = wlo;     // si cambió el filtro, vuelve al inicio de la ventana
       $('clock-display').textContent = hhmm(dayMin);
@@ -318,36 +320,31 @@
 
   // ---------------------------------------------------------------- leyenda = filtro
   function modeRows() {
-    return MODES.map((m) => `<div class="row"><label><input type="checkbox" data-mode="${m.id}" checked>
-      <span class="swatch" style="background:${m.color}"></span><span>${m.label}</span></label>
-      <span class="n">${fmt(S.trips_by_mode[m.id] || 0)}</span><button type="button" class="solo" data-solo-mode="${m.id}" aria-label="Solo ${m.label}">solo</button></div>`).join('');
+    return MODES.map((m) => `<div class="row"><label title="Clic: activar o desactivar · doble clic: solo este"><input type="checkbox" data-mode="${m.id}" checked>
+      <span class="swatch" style="background:${m.color}"></span><span>${m.label}</span><span class="n">${fmt(S.trips_by_mode[m.id] || 0)}</span></label></div>`).join('');
   }
+  const legendFoot = '<div class="foot"><span class="hint">Clic: activar/desactivar · doble clic: solo</span><button type="button" class="btn small" data-legend-reset>Restablecer</button></div>';
   function buildLegend() {
     const el = $('legend');
     if (state.layer === 'objects') {
       el.innerHTML = `<div class="group"><h4>Categoría de objeto</h4>
-        ${F.categories.map((c, i) => `<div class="row"><label><input type="checkbox" data-cat="${i}" checked>
-          <span class="swatch" style="background:${CAT_COLORS[c.id]}"></span><span>${c.label}</span></label>
-          <span class="n">${fmt(c.count)}</span><button type="button" class="solo" data-solo-cat="${i}" aria-label="Solo ${c.label}">solo</button></div>`).join('')}
-        <div class="presets"><button type="button" class="btn small" data-preset="all">Todas</button>
-          <button type="button" class="btn small" data-preset="top3">Las 3 mayores</button>
-          <button type="button" class="btn small" data-preset="none">Ninguna</button></div>
-        <label class="opt"><input type="checkbox" id="opt-gray" checked> Mostrar el resto en gris</label></div>`;
+        ${F.categories.map((c, i) => `<div class="row"><label title="Clic: activar o desactivar · doble clic: solo esta"><input type="checkbox" data-cat="${i}" checked>
+          <span class="swatch" style="background:${CAT_COLORS[c.id]}"></span><span>${c.label}</span><span class="n">${fmt(c.count)}</span></label></div>`).join('')}
+        ${legendFoot}</div>`;
     } else if (state.layer === 'insights') {
-      el.innerHTML = `<div class="group"><h4>Recorrido por franja horaria</h4>
-        <div class="ramp" style="background:linear-gradient(90deg,${HEAT_RAMP.join(',')})"></div>
-        <div class="ramp-labels"><span>menos</span><span>más</span></div>
-        <div class="hint">Mapa de calor del recorrido reconstruido (muestras cada ~40 m). Cada franja se normaliza por separado: el color compara zonas dentro de la franja; el peso de cada franja está en su encabezado. De 00:00 a 04:00 no se muestra.</div></div>
-        <div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}</div>`;
+      el.innerHTML = `<div class="group"><h4>Tráfico por celda (km de recorrido)</h4>
+        <div id="ins-classes"></div>
+        <div class="hint">Cada celda es un hexágono de ~240 m. Amarillo = poco recorrido, rojo = mucho. La escala es la misma en las tres franjas, así que los colores se comparan directamente. De 00:00 a 04:00 no se muestra.</div></div>
+        <div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}${legendFoot}</div>`;
     } else if (state.layer === 'density') {
       el.innerHTML = `<div class="group"><h4>Recorrido reconstruido por celda</h4>
         <div class="ramp" style="background:linear-gradient(90deg,${DENSITY_RAMP.join(',')})"></div>
         <div class="ramp-labels"><span>menos</span><span>más</span></div>
         <div class="hint">Altura y tono = km recorridos (muestras cada ~40 m). Basado en trayectorias, no en puntos.</div></div>
-        <div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}</div>`;
+        <div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}${legendFoot}</div>`;
     } else {
       el.innerHTML = `<div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}
-        <div class="hint">Cada trayectoria se desvanece tras pasar.</div></div>`;
+        <div class="hint">Cada trayectoria se desvanece tras pasar.</div>${legendFoot}</div>`;
     }
     syncLegend();
   }
@@ -355,7 +352,10 @@
     const el = $('legend');
     el.querySelectorAll('[data-cat]').forEach((cb) => { cb.checked = state.cats.has(+cb.dataset.cat); });
     el.querySelectorAll('[data-mode]').forEach((cb) => { cb.checked = state.modes.has(cb.dataset.mode); });
-    const g = $('opt-gray'); if (g) g.checked = state.gray;
+  }
+  function resetLegendFilters() {
+    state.cats = new Set(F.catIds.map((_, i) => i));
+    state.modes = new Set(MODES.map((m) => m.id));
   }
   function bindLegend() {
     const el = $('legend');
@@ -363,20 +363,62 @@
       const t = e.target;
       if (t.dataset.cat != null) { t.checked ? state.cats.add(+t.dataset.cat) : state.cats.delete(+t.dataset.cat); }
       else if (t.dataset.mode) { t.checked ? state.modes.add(t.dataset.mode) : state.modes.delete(t.dataset.mode); }
-      else if (t.id === 'opt-gray') state.gray = t.checked;
+      else return;
+      render();
+    });
+    // doble clic en un elemento = dejar solo ese
+    el.addEventListener('dblclick', (e) => {
+      const inp = e.target.closest('label') && e.target.closest('label').querySelector('input');
+      if (!inp) return;
+      if (inp.dataset.cat != null) state.cats = new Set([+inp.dataset.cat]);
+      else if (inp.dataset.mode) state.modes = new Set([inp.dataset.mode]);
       else return;
       render();
     });
     el.addEventListener('click', (e) => {
-      const b = e.target.closest('button'); if (!b) return;
-      if (b.dataset.soloCat != null) state.cats = new Set([+b.dataset.soloCat]);
-      else if (b.dataset.soloMode) state.modes = new Set([b.dataset.soloMode]);
-      else if (b.dataset.preset === 'all') state.cats = new Set(F.catIds.map((_, i) => i));
-      else if (b.dataset.preset === 'none') state.cats = new Set();
-      else if (b.dataset.preset === 'top3') {
-        state.cats = new Set(F.categories.map((c, i) => [i, c.count]).filter(([i]) => F.catIds[i] !== 'other')
-          .sort((a, b2) => b2[1] - a[1]).slice(0, 3).map(([i]) => i));
-      } else return;
+      if (e.target.closest('[data-legend-reset]')) { resetLegendFilters(); render(); }
+    });
+  }
+
+  // ---------------------------------------------------------------- chips de filtros activos
+  function activeChips() {
+    const out = [];
+    const [t0, t1] = state.time;
+    if (!(t0 === 0 && t1 === TIME_N - 1)) {
+      const wholeYear = t0 % 12 === 0 && t1 % 12 === 11 && Math.floor(t0 / 12) === Math.floor(t1 / 12);
+      out.push({ key: 'time', label: wholeYear ? String(YEAR0 + Math.floor(t0 / 12)) : `${monthLabel(t0)} – ${monthLabel(t1)}`,
+        clear: () => { state.time = [0, TIME_N - 1]; } });
+    }
+    if (state.layer !== 'insights' && (state.hours[0] > 0 || state.hours[1] < 23)) {
+      out.push({ key: 'hours', label: `${hh(state.hours[0])}:00–${hh(state.hours[1])}:59`, clear: () => { state.hours = [0, 23]; } });
+    }
+    if (state.layer === 'objects') {
+      if (state.cats.size < F.catIds.length) {
+        const n = state.cats.size;
+        out.push({ key: 'cats', label: n === 0 ? 'Sin categorías' : n === 1 ? F.categories[[...state.cats][0]].label : `${n} categorías`,
+          clear: () => { state.cats = new Set(F.catIds.map((_, i) => i)); } });
+      }
+    } else if (state.modes.size < MODES.length) {
+      const n = state.modes.size;
+      out.push({ key: 'modes', label: n === 0 ? 'Sin modos' : n === 1 ? MODES.find((m) => state.modes.has(m.id)).label.split(' (')[0] : `${n} modos`,
+        clear: () => { state.modes = new Set(MODES.map((m) => m.id)); } });
+    }
+    return out;
+  }
+  let chipList = [];
+  function renderChips() {
+    chipList = activeChips();
+    $('chips').innerHTML = chipList.length
+      ? chipList.map((c) => `<span class="chip">${c.label}<button type="button" data-chip="${c.key}" aria-label="Quitar el filtro ${c.label}" title="Quitar filtro">✕</button></span>`).join('')
+        + (chipList.length > 1 ? '<button type="button" class="link" data-chip="all">Limpiar todo</button>' : '')
+      : '<span class="none">Sin filtros: se muestran todos los datos</span>';
+  }
+  function bindChips() {
+    $('chips').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-chip]'); if (!b) return;
+      stopSweep();
+      if (b.dataset.chip === 'all') resetFilters();
+      else { const c = chipList.find((x) => x.key === b.dataset.chip); if (c) c.clear(); }
       render();
     });
   }
@@ -386,25 +428,30 @@
     document.querySelectorAll('.layer-switch button').forEach((b) =>
       b.addEventListener('click', () => setLayer(b.dataset.layer)));
     bindLegend();
+    bindChips();
     window.addEventListener('resize', () => { if (charts['chart-time']) updateCharts(); });
-    $('reset').onclick = () => { resetFilters(); render(); };
     $('play').onclick = () => { playing = !playing; syncPlayButton(); };
     document.querySelectorAll('[data-scale]').forEach((b) => b.addEventListener('click', () => {
       state.scale = b.dataset.scale;
       document.querySelectorAll('[data-scale]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       updateCharts();
     }));
-    $('t-all').onclick = () => { stopSweep(); state.time = [0, TIME_N - 1]; render(); };
-    $('t-last12').onclick = () => { stopSweep(); state.time = [Math.max(0, TIME_N - 12), TIME_N - 1]; render(); };
+    $('t-last12').onclick = () => { stopSweep(); state.time = [Math.max(0, TIME_N - 12), TIME_N - 1]; setMenu(false); render(); };
     $('t-peak').onclick = () => {
       stopSweep();
       const cs = charts['chart-time'].counts, byYear = new Map();
       cs.forEach((v, i) => byYear.set(Math.floor(i / 12), (byYear.get(Math.floor(i / 12)) || 0) + v));
       const y = [...byYear.entries()].sort((a, b) => b[1] - a[1])[0][0];
-      state.time = [y * 12, Math.min(TIME_N - 1, y * 12 + 11)]; render();
+      state.time = [y * 12, Math.min(TIME_N - 1, y * 12 + 11)]; setMenu(false); render();
     };
-    $('t-play').onclick = () => (sweepTimer ? stopSweep() : startSweep());
-    $('clock-clear-hours').onclick = () => { state.hours = [0, 23]; render(); };
+    $('t-play').onclick = () => { setMenu(false); sweepTimer ? stopSweep() : startSweep(); };
+    // menú de opciones y opciones del reloj (se cierran al hacer clic fuera o con Escape)
+    const menu = $('menu'), mbtn = $('menu-btn');
+    function setMenu(open) { menu.hidden = !open; mbtn.setAttribute('aria-expanded', String(open)); }
+    mbtn.onclick = (e) => { e.stopPropagation(); setMenu(menu.hidden); };
+    document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target) && e.target !== mbtn) setMenu(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+    $('clock-more-btn').onclick = () => { const m = $('clock-more'); m.hidden = !m.hidden; $('clock-more-btn').setAttribute('aria-expanded', String(!m.hidden)); };
     $('speed').onchange = (e) => { speed = +e.target.value; };
     document.querySelectorAll('[data-clock]').forEach((b) => b.addEventListener('click', () => setClockMode(b.dataset.clock)));
     $('clock-scrub').addEventListener('input', (e) => {
@@ -669,7 +716,7 @@
       {
         q: '¿Qué elementos dominan el paisaje urbano?',
         text: `Señalización vertical (${pct(share('signage'))}), alumbrado y postes (${pct(share('lighting'))}) y comercio/publicidad (${pct(share('commerce'))}) suman ${pct(share('signage') + share('lighting') + share('commerce'))} de lo detectado. El mobiliario urbano es minoritario (${pct(share('furniture'))}). Resaltamos las tres categorías mayores y dejamos el resto en gris.`,
-        hint: 'En la leyenda puedes elegir categorías, pulsar «solo» o usar «Las 3 mayores».',
+        hint: 'En la leyenda: clic para activar o desactivar una categoría y doble clic para dejar solo esa.',
         apply: go('objects', () => {
           state.cats = new Set(F.categories.map((c, i) => [i, c.count]).filter(([i]) => F.catIds[i] !== 'other')
             .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([i]) => i));
@@ -695,7 +742,7 @@
           const early = T.filter((d) => d.t < 240).length;
           return `Entre 04:00 y 24:00 se reconstruyen ≈ ${fmt.format(Math.round(tot))} km: la tarde concentra el ${pct(st[1].km / tot)}, la mañana el ${pct(st[0].km / tot)} y la noche el ${pct(st[2].km / tot)}. Dentro de cada franja, el 10 % de las celdas más recorridas reúne el ${pct(st[0].topShare)} (mañana), ${pct(st[1].topShare)} (tarde) y ${pct(st[2].topShare)} (noche) del recorrido. ${fmt.format(early)} trayectorias ocurren entre 00:00 y 04:00 y no se muestran.`;
         })(),
-        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Cada franja se normaliza por separado.',
+        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Comparten escala de color: amarillo = poco recorrido, rojo = mucho.',
         apply: go('insights'),
       },
       {
@@ -706,32 +753,90 @@
       },
     ];
   }
-  // ---------------------------------------------------------------- insights: tres mapas de calor por franja horaria
-  let insPanes = null, insView = null;
+  // ---------------------------------------------------------------- insights: tres mapas de celdas coloreadas por tráfico
+  const LAT0 = 50.09, LON0 = 14.38;
+  const MX = 111320 * Math.cos(LAT0 * Math.PI / 180), MY = 110574;           // metros por grado de longitud y latitud
+  const INS_RGB = INS_RAMP.map(hex2rgb);
+  // Hexágonos de lados planos (coordenadas axiales); R = radio en metros
+  function hexOf(lon, lat, R) {
+    const x = (lon - LON0) * MX, y = (lat - LAT0) * MY;
+    const q = (2 / 3 * x) / R, r = (-1 / 3 * x + Math.sqrt(3) / 3 * y) / R;
+    let rx = Math.round(q), rz = Math.round(r), ry = Math.round(-q - r);
+    const dx = Math.abs(rx - q), dy = Math.abs(ry + q + r), dz = Math.abs(rz - r);
+    if (dx > dy && dx > dz) rx = -ry - rz; else if (dy > dz) ry = -rx - rz; else rz = -rx - ry;
+    return [rx, rz];
+  }
+  function hexCenter(q, r, R) {
+    return [LON0 + (R * 1.5 * q) / MX, LAT0 + (R * Math.sqrt(3) * (r + q / 2)) / MY];
+  }
+  function binCells(points) {
+    const m = new Map();
+    for (const p of points) {
+      const [q, r] = hexOf(p[0], p[1], INS_R), k = q + ',' + r;
+      const c = m.get(k);
+      if (c) c.n++; else m.set(k, { q, r, n: 1 });
+    }
+    return [...m.values()];
+  }
+  // Cortes de clase compartidos por las tres franjas (percentiles de las celdas con recorrido)
+  function classBreaks(allKm) {
+    if (!allKm.length) return [0.1, 0.2, 0.4, 0.8];
+    const v = allKm.slice().sort((a, b) => a - b);
+    const at = (p) => v[Math.min(v.length - 1, Math.floor(p * v.length))];
+    const nice = (x) => (x < 1 ? Math.max(0.1, Math.round(x * 10) / 10) : Math.round(x));
+    const b = [at(0.5), at(0.75), at(0.9), at(0.97)].map(nice);
+    for (let i = 1; i < b.length; i++) if (b[i] <= b[i - 1]) b[i] = +(b[i - 1] + (b[i - 1] < 1 ? 0.1 : 1)).toFixed(1);
+    return b;
+  }
+  const fkm = (x) => (x < 1 ? x.toFixed(1) : String(Math.round(x))).replace('.', ',');
+  let insPanes = null, insView = null, insTips = [];
   function ensureInsights() {
     if (insPanes) return;
     insView = Object.assign(baseView(), { zoom: 11.6 });
-    insPanes = BANDS.map((b, i) => new deck.DeckGL({
-      container: 'ins-map-' + i, map: maplibregl, mapStyle: MAP_STYLE, viewState: insView, controller: true,
-      // las tres vistas comparten cámara: mover una mueve las demás
-      onViewStateChange: ({ viewState }) => { insView = viewState; insPanes.forEach((pn) => pn.setProps({ viewState: insView })); },
-    }));
+    insPanes = BANDS.map((b, i) => {
+      const host = $('ins-map-' + i);
+      const tip = document.createElement('div'); tip.className = 'pane-tip'; tip.hidden = true; host.appendChild(tip); insTips[i] = tip;
+      return new deck.DeckGL({
+        container: host, map: maplibregl, mapStyle: MAP_STYLE, viewState: insView, controller: true,
+        // las tres vistas comparten cámara: mover una mueve las demás
+        onViewStateChange: ({ viewState }) => { insView = viewState; insPanes.forEach((pn) => pn.setProps({ viewState: insView })); },
+        onHover: (info) => {
+          try {
+            if (!info || !info.object) { tip.hidden = true; return; }
+            tip.innerHTML = `<b>≈ ${fkm(info.object.km)} km</b> de recorrido<br>en esta celda (~240 m)<br><span class="muted">${b.label} ${b.range}</span>`;
+            tip.style.left = Math.min(info.x + 12, host.clientWidth - 200) + 'px';
+            tip.style.top = Math.max(info.y - 10, 4) + 'px';
+            tip.hidden = false;
+          } catch (e) { tip.hidden = true; }
+        },
+      });
+    });
   }
   function renderInsights() {
     ensureInsights();
     const trips = getTrips();
     const per = BANDS.map((b) => trips.filter((d) => d.t >= b.lo && d.t < b.hi));
+    const cells = per.map((tr) => binCells(tr.flatMap((d) => d.s)));
+    cells.forEach((cs) => cs.forEach((c) => { c.km = c.n * SAMPLE_KM; }));
+    const br = classBreaks(cells.flatMap((cs) => cs.map((c) => c.km)));
+    const cls = (km) => (km > br[3] ? 4 : km > br[2] ? 3 : km > br[1] ? 2 : km > br[0] ? 1 : 0);
     const kms = per.map((tr) => tr.reduce((a, d) => a + d.s.length, 0) * SAMPLE_KM);
     const totKm = kms.reduce((a, b) => a + b, 0) || 1;
     BANDS.forEach((b, i) => {
+      const data = cells[i].map((c) => ({ pos: hexCenter(c.q, c.r, INS_R), km: c.km, cls: cls(c.km) }));
       insPanes[i].setProps({
-        layers: [new deck.HeatmapLayer({
-          id: 'heat-' + b.id, data: per[i].flatMap((d) => d.s), getPosition: posPt, getWeight: 1,
-          radiusPixels: 26, intensity: 1.2, threshold: 0.04, colorRange: HEAT_RAMP.map(hex2rgb),
+        layers: [new deck.ColumnLayer({
+          id: 'ins-' + b.id, data, pickable: true, extruded: false, diskResolution: 6, radius: INS_R * 0.98,
+          getPosition: (d) => d.pos, getFillColor: (d) => [...INS_RGB[d.cls], 235], updateTriggers: { getFillColor: [br.join()] },
         })],
       });
       $('ins-stats-' + i).textContent = `${fmt(per[i].length)} trayectorias · ≈ ${fmt(Math.round(kms[i]))} km · ${pct(kms[i] / totKm)}`;
     });
+    const box = $('ins-classes');
+    if (box) {
+      const lab = [`≤ ${fkm(br[0])} km`, `${fkm(br[0])} – ${fkm(br[1])} km`, `${fkm(br[1])} – ${fkm(br[2])} km`, `${fkm(br[2])} – ${fkm(br[3])} km`, `> ${fkm(br[3])} km`];
+      box.innerHTML = lab.map((t, k) => `<div class="cls"><span class="swatch" style="background:${INS_RAMP[k]}"></span><span>${t}${k === 0 ? ' <span class="muted">(poco)</span>' : k === 4 ? ' <span class="muted">(mucho)</span>' : ''}</span></div>`).join('');
+    }
   }
   // Estadísticas de una franja con todos los datos (para el texto del recorrido guiado)
   function bandStat(b) {

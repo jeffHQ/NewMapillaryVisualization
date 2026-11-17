@@ -82,7 +82,7 @@
 
     <!-- La leyenda es también el filtro de categoría / modo -->
 
-    <!-- Insights: tres mapas de calor del recorrido (mañana, tarde, noche), con vistas sincronizadas -->
+    <!-- Insights: tres mapas de celdas coloreadas por tráfico (mañana, tarde, noche), con cámaras sincronizadas y misma escala -->
     <div id="insights" class="insights" hidden>
       <section class="pane" aria-label="Mañana, de 04:00 a 10:59">
         <header class="pane-head"><h3>Mañana <span class="muted">04:00 – 10:59</span></h3><p id="ins-stats-0" class="pane-stats"></p></header>
@@ -99,16 +99,18 @@
     </div>
 
     <div id="clock" class="clock" hidden>
-      <div class="clock-title" id="clock-title">Reloj diario (24 h)</div>
+      <div class="clock-top">
+        <div class="clock-title" id="clock-title">Reloj diario (24 h)</div>
+        <button type="button" class="help" id="clock-more-btn" aria-expanded="false" aria-controls="clock-more" aria-label="Más opciones del reloj" title="Más opciones del reloj">⚙</button>
+      </div>
       <div class="clock-time" id="clock-display" aria-live="off">00:00</div>
       <div class="clock-bar" aria-hidden="true"><span id="clock-win" class="win"></span><span id="clock-fill"></span></div>
       <input type="range" id="clock-scrub" class="scrub" min="0" max="1439" step="1" value="0" aria-label="Mover el reloj">
       <div class="clock-row"><span>Trayectorias activas</span><b id="clock-active">0</b></div>
       <div class="clock-row" id="clock-window-row"><span>Hora de inicio</span><b id="clock-window">Todo el día</b></div>
-      <button type="button" class="btn small" id="clock-clear-hours" hidden>Quitar filtro de hora</button>
       <div class="clock-row" id="clock-hour-row" hidden><span>Hora de inicio más frecuente</span><b id="clock-hour">—</b></div>
-      <div class="play-row">
-        <button type="button" id="play" class="btn small primary" aria-pressed="true">Pausar</button>
+      <button type="button" id="play" class="btn primary" aria-pressed="true">Pausar</button>
+      <div id="clock-more" class="clock-more" hidden>
         <label>Velocidad
           <select id="speed">
             <option value="2">0.5×</option>
@@ -116,42 +118,49 @@
             <option value="8">2×</option>
           </select>
         </label>
+        <div class="clock-modes" role="group" aria-label="Tipo de reloj">
+          <button type="button" class="btn small" data-clock="day" aria-pressed="true">Día 24 h</button>
+          <button type="button" class="btn small" data-clock="rel" aria-pressed="false">Relativo 60 s</button>
+        </div>
+        <p class="hint" id="clock-note"></p>
       </div>
-      <div class="clock-modes" role="group" aria-label="Tipo de reloj">
-        <button type="button" class="btn small" data-clock="day" aria-pressed="true">Día 24 h</button>
-        <button type="button" class="btn small" data-clock="rel" aria-pressed="false">Relativo 60 s</button>
-      </div>
-      <p class="hint" id="clock-note"></p>
     </div>
 
     <div id="tooltip" class="tooltip" role="status" hidden></div>
     <div id="loading" class="loading" role="status">Cargando datos…</div>
   </section>
 
-    <!-- Series de tiempo enlazadas: barra inferior -->
+    <!-- Filtros: chips activos + series de tiempo enlazadas -->
     <section class="timebar" aria-labelledby="filters-h">
       <div class="timebar-head">
-        <h2 id="filters-h">Series de tiempo enlazadas</h2>
+        <h2 id="filters-h">Filtros</h2>
+        <div id="chips" class="chips" aria-label="Filtros activos"></div>
         <p id="result-count" class="result" aria-live="polite"></p>
-        <button type="button" class="btn small" id="reset">Restablecer todo</button>
-      </div>
-      <div class="timebar-charts">
-        <div class="series series-time">
-          <div class="series-head">
-            <h3>Mes de captura</h3>
-            <div class="series-tools" role="group" aria-label="Herramientas de la serie mensual">
+        <button type="button" class="help" aria-label="Ayuda de las series de tiempo"
+                title="Eje vertical: nº de detecciones (o de trayectorias en las vistas de recorrido). Cursor = valor · arrastra para elegir un periodo y ajusta los bordes · clic en el eje = año o franja del día · doble clic = todo.">?</button>
+        <div class="menu-wrap">
+          <button type="button" class="btn small" id="menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="menu">⚙ Opciones</button>
+          <div id="menu" class="menu" role="group" aria-label="Opciones de las series de tiempo" hidden>
+            <div class="menu-group">
+              <span class="menu-label">Escala de la serie mensual</span>
               <span class="seg" role="group" aria-label="Escala vertical">
                 <button type="button" data-scale="linear" aria-pressed="false" title="Altura proporcional al valor">Lineal</button>
                 <button type="button" data-scale="sqrt" aria-pressed="true" title="Raíz cuadrada: realza los meses pequeños">Raíz</button>
                 <button type="button" data-scale="log" aria-pressed="false" title="Logarítmica: máximo realce de los meses pequeños">Log</button>
               </span>
-              <button type="button" class="btn small" id="t-all">Todo</button>
-              <button type="button" class="btn small" id="t-peak" title="Selecciona el año con más datos">Mayor año</button>
-              <button type="button" class="btn small" id="t-last12">12 m</button>
+            </div>
+            <div class="menu-group">
+              <span class="menu-label">Atajos de tiempo</span>
+              <button type="button" class="btn small" id="t-peak" title="Selecciona el año con más datos">Año con más datos</button>
+              <button type="button" class="btn small" id="t-last12">Últimos 12 meses</button>
               <button type="button" class="btn small" id="t-play" aria-pressed="false" title="Desliza una ventana por los meses">▶ Recorrer</button>
             </div>
-            <span id="time-range" class="readout"></span>
           </div>
+        </div>
+      </div>
+      <div class="timebar-charts">
+        <div class="series series-time">
+          <div class="series-head"><h3>Mes de captura</h3><span id="time-range" class="readout"></span></div>
           <svg id="chart-time" class="chart" tabindex="0" role="group"
                aria-label="Serie mensual. Arrastra para elegir un periodo; flechas para mover, Mayús más flechas para cambiar el final, Escape para restablecer."></svg>
         </div>
@@ -161,7 +170,6 @@
                aria-label="Serie por hora. Arrastra para elegir un rango de horas; flechas para mover, Escape para restablecer."></svg>
         </div>
       </div>
-      <p class="hint">Eje vertical: nº de detecciones (o trayectorias) · cursor = valor · arrastra o ajusta los bordes · clic en el eje = año o franja · doble clic = todo.</p>
     </section>
   </div>
 </main>
