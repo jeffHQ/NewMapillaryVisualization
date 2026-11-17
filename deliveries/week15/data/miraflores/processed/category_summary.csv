@@ -1,0 +1,163 @@
+category,label,value,count
+lighting,Alumbrado y postes,object--support--utility-pole,7257
+lighting,Alumbrado y postes,object--street-light,5281
+commerce,Comercio y publicidad,object--sign--advertisement,2356
+commerce,Comercio y publicidad,object--sign--store,2149
+signage,Señalización vertical,object--traffic-sign--front,2098
+lighting,Alumbrado y postes,object--support--pole,1796
+marking,Marcas viales,marking--discrete--crosswalk-zebra,1191
+signage,Señalización vertical,object--traffic-sign--direction-front,1025
+utilities,Infraestructura y registros,construction--flat--driveway,1000
+utilities,Infraestructura y registros,object--manhole,809
+marking,Marcas viales,marking--discrete--arrow--straight,746
+other,Otros,object--traffic-cone,689
+marking,Marcas viales,marking--discrete--other-marking,639
+signage,Señalización vertical,object--traffic-sign--back,612
+furniture,Mobiliario urbano,object--trash-can,600
+marking,Marcas viales,marking--discrete--stop-line,371
+utilities,Infraestructura y registros,object--junction-box,322
+commerce,Comercio y publicidad,object--banner,281
+marking,Marcas viales,marking--discrete--text--other,237
+signage,Señalización vertical,warning--pedestrians-crossing--g4,226
+marking,Marcas viales,marking--discrete--arrow--split-right-or-straight,217
+furniture,Mobiliario urbano,object--bench,191
+other,Otros,general--traffic-sign--g1,157
+traffic_light,Semáforos,object--traffic-light--pedestrians-side,153
+furniture,Mobiliario urbano,object--cctv-camera,152
+signage,Señalización vertical,complementary--chevron-right--g1,146
+traffic_light,Semáforos,object--traffic-light--general-horizontal-front,125
+signage,Señalización vertical,information--general-directions--g1,123
+furniture,Mobiliario urbano,object--fire-hydrant,122
+traffic_light,Semáforos,object--traffic-light--general-upright-side,116
+signage,Señalización vertical,warning--texts--g2,98
+traffic_light,Semáforos,object--traffic-light--pedestrians-front,96
+signage,Señalización vertical,complementary--chevron-left--g1,89
+signage,Señalización vertical,regulatory--no-parking--g5,87
+furniture,Mobiliario urbano,object--bike-rack,87
+signage,Señalización vertical,warning--texts--g3,87
+marking,Marcas viales,marking--discrete--arrow--left,86
+marking,Marcas viales,marking--discrete--symbol--bicycle,86
+marking,Marcas viales,marking--discrete--arrow--right,82
+other,Otros,object--sign--information,69
+traffic_light,Semáforos,object--traffic-light--general-upright-front,69
+signage,Señalización vertical,regulatory--stop--g1,68
+marking,Marcas viales,marking--discrete--arrow--split-left-or-straight,64
+traffic_light,Semáforos,object--traffic-light--general-horizontal-side,62
+lighting,Alumbrado y postes,object--support--traffic-sign-frame,59
+other,Otros,object--sign--back,58
+signage,Señalización vertical,object--traffic-sign--direction-back,57
+signage,Señalización vertical,warning--texts--g1,56
+signage,Señalización vertical,warning--road-bump--g2,55
+traffic_light,Semáforos,object--traffic-light--general-upright,43
+traffic_light,Semáforos,object--traffic-light--general-upright-back,41
+traffic_light,Semáforos,object--traffic-light--pedestrians,39
+traffic_light,Semáforos,object--traffic-light--general-horizontal,35
+utilities,Infraestructura y registros,object--catch-basin,34
+signage,Señalización vertical,regulatory--maximum-speed-limit-30--g1,31
+signage,Señalización vertical,object--traffic-sign--information-parking,31
+signage,Señalización vertical,complementary--keep-left--g1,30
+marking,Marcas viales,marking--discrete--text--30,29
+utilities,Infraestructura y registros,construction--barrier--temporary,26
+marking,Marcas viales,marking--discrete--text,26
+marking,Marcas viales,marking--discrete--text--bus,21
+signage,Señalización vertical,warning--school-zone--g2,19
+signage,Señalización vertical,regulatory--priority-road--g1,19
+traffic_light,Semáforos,object--traffic-light--general-horizontal-back,18
+furniture,Mobiliario urbano,object--water-valve,18
+signage,Señalización vertical,regulatory--speed-limit-zone--g1,16
+signage,Señalización vertical,warning--bicycles-crossing--g2,15
+traffic_light,Semáforos,object--traffic-light--general-single-front,15
+signage,Señalización vertical,object--sign--other,14
+marking,Marcas viales,marking--discrete--text--slow,14
+signage,Señalización vertical,warning--curve-left--g2,13
+marking,Marcas viales,marking--discrete--text--stop,13
+marking,Marcas viales,marking--discrete--symbol--wheelchair,12
+utilities,Infraestructura y registros,construction--flat--crosswalk-plain,11
+signage,Señalización vertical,object--traffic-sign--temporary-front,10
+signage,Señalización vertical,regulatory--no-u-turn--g1,10
+traffic_light,Semáforos,object--traffic-light--pedestrians-back,9
+signage,Señalización vertical,regulatory--no-parking--g9,9
+signage,Señalización vertical,warning--curve-right--g2,9
+marking,Marcas viales,marking--discrete--text--school,8
+marking,Marcas viales,marking--discrete--give-way-single,8
+signage,Señalización vertical,regulatory--no-left-turn--g1,8
+signage,Señalización vertical,regulatory--yield--g1,8
+signage,Señalización vertical,regulatory--maximum-speed-limit-40--g1,6
+signage,Señalización vertical,regulatory--no-right-turn--g1,6
+signage,Señalización vertical,warning--roundabout--g2,6
+marking,Marcas viales,marking--discrete--give-way-row,6
+signage,Señalización vertical,information--disabled-persons--g1,6
+signage,Señalización vertical,regulatory--maximum-speed-limit-60--g1,5
+signage,Señalización vertical,regulatory--dual-path-bicycles-and-pedestrians--g1,5
+signage,Señalización vertical,regulatory--no-horn--g1,5
+furniture,Mobiliario urbano,object--mailbox,5
+signage,Señalización vertical,regulatory--maximum-speed-limit-50--g1,5
+signage,Señalización vertical,warning--children--g2,5
+signage,Señalización vertical,regulatory--buses-only--g1,4
+signage,Señalización vertical,regulatory--height-limit--g1,4
+marking,Marcas viales,marking--discrete--arrow--split-left-or-right,3
+signage,Señalización vertical,warning--road-narrows--g2,3
+signage,Señalización vertical,regulatory--no-u-turn--g2,3
+signage,Señalización vertical,warning--road-narrows-left--g2,3
+marking,Marcas viales,marking--discrete--arrow--split-left-or-right-or-straight,3
+signage,Señalización vertical,warning--roadworks--g5,3
+signage,Señalización vertical,warning--added-lane-right--g1,2
+signage,Señalización vertical,information--highway-interchange--g1,2
+signage,Señalización vertical,warning--playground--g1,2
+signage,Señalización vertical,complementary--texts-two-lines--g1,2
+signage,Señalización vertical,regulatory--maximum-speed-limit-80--g1,2
+signage,Señalización vertical,warning--y-roads--g1,2
+signage,Señalización vertical,regulatory--no-bicycles--g1,2
+signage,Señalización vertical,warning--equestrians-crossing--g2,2
+signage,Señalización vertical,warning--horizontal-alignment-left--g1,2
+signage,Señalización vertical,warning--traffic-merges-left--g1,2
+other,Otros,object--parking-meter,2
+traffic_light,Semáforos,object--traffic-light--other,2
+signage,Señalización vertical,warning--soft-shoulder--g1,2
+signage,Señalización vertical,information--parking--g3,2
+furniture,Mobiliario urbano,object--phone-booth,2
+signage,Señalización vertical,regulatory--maximum-speed-limit-10--g1,2
+signage,Señalización vertical,warning--double-curve-first-right--g2,1
+signage,Señalización vertical,regulatory--turn-right-ahead--g2,1
+signage,Señalización vertical,information--parking--g5,1
+signage,Señalización vertical,information--parking--g1,1
+signage,Señalización vertical,regulatory--no-heavy-goods-vehicles--g1,1
+signage,Señalización vertical,regulatory--texts-two-lines--g1,1
+signage,Señalización vertical,regulatory--no-heavy-goods-vehicles--g2,1
+signage,Señalización vertical,complementary--advisory-exit-or-ramp-speed--g1,1
+signage,Señalización vertical,warning--traffic-signals--g3,1
+signage,Señalización vertical,warning--trail-crossing--g1,1
+signage,Señalización vertical,warning--road-narrows-right--g2,1
+marking,Marcas viales,marking--discrete--arrow--other,1
+marking,Marcas viales,marking--discrete--text--50,1
+signage,Señalización vertical,warning--winding-road-first-left--g1,1
+signage,Señalización vertical,regulatory--texts-four-lines--g1,1
+signage,Señalización vertical,warning--hairpin-curve-right--g1,1
+signage,Señalización vertical,regulatory--bicycles-only--g1,1
+signage,Señalización vertical,regulatory--no-stopping--g2,1
+signage,Señalización vertical,complementary--disabled-persons--g1,1
+signage,Señalización vertical,regulatory--no-motorcycles--g2,1
+signage,Señalización vertical,regulatory--keep-left--g1,1
+signage,Señalización vertical,complementary--bike-route--g3,1
+signage,Señalización vertical,warning--tunnel--g2,1
+marking,Marcas viales,marking--discrete--symbol--pedestrian,1
+signage,Señalización vertical,regulatory--turn-right-ahead--g1,1
+signage,Señalización vertical,regulatory--one-way-straight--g1,1
+signage,Señalización vertical,object--traffic-sign--temporary-back,1
+signage,Señalización vertical,information--rest-area--g1,1
+signage,Señalización vertical,regulatory--turn-left--g2,1
+signage,Señalización vertical,regulatory--no-buses--g3,1
+signage,Señalización vertical,regulatory--no-motor-vehicles-except-motorcycles--g1,1
+signage,Señalización vertical,regulatory--no-left-turn--g2,1
+signage,Señalización vertical,regulatory--text--g1,1
+signage,Señalización vertical,warning--roadworks--g2,1
+signage,Señalización vertical,regulatory--no-overtaking--g1,1
+signage,Señalización vertical,regulatory--keep-right--g5,1
+signage,Señalización vertical,regulatory--no-buses--g1,1
+signage,Señalización vertical,regulatory--u-turn--g2,1
+signage,Señalización vertical,regulatory--width-limit--g1,1
+signage,Señalización vertical,warning--narrow-bridge--g2,1
+signage,Señalización vertical,regulatory--end-of-maximum-speed-limit-40--g1,1
+signage,Señalización vertical,regulatory--no-entry--g1,1
+signage,Señalización vertical,regulatory--turn-right--g2,1
+signage,Señalización vertical,regulatory--no-passenger-loading--g1,1

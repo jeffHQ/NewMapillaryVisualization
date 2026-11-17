@@ -235,6 +235,11 @@ select {
 .mini-cv canvas { position: absolute; inset: 0; display: block; }
 @media (max-width: 900px) { .ins-mode { left: auto; right: 12px; } .minis { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(4, 1fr); } }
 
+/* Selector de ciudad (junto a «Página del proyecto») */
+.top nav { display: flex; align-items: center; gap: 10px; }
+.city-switch button { padding: 6px 14px; }
+.city-switch button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+
 /* Responsive */
 @media (max-width: 900px) {
   body { height: auto; display: block; }

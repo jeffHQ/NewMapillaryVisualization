@@ -1,9 +1,12 @@
-/* Praga a pie de calle — visualización con deck.gl (semana 12) */
+/* Praga / Miraflores a pie de calle — visualización con deck.gl (entrega final) */
 (function () {
   'use strict';
 
   const nf = new Intl.NumberFormat('es', { useGrouping: 'always' });
   const nf1 = new Intl.NumberFormat('es', { useGrouping: 'always', maximumFractionDigits: 1 });
+  // Ciudad activa: #city=praga (por defecto) | #city=miraflores. Cambiarla recarga la página con los datos de esa ciudad.
+  const CITY_IDS = ['praga', 'miraflores'];
+  const CITY_ID = (() => { const c = new URLSearchParams(location.hash.slice(1)).get('city'); return CITY_IDS.includes(c) ? c : 'praga'; })();
   const fmt = Object.assign((n) => nf.format(n), { format: (n) => nf.format(n) });
   const fmt1 = (n) => nf1.format(n);
   const pct = (x, d = 0) => (x * 100).toFixed(d).replace('.', ',') + ' %';
@@ -49,7 +52,7 @@
     v.split('--').slice(-2).join(' · ').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
   const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  const YEAR0 = 2014;
+  let YEAR0 = 2014;   // primer año de los datos de la ciudad (se ajusta al cargar)
   const monthIdx = (y, m) => (y - YEAR0) * 12 + (m - 1);
   const monthLabel = (ti) => `${MES[ti % 12]} ${YEAR0 + Math.floor(ti / 12)}`;
   const hh = (h) => String(h).padStart(2, '0');
@@ -89,10 +92,13 @@
   const usesTrips = () => state.layer !== 'objects';
 
   // ---------------------------------------------------------------- datos
-  Promise.all(['data/features.json', 'data/trips.json', 'data/summary.json'].map((u) =>
+  Promise.all(['features', 'trips', 'summary'].map((n) => `data/${CITY_ID}/${n}.json`).map((u) =>
     fetch(u).then((r) => { if (!r.ok) throw new Error(u + ' ' + r.status); return r.json(); })
   )).then(([f, t, s]) => {
     F = f; T = t; S = s;
+    S.city = S.city || { id: 'praga', name: 'Praga', place: 'oeste de Praga', view_zoom: 12.6 };
+    YEAR0 = Math.min(...F.year, ...T.map((d) => d.y));
+    applyCity();
     F.catIds = F.categories.map((c) => c.id);
     F.catColor = F.catIds.map((id) => hex2rgb(CAT_COLORS[id]));
     F.ti = F.year.map((y, i) => monthIdx(y, F.month[i]));
@@ -106,6 +112,24 @@
     $('loading').hidden = false;
     $('loading').textContent = 'No se pudo iniciar la visualización (' + e.message + '). Si abriste el archivo directamente, sirve la carpeta con un servidor local: python -m http.server';
   });
+
+  // ---------------------------------------------------------------- ciudad
+  function applyCity() {
+    const c = S.city;
+    document.title = `${c.name} a pie de calle · Mapillary`;
+    const h1 = document.querySelector('.top h1'); if (h1) h1.textContent = `${c.name} a pie de calle`;
+    const mw = document.querySelector('.map-wrap'); if (mw) mw.setAttribute('aria-label', `Mapa interactivo de ${c.name}`);
+    const tz = $('tz-label'); if (tz) tz.textContent = `(${c.name})`;
+    document.querySelectorAll('[data-city]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.city === CITY_ID)));
+    const a = S.area, dot = (x) => String(x).replace('.', ',');
+    $('about-area').textContent = `lon ${a.lon[0].toFixed(3)}–${a.lon[1].toFixed(3)}, lat ${a.lat[0].toFixed(3)}–${a.lat[1].toFixed(3)} (~${dot(a.width_km)} × ${dot(a.height_km)} km, ${c.place})`;
+    const q = S.trip_quality;
+    $('about-quality').textContent = q ? `los tramos duran ~${fmt1(q.median_duration_s)} s de mediana y el ${pct(q.share_over_80kmh)} supera los 80 km/h` : 'los tramos son muy cortos';
+    $('about-years').textContent = `${YEAR0}–${Math.max(...F.year)}`;
+    const n = S.n_excluded_dates || 0, ex = $('about-excl');
+    ex.hidden = n === 0;
+    if (n) ex.textContent = `${n} detecciones con fecha anterior a ${YEAR0} se omiten de la app por inconsistencia de fecha.`;
+  }
 
   // ---------------------------------------------------------------- filtrado
   const inR = (v, r) => v >= r[0] && v <= r[1];
@@ -166,7 +190,8 @@
     requestAnimationFrame(tick);
   }
 
-  const baseView = () => ({ longitude: S.area.center[0], latitude: S.area.center[1], zoom: 12.6, pitch: 0, bearing: 0 });
+  const Z0 = () => (S.city && S.city.view_zoom) || 12.6;
+  const baseView = () => ({ longitude: S.area.center[0], latitude: S.area.center[1], zoom: Z0(), pitch: 0, bearing: 0 });
 
   function layers() {
     if (state.layer === 'objects') {
@@ -261,7 +286,7 @@
     clockMode = mode;
     const day = mode === 'day';
     document.querySelectorAll('[data-clock]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.clock === mode)));
-    $('clock-title').textContent = day ? 'Reloj diario (24 h, hora de Praga)' : 'Reloj relativo de la animación';
+    $('clock-title').textContent = day ? `Reloj diario (24 h, hora de ${S.city.name})` : 'Reloj relativo de la animación';
     $('clock-hour-row').hidden = day;
     const sc = $('clock-scrub');
     sc.min = 0; sc.max = day ? 1439 : CLOCK_MAX; sc.step = day ? 1 : 0.1;
@@ -430,6 +455,11 @@
       b.addEventListener('click', () => setLayer(b.dataset.layer)));
     bindLegend();
     bindChips();
+    document.querySelectorAll('[data-city]').forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.city === CITY_ID) return;
+      location.hash = '#city=' + b.dataset.city;      // reinicia estado, mapas y filtros con los datos de la otra ciudad
+      location.reload();
+    }));
     window.addEventListener('resize', () => { if (charts['chart-time']) updateCharts(); if (state.layer === 'insights' && state.insMode === 'hours') renderMinis(); });
     document.querySelectorAll('[data-insmode]').forEach((b) => b.addEventListener('click', () => {
       state.insMode = b.dataset.insmode;
@@ -497,7 +527,7 @@
     buildLegend();
     if (isTrips()) setClockMode(clockMode);
     if (!opts.keepView && !ins) {
-      flyTo(layer === 'density' ? { pitch: 50, bearing: -15, zoom: 12.2 } : layer === 'trips' ? { zoom: 12.9, pitch: 30 } : {});
+      flyTo(layer === 'density' ? { pitch: 50, bearing: -15, zoom: Z0() - 0.4 } : layer === 'trips' ? { zoom: Z0() + 0.3, pitch: 30 } : {});
     }
     render();
   }
@@ -708,11 +738,15 @@
     const modeTot = Object.values(S.trips_by_mode).reduce((a, b) => a + b, 0);
     const vShare = S.trips_by_mode.vehicle / modeTot;
     const tc = S.trip_concentration;
+    const th = S.trips_by_hour, thTot = Object.values(th).reduce((a, b) => a + b, 0) || 1;
+    const peakShare = th[S.peak_trip_hour] / thTot;
+    const nightShare = [22, 23, 0, 1, 2, 3, 4, 5].reduce((a, hr) => a + (th[hr] || 0), 0) / thTot;
+    const med = (S.trip_quality && S.trip_quality.median_duration_s) || 2;
     const go = (layer, mut) => () => { resetFilters(); if (mut) mut(); setLayer(layer); };
     return [
       {
         q: '¿Qué tan completa es la cobertura?',
-        text: `La zona de estudio (~${S.area.width_km.toString().replace('.', ',')} × ${S.area.height_km.toString().replace('.', ',')} km, oeste de Praga) reúne ${fmt.format(total)} detecciones de objetos urbanos en ${fmt.format(S.n_sequences_detections)} secuencias de captura (${fmt.format(S.n_images)} imágenes). Cada punto es un objeto; el color indica su categoría.`,
+        text: `La zona de estudio (~${S.area.width_km.toString().replace('.', ',')} × ${S.area.height_km.toString().replace('.', ',')} km, ${S.city.place}) reúne ${fmt.format(total)} detecciones de objetos urbanos en ${fmt.format(S.n_sequences_detections)} secuencias de captura (${fmt.format(S.n_images)} imágenes). Cada punto es un objeto; el color indica su categoría.`,
         hint: 'Acerca el mapa y pasa el cursor sobre un punto para ver qué es y cuándo se detectó.',
         apply: go('objects'),
       },
@@ -724,7 +758,7 @@
       },
       {
         q: '¿Qué elementos dominan el paisaje urbano?',
-        text: `Señalización vertical (${pct(share('signage'))}), alumbrado y postes (${pct(share('lighting'))}) y comercio/publicidad (${pct(share('commerce'))}) suman ${pct(share('signage') + share('lighting') + share('commerce'))} de lo detectado. El mobiliario urbano es minoritario (${pct(share('furniture'))}). Resaltamos las tres categorías mayores y dejamos el resto en gris.`,
+        text: `Señalización vertical (${pct(share('signage'))}), alumbrado y postes (${pct(share('lighting'))}) y comercio/publicidad (${pct(share('commerce'))}) suman ${pct(share('signage') + share('lighting') + share('commerce'))} de lo detectado. El mobiliario urbano representa el ${pct(share('furniture'))}. Resaltamos las tres categorías mayores y dejamos el resto en gris.`,
         hint: 'En la leyenda: clic para activar o desactivar una categoría y doble clic para dejar solo esa.',
         apply: go('objects', () => {
           state.cats = new Set(F.categories.map((c, i) => [i, c.count]).filter(([i]) => F.catIds[i] !== 'other')
@@ -739,7 +773,7 @@
       },
       {
         q: '¿Cómo se desplaza quien captura?',
-        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, ${pct(vShare)} corresponde a velocidades de vehículo motorizado (inferencia por velocidad poco fiable: tramos de ~2 s). La actividad se concentra a mediodía y primera tarde, con pico a las ${hh(S.peak_trip_hour)}:00 h (hora local); casi no hay capturas nocturnas.`,
+        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, ${pct(vShare)} corresponde a velocidades de vehículo motorizado (inferencia por velocidad poco fiable: tramos de ~${fmt1(med)} s de mediana). El inicio de las trayectorias tiene su pico a las ${hh(S.peak_trip_hour)}:00 h (hora local; ${pct(peakShare)} del total) y el ${pct(nightShare)} empieza entre las 22:00 y las 06:00.`,
         hint: 'Mueve el reloj de 24 h o pulsa Reproducir. Cada trayectoria se desvanece tras pasar.',
         apply: go('trips'),
       },
@@ -794,7 +828,7 @@
   let insPanes = null, insView = null, insTips = [];
   function ensureInsights() {
     if (insPanes) return;
-    insView = Object.assign(baseView(), { zoom: 11.6 });
+    insView = Object.assign(baseView(), { zoom: Z0() - 1.0 });
     insPanes = BANDS.map((b, i) => {
       const host = $('ins-map-' + i);
       const tip = document.createElement('div'); tip.className = 'pane-tip'; tip.hidden = true; host.appendChild(tip); insTips[i] = tip;

@@ -23,6 +23,19 @@ Mapillary reúne fotografías de calle aportadas por voluntarios y detecta en el
 
 ## La aplicación
 
+La aplicación tiene **dos pestañas de ciudad**, con el selector **«Praga | Miraflores»** junto a «Página del proyecto» (Praga por defecto; también `index.html#city=miraflores`). Miraflores (Lima, Perú) es un segundo caso con el **mismo diseño, filtros y vistas**; el paper, el póster, la presentación y los videos se centran en Praga. Cambiar de pestaña recarga la aplicación con los datos de esa ciudad.
+
+| | Praga | Miraflores (Lima) |
+|---|---|---|
+| Zona | oeste de Praga, ~4,6 × 8,9 km (2 de 5 lotes) | distrito completo, ~5,4 × 5,0 km (lon -77,060 a -77,010; lat -12,145 a -12,100) |
+| Detecciones de objetos | 39.564 (277 clases, 1.096 secuencias) | 33.426 (162 clases, 2.574 secuencias) |
+| Trayectorias reconstruidas | 6.379 (≈ 1.331 km) | 5.737 (≈ 1.155 km) |
+| Imágenes en la zona | 76.225 | 18.764 |
+| Periodo | 2014–2026 | 2016–2026 (2016, 2022 y 2024 concentran el 96 % de las detecciones) |
+| Zona horaria de las horas | Europe/Prague | America/Lima |
+| Acceso a la API | 20 y 21 de octubre de 2026 | 16 de noviembre de 2026 |
+
+
 Cuatro vistas, un mismo conjunto de filtros:
 
 - **Objetos:** puntos coloreados por categoría (paleta Okabe-Ito); clic para activar o desactivar, doble clic para dejar solo esa categoría, y el resto en gris.
@@ -45,7 +58,7 @@ python -m http.server 8000
 
 No abras `index.html` con doble clic: el navegador bloquea la carga de los JSON desde `file://`.
 
-**Regenerar los datos** (opcional; los datos procesados ya están en `deliveries/week15/app/data/`):
+**Regenerar los datos** (opcional; los datos procesados ya están en `deliveries/week15/app/data/<ciudad>/`). El pipeline está en `deliveries/week15/pipeline/` y se parametriza con `--city praga|miraflores` (ver `cities.py`):
 
 ```bash
 python -m venv venv
@@ -53,13 +66,14 @@ source venv/bin/activate         # Windows: .\venv\Scripts\activate
 pip install -r requirements.txt
 
 export MAPILLARY_TOKEN="..."     # PowerShell: $env:MAPILLARY_TOKEN = "..."
-cd deliveries/week12/code        # los scripts usan rutas relativas
-python 01_extract_features.py && python 02_extract_images.py
-python 03_clean_features.py && python 04_match_trips.py
-python 05_build_processed_data.py
+cd deliveries/week15/pipeline    # los scripts usan rutas relativas a deliveries/week15
+CITY=miraflores                  # o praga
+python 01_extract_features.py --city $CITY && python 02_extract_images.py --city $CITY
+python 03_clean_features.py --city $CITY && python 04_match_trips.py --city $CITY
+python 05_build_processed_data.py --city $CITY
 ```
 
-Sin token puede ejecutarse solo `05`, que parte de los intermedios versionados en `deliveries/week12/data/interim/`. El token (*Client Access Token*) se obtiene en el [dashboard de desarrolladores de Mapillary](https://www.mapillary.com/dashboard/developers); **nunca lo escribas en el código**. Las descargas crudas (~650 MB) no se versionan.
+Sin token puede ejecutarse solo `05`, que parte de los intermedios versionados en `deliveries/week15/data/<ciudad>/interim/`. El token (*Client Access Token*) se obtiene en el [dashboard de desarrolladores de Mapillary](https://www.mapillary.com/dashboard/developers); **nunca lo escribas en el código**. Las descargas crudas (~650 MB por ciudad) no se versionan. Descargar Miraflores tarda unos 20 minutos (detecciones) y la reconstrucción de trayectorias unos 3 minutos.
 
 **Regenerar el paper, el póster y la presentación** (PDF a partir de las fuentes HTML):
 
@@ -76,8 +90,8 @@ python build_pdfs.py             # requiere Chrome, Edge o Chromium (variable op
 
 ## Datos
 
-- **Fuente:** [Mapillary API v4](https://www.mapillary.com/developer/api-documentation) (`map_features`, `images`), CC BY-SA. Acceso: 20 y 21 de octubre de 2026.
-- **Procesados:** [`deliveries/week15/data/processed/`](deliveries/week15/data/processed/) y diccionario en [`data_dictionary.csv`](deliveries/week15/data/data_dictionary.csv).
+- **Fuente:** [Mapillary API v4](https://www.mapillary.com/developer/api-documentation) (`map_features`, `images`), CC BY-SA. Acceso: 20 y 21 de octubre de 2026 (Praga) y 16 de noviembre de 2026 (Miraflores).
+- **Procesados:** [`deliveries/week15/data/praga/processed/`](deliveries/week15/data/praga/processed/) y [`deliveries/week15/data/miraflores/processed/`](deliveries/week15/data/miraflores/processed/); diccionario en [`data_dictionary.csv`](deliveries/week15/data/data_dictionary.csv). Las horas están en la zona horaria de cada ciudad.
 - **Privacidad:** no se publican nombres de contribuyentes ni miniaturas de imágenes; los dispositivos se agregan por fabricante.
 
 ## Limitaciones conocidas
@@ -88,7 +102,8 @@ python build_pdfs.py             # requiere Chrome, Edge o Chromium (variable op
 4. El reloj de 24 h superpone todas las fechas: muestra un ciclo diario, no un día concreto.
 5. El 3D no incluye edificios: la altura solo codifica el valor.
 6. Se usa el perfil de automóvil de OSRM para todos los modos.
-7. Hay 4 detecciones con fecha de 2006 (inconsistentes) excluidas de la aplicación.
+7. Hay 4 detecciones con fecha de 2006 (inconsistentes) excluidas de la aplicación (Praga).
+8. **Miraflores:** una sola descarga del distrito; los tramos de trayectoria duran 2,8 s de mediana y el 14 % de las velocidades supera los 80 km/h, así que el modo de transporte (55 % «vehículo») también es una inferencia débil. Tres años concentran el 96 % de las detecciones y la mayor parte de la captura ocurre entre las 07:00 y las 18:00. Los datos viejos de `dust/` (2.186 detecciones sin secuencia) no se usan.
 
 ## Contribution statement
 
@@ -120,10 +135,12 @@ Se utilizaron herramientas de IA para asistir el desarrollo del código y la red
 │   ├── week04/  week05/  week06/  week07/  week10/
 │   ├── week12/                   # borrador refinado y crítica de pares (app, pipeline 01–05, datos)
 │   └── week15/                   # entrega final
-│       ├── app/                  # aplicación final + página del proyecto (se publica en GitHub Pages)
-│       ├── paper/  presentation/  poster/  videos/
+│       ├── app/                  # aplicación final (Praga y Miraflores) + página del proyecto (GitHub Pages)
+│       │   └── data/{praga,miraflores}/   # JSON compactos de cada ciudad
+│       ├── pipeline/             # extracción → limpieza → trayectorias → datos (--city)
+│       ├── paper/  presentation/  poster/  videos/   # solo Praga
 │       ├── code/build_pdfs.py    # QR y PDFs
-│       ├── data/                 # datos procesados y diccionario
+│       ├── data/{praga,miraflores}/  # interim, processed (raw no se versiona) y diccionario
 │       └── FinalPaper.pdf · FinalPoster.pdf · PresentationFinal.pdf
 ├── .github/workflows/pages.yml   # despliegue en GitHub Pages
 └── dust/                         # material descartado y legado (ignorado por git)

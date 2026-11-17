@@ -1,0 +1,218 @@
+{
+  "city": {
+    "id": "miraflores",
+    "name": "Miraflores",
+    "place": "distrito de Miraflores, Lima",
+    "tz": "America/Lima",
+    "view_zoom": 13.0
+  },
+  "trip_quality": {
+    "median_duration_s": 2.8,
+    "share_over_80kmh": 0.145
+  },
+  "cell_deg": [
+    0.000852,
+    0.0009
+  ],
+  "n_excluded_dates": 0,
+  "area": {
+    "lon": [
+      -77.060005,
+      -77.00999
+    ],
+    "lat": [
+      -12.144997,
+      -12.099977
+    ],
+    "center": [
+      -77.035,
+      -12.1225
+    ],
+    "width_km": 5.4,
+    "height_km": 5.0
+  },
+  "generated_at": "2026-11-17",
+  "n_detections": 33426,
+  "n_sequences_detections": 2574,
+  "n_trips": 5737,
+  "n_images": 18764,
+  "n_distinct_values": 162,
+  "year_range": [
+    2016,
+    2026
+  ],
+  "detections_by_year": {
+    "2016": 6317,
+    "2017": 176,
+    "2018": 6,
+    "2019": 44,
+    "2022": 10836,
+    "2023": 422,
+    "2024": 14978,
+    "2025": 449,
+    "2026": 198
+  },
+  "trips_by_year": {
+    "2016": 1234,
+    "2017": 25,
+    "2019": 4,
+    "2022": 1758,
+    "2023": 73,
+    "2024": 2513,
+    "2025": 92,
+    "2026": 38
+  },
+  "trips_by_mode": {
+    "vehicle": 3183,
+    "walk": 714,
+    "micro": 1840
+  },
+  "trips_by_hour": {
+    "0": 0,
+    "1": 6,
+    "2": 0,
+    "3": 15,
+    "4": 26,
+    "5": 49,
+    "6": 4,
+    "7": 390,
+    "8": 690,
+    "9": 546,
+    "10": 653,
+    "11": 543,
+    "12": 300,
+    "13": 433,
+    "14": 349,
+    "15": 575,
+    "16": 707,
+    "17": 341,
+    "18": 75,
+    "19": 15,
+    "20": 18,
+    "21": 0,
+    "22": 2,
+    "23": 0
+  },
+  "images_by_year": {
+    "2016": 3516,
+    "2017": 224,
+    "2018": 12,
+    "2019": 197,
+    "2022": 4962,
+    "2023": 251,
+    "2024": 8662,
+    "2025": 750,
+    "2026": 190
+  },
+  "device_makes_top": [
+    [
+      "Desconocido",
+      12372
+    ],
+    [
+      "Garmin",
+      3660
+    ],
+    [
+      "Gopro",
+      1277
+    ],
+    [
+      "Apple",
+      541
+    ],
+    [
+      "Samsung",
+      483
+    ],
+    [
+      "Xiaomi",
+      368
+    ],
+    [
+      "Motorola",
+      57
+    ],
+    [
+      "Crosscall",
+      6
+    ]
+  ],
+  "top_values": [
+    {
+      "value": "object--support--utility-pole",
+      "count": 7257,
+      "category": "lighting"
+    },
+    {
+      "value": "object--street-light",
+      "count": 5281,
+      "category": "lighting"
+    },
+    {
+      "value": "object--sign--advertisement",
+      "count": 2356,
+      "category": "commerce"
+    },
+    {
+      "value": "object--sign--store",
+      "count": 2149,
+      "category": "commerce"
+    },
+    {
+      "value": "object--traffic-sign--front",
+      "count": 2098,
+      "category": "signage"
+    },
+    {
+      "value": "object--support--pole",
+      "count": 1796,
+      "category": "lighting"
+    },
+    {
+      "value": "marking--discrete--crosswalk-zebra",
+      "count": 1191,
+      "category": "marking"
+    },
+    {
+      "value": "object--traffic-sign--direction-front",
+      "count": 1025,
+      "category": "signage"
+    },
+    {
+      "value": "construction--flat--driveway",
+      "count": 1000,
+      "category": "utilities"
+    },
+    {
+      "value": "object--manhole",
+      "count": 809,
+      "category": "utilities"
+    }
+  ],
+  "categories": {
+    "signage": 5205,
+    "lighting": 14393,
+    "commerce": 4786,
+    "marking": 3865,
+    "furniture": 1177,
+    "utilities": 2202,
+    "traffic_light": 823,
+    "other": 975
+  },
+  "concentration": {
+    "occupied_cells_100m": 1428,
+    "top10pct_cells_share": 0.407
+  },
+  "trip_concentration": {
+    "occupied_cells_100m": 1181,
+    "top10pct_cells_share": 0.462,
+    "km_total": 1155.4
+  },
+  "peak_trip_hour": 16,
+  "source_split": {
+    "trafficsign": 1514,
+    "mvd_fast": 6871,
+    "panoptic": 25041
+  }
+}

@@ -16,9 +16,13 @@ Praga a pie de calle: visualización interactiva de capturas colaborativas de Ma
 | **Póster en PDF, con QR** (§5.5) | [`FinalPoster.pdf`](FinalPoster.pdf) · fuente: [`poster/poster.html`](poster/poster.html) · QR: [`poster/qr.svg`](poster/qr.svg) |
 | **Página del proyecto** (§5.6) | <https://jeffhq.github.io/NewMapillaryVisualization/project.html> · fuente: [`app/project.html`](app/project.html) |
 | **Presentación final** (§4.7) `PresentationFinal.pdf` | [`PresentationFinal.pdf`](PresentationFinal.pdf) · fuente: [`presentation/PresentationFinal.html`](presentation/PresentationFinal.html) |
-| **Paquete de datos final** | [`data/processed/`](data/processed/) · [`data/data_dictionary.csv`](data/data_dictionary.csv) · [`app/data/`](app/data/) |
-| **Código completo** | [`app/`](app/) (visualización) · [`../week12/code/`](../week12/code/) (pipeline 01–05) · [`code/build_pdfs.py`](code/build_pdfs.py) (documentos) |
+| **Paquete de datos final** | [`data/praga/processed/`](data/praga/processed/) · [`data/miraflores/processed/`](data/miraflores/processed/) · [`data/data_dictionary.csv`](data/data_dictionary.csv) · [`app/data/`](app/data/) |
+| **Código completo** | [`app/`](app/) (visualización) · [`pipeline/`](pipeline/) (pipeline 01–05 por ciudad) · [`code/build_pdfs.py`](code/build_pdfs.py) (documentos) |
 | **README final** (§5.7) | [`../../README.md`](../../README.md) |
+
+## Ciudades
+
+La aplicación incluye dos pestañas con el **mismo diseño y filtros**: **Praga** (por defecto) y **Miraflores (Lima)**, con el selector junto a «Página del proyecto». El paper, el póster, la presentación y los videos tratan solo Praga. Datos de cada ciudad: `app/data/<ciudad>/` (aplicación) y `data/<ciudad>/{interim,processed}/` (análisis). Las descargas crudas (`data/<ciudad>/raw/`) no se versionan; se regeneran con `pipeline/`.
 
 ## Estructura
 
@@ -30,7 +34,8 @@ week15/
 ├── poster/                 fuente del póster, capturas y QR
 ├── videos/VideoScripts.md  guiones del teaser y del video de presentación
 ├── code/build_pdfs.py      genera el QR y los tres PDF
-├── data/                   datos procesados (CSV) y diccionario de datos
+├── pipeline/               extracción, limpieza, trayectorias y datos procesados por ciudad (--city)
+├── data/                   <ciudad>/{interim,processed} (CSV) y diccionario de datos
 └── FinalPaper.pdf · FinalPoster.pdf · PresentationFinal.pdf
 ```
 
@@ -47,7 +52,7 @@ pip install -r ../../requirements.txt
 cd ../code && python build_pdfs.py
 ```
 
-El pipeline de datos (extracción, limpieza, trayectorias y tablas procesadas) está en [`../week12/code/`](../week12/code/); ver el README principal.
+El pipeline de datos (extracción, limpieza, trayectorias y tablas procesadas) está en [`pipeline/`](pipeline/) y se ejecuta por ciudad con `--city praga|miraflores`; ver el README principal.
 
 ## Despliegue
 

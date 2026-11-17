@@ -13,3 +13,6 @@ deliveries/*/data/raw/
 # Configuración local de asistentes de código
 CLAUDE.md
 .claude/
+
+# Descargas crudas por ciudad (deliveries/weekNN/data/<ciudad>/raw)
+deliveries/*/data/*/raw/

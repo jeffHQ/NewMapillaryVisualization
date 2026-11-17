@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Praga a pie de calle · Mapillary</title>
-  <meta name="description" content="Exploración interactiva de 39 mil objetos urbanos y 6 mil trayectorias de captura de Mapillary en el oeste de Praga.">
+  <meta name="description" content="Exploración interactiva de objetos urbanos y trayectorias de captura de Mapillary en Praga y en Miraflores (Lima).">
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
   <link rel="stylesheet" href="css/style.css?v=__VER__">
   <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
@@ -19,6 +19,10 @@
     <p class="tagline">¿Cómo se captura la ciudad y qué muestran las imágenes colaborativas de Mapillary?</p>
   </div>
   <nav aria-label="Navegación del proyecto">
+    <div id="city-switch" class="seg city-switch" role="group" aria-label="Ciudad">
+      <button type="button" data-city="praga" aria-pressed="true" title="Oeste de Praga (República Checa)">Praga</button>
+      <button type="button" data-city="miraflores" aria-pressed="false" title="Distrito de Miraflores (Lima, Perú)">Miraflores</button>
+    </div>
     <a href="project.html">Página del proyecto</a>
   </nav>
 </header>
@@ -57,14 +61,14 @@
     <!-- 4. Datos y límites (plegado) -->
     <details class="card about">
       <summary>Datos y límites</summary>
-      <p>Fuente: <a href="https://www.mapillary.com/developer/api-documentation" target="_blank" rel="noopener">Mapillary API v4</a> (CC BY-SA). Zona cubierta: lon 14.350–14.415, lat 50.050–50.130 (~4,6 × 8,9 km, oeste de Praga).</p>
+      <p>Fuente: <a href="https://www.mapillary.com/developer/api-documentation" target="_blank" rel="noopener">Mapillary API v4</a> (CC BY-SA). Zona cubierta: <span id="about-area"></span>.</p>
       <ul class="notes">
         <li>Los objetos provienen de <code>map_features</code>: detecciones automáticas, no un censo.</li>
-        <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de esas detecciones y se ajustan a la red vial (OSRM, perfil de automóvil). El modo se infiere solo por la velocidad media (&lt;7, 7–25, &gt;25&nbsp;km/h) y es poco fiable: los tramos duran ~2&nbsp;s de mediana y el 25&nbsp;% supera los 80&nbsp;km/h.</li>
+        <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de esas detecciones y se ajustan a la red vial (OSRM, perfil de automóvil). El modo se infiere solo por la velocidad media (&lt;7, 7–25, &gt;25&nbsp;km/h) y es poco fiable: <span id="about-quality"></span>.</li>
         <li>La densidad 3D mide recorrido reconstruido (muestras cada ~40&nbsp;m de trayectoria), no puntos de detección. No hay datos de edificios: la altura solo codifica el valor.</li>
-        <li>El reloj de 24&nbsp;h superpone trayectorias de todas las fechas (2014–2026) según la hora del día en que se capturaron: muestra el ciclo diario, no un día concreto.</li>
+        <li>El reloj de 24&nbsp;h superpone trayectorias de todas las fechas (<span id="about-years"></span>) según la hora del día en que se capturaron: muestra el ciclo diario, no un día concreto.</li>
         <li>La cobertura depende de quién captura: una campaña concentrada puede dominar un año entero.</li>
-        <li>4 detecciones con fecha de 2006 se omiten de la app por inconsistencia de fecha.</li>
+        <li id="about-excl" hidden></li>
       </ul>
     </details>
   </aside>
@@ -172,7 +176,7 @@
                aria-label="Serie mensual. Arrastra para elegir un periodo; flechas para mover, Mayús más flechas para cambiar el final, Escape para restablecer."></svg>
         </div>
         <div class="series series-hour">
-          <div class="series-head"><h3>Hora del día <span class="muted">(Praga)</span></h3><span id="hour-range" class="readout"></span></div>
+          <div class="series-head"><h3>Hora del día <span class="muted" id="tz-label">(Praga)</span></h3><span id="hour-range" class="readout"></span></div>
           <svg id="chart-hour" class="chart" tabindex="0" role="group"
                aria-label="Serie por hora. Arrastra para elegir un rango de horas; flechas para mover, Escape para restablecer."></svg>
         </div>

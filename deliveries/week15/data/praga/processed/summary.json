@@ -1,4 +1,20 @@
 {
+  "city": {
+    "id": "praga",
+    "name": "Praga",
+    "place": "oeste de Praga",
+    "tz": "Europe/Prague",
+    "view_zoom": 12.6
+  },
+  "trip_quality": {
+    "median_duration_s": 2.1,
+    "share_over_80kmh": 0.251
+  },
+  "cell_deg": [
+    0.0013,
+    0.0009
+  ],
+  "n_excluded_dates": 4,
   "area": {
     "lon": [
       14.349994,
@@ -15,7 +31,7 @@
     "width_km": 4.6,
     "height_km": 8.9
   },
-  "generated_at": "2026-11-02",
+  "generated_at": "2026-11-17",
   "n_detections": 39564,
   "n_sequences_detections": 1096,
   "n_trips": 6379,
