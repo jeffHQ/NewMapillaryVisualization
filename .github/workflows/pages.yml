@@ -1,4 +1,4 @@
-# Publica la aplicación final (deliveries/week15/app) en GitHub Pages en cada push a main.
+# Publica la aplicación final (deliveries/week15/app) en GitHub Pages en cada push a main, versionando CSS y JS.
 # Requiere: Settings → Pages → Source: "GitHub Actions".
 name: Deploy app to GitHub Pages
 on:
