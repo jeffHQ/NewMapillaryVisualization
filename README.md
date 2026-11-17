@@ -22,7 +22,7 @@ python -m http.server 8000
 # abrir http://localhost:8000
 ```
 
-Requiere conexión a internet (deck.gl, MapLibre y el mapa base se cargan por CDN). Tiene tres capas —**Objetos**, **Densidad 3D** y **Trayectorias**—, series de tiempo enlazadas por mes y hora, una leyenda que funciona como filtro y un **recorrido guiado** de seis preguntas.
+Requiere conexión a internet (deck.gl, MapLibre y el mapa base se cargan por CDN). Tiene cuatro vistas —**Objetos**, **Densidad 3D**, **Trayectorias** e **Insights** (tres mapas de calor del recorrido: mañana, tarde y noche)—, series de tiempo enlazadas por mes y hora en una barra inferior, una leyenda que funciona como filtro y un **recorrido guiado** de siete pasos.
 
 ## Estructura del repositorio
 

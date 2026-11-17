@@ -54,6 +54,17 @@
   const monthLabel = (ti) => `${MES[ti % 12]} ${YEAR0 + Math.floor(ti / 12)}`;
   const hh = (h) => String(h).padStart(2, '0');
 
+  const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+  // Franjas del día para los mapas de insights (minutos desde 00:00, hora local de Praga)
+  const BANDS = [
+    { id: 'morning', label: 'Mañana', range: '04:00–10:59', lo: 240, hi: 660 },
+    { id: 'afternoon', label: 'Tarde', range: '11:00–17:59', lo: 660, hi: 1080 },
+    { id: 'night', label: 'Noche', range: '18:00–23:59', lo: 1080, hi: 1440 },
+  ];
+  const HEAT_RAMP = ['#c7d2e3', '#9db0cc', '#7189b0', '#4f6592', '#344a78', '#1f2d4d'];
+  // Ventana de hora de inicio elegida en la serie por hora, en minutos desde 00:00
+  const startWindow = () => [state.hours[0] * 60, Math.min(1440, (state.hours[1] + 1) * 60)];
+  const hhmm = (m) => `${hh(Math.floor(m / 60) % 24)}:${hh(Math.floor(m % 60))}`;
   const SAMPLE_KM = 0.04;      // cada muestra de trayectoria ≈ 40 m (ver code/05_build_processed_data.py)
   const DAY_SPAN = 10, DAY_TRAIL = 25;  // minutos de reloj: duración visual de un viaje y su estela
   const TRAIL = 18, CLOCK_MAX = 60;
@@ -66,6 +77,7 @@
     cats: new Set(),
     modes: new Set(MODES.map((m) => m.id)),
     gray: true,                   // categorías no elegidas en gris en vez de ocultas
+    scale: 'sqrt',                // escala vertical de la serie mensual: linear | sqrt | log
   };
   let F, T, S, TIME_N = 0;
   let clockMode = 'day', dayMin = 0, time = 0, playing = true, speed = 4, lastTs = null, lastClock = 0;
@@ -113,7 +125,7 @@
   function tripsFiltered(skip) {
     return T.filter((t) =>
       (skip === 'time' || inR(t.ti, state.time)) &&
-      (skip === 'hour' || inR(t.h, state.hours)) &&
+      (skip === 'hour' || state.layer === 'insights' || inR(t.h, state.hours)) &&
       state.modes.has(t.m));
   }
   const getTrips = () => (cache.trips || (cache.trips = tripsFiltered()));
@@ -130,7 +142,7 @@
     deckgl = new deck.DeckGL({
       container: 'map',
       map: maplibregl,
-      mapStyle: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+      mapStyle: MAP_STYLE,
       initialViewState: baseView(),
       controller: true,
       onHover,
@@ -144,6 +156,10 @@
     syncPlayButton();
     const h = new URLSearchParams(location.hash.slice(1));   // enlaces directos: #step=3
     goStep(h.has('step') ? +h.get('step') - 1 : 0);
+    if (h.has('hours')) {                                      // enlaces directos: #step=5&hours=11-17
+      const [a, b] = h.get('hours').split('-').map(Number);
+      if (a >= 0 && b <= 23 && a <= b) { state.hours = [a, b]; render(); }
+    }
     requestAnimationFrame(tick);
   }
 
@@ -191,7 +207,7 @@
 
   function render() {
     cache = {};
-    deckgl.setProps({ layers: layers() });
+    if (state.layer === 'insights') renderInsights(); else deckgl.setProps({ layers: layers() });
     updateCharts();
     updateSummary();
     syncLegend();
@@ -214,11 +230,19 @@
       const on = day ? (dayMin >= d.t && dayMin <= d.t + DAY_SPAN + DAY_TRAIL) : (time <= d.d + TRAIL);
       if (on) { active++; hours.set(d.h, (hours.get(d.h) || 0) + 1); }
     }
+    const [wlo, whi] = startWindow();
+    const filtered = state.hours[0] > 0 || state.hours[1] < 23;
+    $('clock-window-row').hidden = !day;
+    $('clock-clear-hours').hidden = !day || !filtered;
     if (day) {
-      $('clock-display').textContent = `${hh(Math.floor(dayMin / 60) % 24)}:${hh(Math.floor(dayMin % 60))}`;
+      if (dayMin < wlo || dayMin > whi + DAY_SPAN + DAY_TRAIL) dayMin = wlo;     // si cambió el filtro, vuelve al inicio de la ventana
+      $('clock-display').textContent = hhmm(dayMin);
       $('clock-fill').style.width = (dayMin / 1440 * 100) + '%';
-      $('clock-scrub').value = Math.floor(dayMin);
+      const w = $('clock-win'); w.style.left = (wlo / 1440 * 100) + '%'; w.style.width = ((whi - wlo) / 1440 * 100) + '%';
+      $('clock-window').textContent = filtered ? `${hh(state.hours[0])}:00 – ${hh(state.hours[1])}:59` : 'Todo el día';
+      const sc = $('clock-scrub'); sc.min = wlo; sc.max = Math.min(1439, whi); sc.value = Math.floor(dayMin);
     } else {
+      $('clock-win').style.width = '0';
       const t = Math.min(time, CLOCK_MAX);
       $('clock-display').textContent = t.toFixed(1).replace('.', ',') + ' s';
       $('clock-fill').style.width = (t / CLOCK_MAX * 100) + '%';
@@ -237,9 +261,9 @@
     $('clock-title').textContent = day ? 'Reloj diario (24 h, hora de Praga)' : 'Reloj relativo de la animación';
     $('clock-hour-row').hidden = day;
     const sc = $('clock-scrub');
-    sc.max = day ? 1439 : CLOCK_MAX; sc.step = day ? 1 : 0.1;
+    sc.min = 0; sc.max = day ? 1439 : CLOCK_MAX; sc.step = day ? 1 : 0.1;
     $('clock-note').textContent = day
-      ? 'Cada trayectoria aparece a la hora real del día en que se capturó y se desvanece; se superponen todas las fechas.'
+      ? 'Cada trayectoria aparece a su hora real de inicio y se desvanece; se superponen todas las fechas. Filtra la hora de inicio con la serie por hora (abajo): el reloj recorre solo esa ventana.'
       : 'Las trayectorias de todas las fechas se reproducen a la vez sobre 60 s relativos.';
     updateClock();
     if (isTrips()) deckgl.setProps({ layers: layers() });
@@ -249,7 +273,10 @@
     if (isTrips() && playing) {
       if (lastTs != null) {
         const dt = (ts - lastTs) / 1000;
-        if (clockMode === 'day') dayMin = (dayMin + dt * speed * 7.5) % (1440 + DAY_SPAN + DAY_TRAIL);   // 1× ≈ 30 min/s
+        if (clockMode === 'day') {                  // 1× ≈ 30 min/s, solo dentro de la ventana de hora de inicio
+          const [lo, hi] = startWindow();
+          dayMin = lo + ((dayMin - lo + dt * speed * 7.5) % (hi - lo + DAY_SPAN + DAY_TRAIL));
+        }
         else time = (time + dt * speed) % 75;
       }
       deckgl.setProps({ layers: layers() });
@@ -278,7 +305,7 @@
       html = `<b>≈ ${fmt1.format(n * SAMPLE_KM)} km</b> de recorrido<br>en esta celda (~180 m)<br><span class="muted">${fmt(n)} muestras de trayectoria</span>`;
     } else {
       const d = info.object, m = MODES.find((x) => x.id === d.m);
-      html = `<b>${m.label.split(' (')[0]}</b><br>${fmt1.format(d.s)} km/h · ${MES[d.o - 1]} ${d.y}<br>inicia ${hh(d.h)}:00 h`;
+      html = `<b>${m.label.split(' (')[0]}</b><br>${fmt1.format(d.s)} km/h · ${MES[d.o - 1]} ${d.y}<br>inicia ${hhmm(d.t)} h`;
     }
     tip.innerHTML = html;
     tip.style.left = Math.min(info.x + 14, tip.parentElement.clientWidth - 250) + 'px';
@@ -303,6 +330,12 @@
           <button type="button" class="btn small" data-preset="top3">Las 3 mayores</button>
           <button type="button" class="btn small" data-preset="none">Ninguna</button></div>
         <label class="opt"><input type="checkbox" id="opt-gray" checked> Mostrar el resto en gris</label></div>`;
+    } else if (state.layer === 'insights') {
+      el.innerHTML = `<div class="group"><h4>Recorrido por franja horaria</h4>
+        <div class="ramp" style="background:linear-gradient(90deg,${HEAT_RAMP.join(',')})"></div>
+        <div class="ramp-labels"><span>menos</span><span>más</span></div>
+        <div class="hint">Mapa de calor del recorrido reconstruido (muestras cada ~40 m). Cada franja se normaliza por separado: el color compara zonas dentro de la franja; el peso de cada franja está en su encabezado. De 00:00 a 04:00 no se muestra.</div></div>
+        <div class="group"><h4>Modo de desplazamiento (inferido)</h4>${modeRows()}</div>`;
     } else if (state.layer === 'density') {
       el.innerHTML = `<div class="group"><h4>Recorrido reconstruido por celda</h4>
         <div class="ramp" style="background:linear-gradient(90deg,${DENSITY_RAMP.join(',')})"></div>
@@ -350,8 +383,25 @@
     document.querySelectorAll('.layer-switch button').forEach((b) =>
       b.addEventListener('click', () => setLayer(b.dataset.layer)));
     bindLegend();
+    window.addEventListener('resize', () => { if (charts['chart-time']) updateCharts(); });
     $('reset').onclick = () => { resetFilters(); render(); };
     $('play').onclick = () => { playing = !playing; syncPlayButton(); };
+    document.querySelectorAll('[data-scale]').forEach((b) => b.addEventListener('click', () => {
+      state.scale = b.dataset.scale;
+      document.querySelectorAll('[data-scale]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      updateCharts();
+    }));
+    $('t-all').onclick = () => { stopSweep(); state.time = [0, TIME_N - 1]; render(); };
+    $('t-last12').onclick = () => { stopSweep(); state.time = [Math.max(0, TIME_N - 12), TIME_N - 1]; render(); };
+    $('t-peak').onclick = () => {
+      stopSweep();
+      const cs = charts['chart-time'].counts, byYear = new Map();
+      cs.forEach((v, i) => byYear.set(Math.floor(i / 12), (byYear.get(Math.floor(i / 12)) || 0) + v));
+      const y = [...byYear.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      state.time = [y * 12, Math.min(TIME_N - 1, y * 12 + 11)]; render();
+    };
+    $('t-play').onclick = () => (sweepTimer ? stopSweep() : startSweep());
+    $('clock-clear-hours').onclick = () => { state.hours = [0, 23]; render(); };
     $('speed').onchange = (e) => { speed = +e.target.value; };
     document.querySelectorAll('[data-clock]').forEach((b) => b.addEventListener('click', () => setClockMode(b.dataset.clock)));
     $('clock-scrub').addEventListener('input', (e) => {
@@ -369,6 +419,7 @@
   }
 
   function resetFilters() {
+    stopSweep();
     state.time = [0, TIME_N - 1];
     state.hours = [0, 23];
     state.cats = new Set(F.catIds.map((_, i) => i));
@@ -381,9 +432,14 @@
     document.querySelectorAll('.layer-switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.layer === layer)));
     $('clock').hidden = !isTrips();
     $('top-card').hidden = usesTrips();
+    const ins = layer === 'insights';
+    $('insights').hidden = !ins;
+    $('map').style.visibility = ins ? 'hidden' : 'visible';    // se oculta sin quitarlo del layout (conserva su tamaño)
+    $('chart-hour').setAttribute('aria-disabled', String(ins));
+    if (ins) state.hours = [0, 23];                            // las franjas ya dividen el día
     buildLegend();
     if (isTrips()) setClockMode(clockMode);
-    if (!opts.keepView) {
+    if (!opts.keepView && !ins) {
       flyTo(layer === 'density' ? { pitch: 50, bearing: -15, zoom: 12.2 } : layer === 'trips' ? { zoom: 12.9, pitch: 30 } : {});
     }
     render();
@@ -391,29 +447,52 @@
 
   // ---------------------------------------------------------------- series de tiempo (barras + selección por arrastre)
   const charts = {};
-  function makeSeries(svgId, n, getRange, setRange, labelsFn) {
+  let sweepTimer = null;
+  const SCALES = { linear: (v) => v, sqrt: Math.sqrt, log: (v) => Math.log1p(v) };
+  const SCALE_NAME = { linear: 'lineal', sqrt: 'raíz', log: 'log' };
+  const HOUR_BANDS = [[0, 3], [4, 10], [11, 17], [18, 23]];     // franjas del eje de horas (mañana 4–10, tarde 11–17, noche 18–23)
+  function makeSeries(svgId, n, getRange, setRange, labelsFn, opts = {}) {
     const svg = $(svgId);
-    const W = 360, H = 104, padB = 18, padT = 12;
+    const W = 360, H = 92, padB = 18, padT = 12;      // se re-miden al dibujar (drawSeries)
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    const bw = W / n;
-    const c = { svg, n, W, H, padB, padT, bw, getRange, labelsFn };
+    const c = { svg, n, W, H, padB, padT, bw: W / n, getRange, labelsFn, useScale: !!opts.useScale, counts: [] };
+    // tooltip y guía al pasar el cursor
+    const host = svg.parentElement;
+    const tip = document.createElement('div'); tip.className = 'chart-tip'; tip.hidden = true; host.appendChild(tip);
+    const guide = document.createElement('div'); guide.className = 'chart-guide'; guide.hidden = true; host.appendChild(guide);
+    const hideHover = () => { tip.hidden = true; guide.hidden = true; };
     const full = () => { const r = getRange(); return r[0] === 0 && r[1] === n - 1; };
     const idxOf = (ev) => {
       const r = svg.getBoundingClientRect();
-      return Math.max(0, Math.min(n - 1, Math.floor(((ev.clientX - r.left) / r.width) * W / bw)));
+      return Math.max(0, Math.min(n - 1, Math.floor(((ev.clientX - r.left) / r.width) * c.W / c.bw)));
     };
-    const xOf = (ev) => { const r = svg.getBoundingClientRect(); return ((ev.clientX - r.left) / r.width) * W; };
+    const xOf = (ev) => { const r = svg.getBoundingClientRect(); return ((ev.clientX - r.left) / r.width) * c.W; };
     let drag = null;
     svg.addEventListener('pointerdown', (ev) => {
+      stopSweep();
+      hideHover();
       svg.setPointerCapture(ev.pointerId);
       const [r0, r1] = getRange(), x = xOf(ev), i = idxOf(ev), tol = 8;
-      if (!full() && Math.abs(x - r0 * bw) <= tol) drag = { mode: 'left' };
-      else if (!full() && Math.abs(x - (r1 + 1) * bw) <= tol) drag = { mode: 'right' };
+      const onAxis = ev.clientY - svg.getBoundingClientRect().top > c.H - c.padB;
+      if (onAxis && opts.axisSelect) { const r = opts.axisSelect(i); if (r) { drag = null; setRange(r); return; } }
+      if (!full() && Math.abs(x - r0 * c.bw) <= tol) drag = { mode: 'left' };
+      else if (!full() && Math.abs(x - (r1 + 1) * c.bw) <= tol) drag = { mode: 'right' };
       else if (!full() && i >= r0 && i <= r1) drag = { mode: 'move', grab: i, r0, r1 };
       else { drag = { mode: 'new', anchor: i }; setRange([i, i]); }
     });
     svg.addEventListener('pointermove', (ev) => {
-      if (!drag) return;
+      if (!drag) {
+        const i = idxOf(ev), v = c.counts[i];
+        if (v == null) return;
+        const x = i * c.bw + c.bw / 2;
+        tip.textContent = opts.tipFn ? opts.tipFn(i, v, c.total) : String(v);
+        tip.style.left = Math.max(50, Math.min(c.W - 50, x)) + svg.offsetLeft + 'px';
+        tip.style.top = svg.offsetTop + 14 + 'px';
+        guide.style.left = x + svg.offsetLeft + 'px'; guide.style.top = svg.offsetTop + c.padT + 'px';
+        guide.style.height = (c.H - c.padT - c.padB) + 'px';
+        tip.hidden = false; guide.hidden = false;
+        return;
+      }
       const i = idxOf(ev), [r0, r1] = getRange();
       if (drag.mode === 'left') setRange([Math.min(i, r1), r1]);
       else if (drag.mode === 'right') setRange([r0, Math.max(i, r0)]);
@@ -425,8 +504,10 @@
     });
     const end = () => { drag = null; };
     svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+    svg.addEventListener('pointerleave', hideHover);
     svg.addEventListener('dblclick', () => setRange([0, n - 1]));
     svg.addEventListener('keydown', (ev) => {
+      stopSweep();
       const [r0, r1] = getRange();
       const d = ev.key === 'ArrowRight' ? 1 : ev.key === 'ArrowLeft' ? -1 : 0;
       if (ev.key === 'Escape' || ev.key === 'Home') { setRange([0, n - 1]); ev.preventDefault(); }
@@ -436,11 +517,40 @@
     charts[svgId] = c;
   }
 
+  // Recorrido: desliza una ventana de meses por toda la serie (ancho = selección actual, o 12 meses)
+  function stopSweep() {
+    if (sweepTimer) { clearInterval(sweepTimer); sweepTimer = null; }
+    const b = $('t-play');
+    if (b) { b.setAttribute('aria-pressed', 'false'); b.textContent = '▶ Recorrer'; }
+  }
+  function startSweep() {
+    const full = state.time[0] === 0 && state.time[1] === TIME_N - 1;
+    const w = full ? 11 : state.time[1] - state.time[0];
+    let a = full ? 0 : state.time[0];
+    const step = () => {
+      state.time = [a, a + w];
+      render();
+      a = a + 1 + w > TIME_N - 1 ? 0 : a + 1;
+    };
+    step();
+    sweepTimer = setInterval(step, 450);
+    const b = $('t-play'); b.setAttribute('aria-pressed', 'true'); b.textContent = '⏸ Detener';
+  }
+
   function buildCharts() {
     makeSeries('chart-time', TIME_N, () => state.time, (r) => { state.time = r; render(); },
-      (i) => (i % 12 === 0 && (YEAR0 + i / 12) % 2 === 0 ? String(YEAR0 + i / 12) : null));
-    makeSeries('chart-hour', 24, () => state.hours, (r) => { state.hours = r; render(); },
-      (i) => (i % 3 === 0 ? String(i) : null));
+      (i) => (i % 12 === 0 && (YEAR0 + i / 12) % 2 === 0 ? String(YEAR0 + i / 12) : null),
+      {
+        useScale: true,
+        tipFn: (i, v, tot) => `${monthLabel(i)} · ${fmt(v)}${tot ? ' (' + pct(v / tot, 1) + ')' : ''}`,
+        axisSelect: (i) => { const a = Math.floor(i / 12) * 12; return [a, Math.min(TIME_N - 1, a + 11)]; },   // clic en el eje = año completo
+      });
+    makeSeries('chart-hour', 24, () => state.hours, (r) => { if (state.layer === 'insights') return; state.hours = r; render(); },
+      (i) => (i % 3 === 0 ? String(i) : null),
+      {
+        tipFn: (i, v, tot) => `${hh(i)}:00–${hh(i)}:59 · ${fmt(v)}${tot ? ' (' + pct(v / tot, 1) + ')' : ''}`,
+        axisSelect: (i) => HOUR_BANDS.find(([a, b]) => i >= a && i <= b),                                   // clic en el eje = franja del día
+      });
   }
 
   function countBy(n, values) {
@@ -450,12 +560,20 @@
   }
 
   function drawSeries(c, counts) {
+    const rect = c.svg.getBoundingClientRect();       // el SVG se dibuja a 1:1 con su tamaño real
+    if (rect.width > 0) {
+      c.W = rect.width; c.H = rect.height || c.H; c.bw = c.W / c.n;
+      c.svg.setAttribute('viewBox', `0 0 ${c.W} ${c.H}`);
+    }
     const range = c.getRange();
+    c.counts = counts; c.total = counts.reduce((a, b) => a + b, 0);
+    const f = c.useScale ? SCALES[state.scale] : (v) => v;
     const max = Math.max(1, ...counts);
+    const maxS = Math.max(1e-9, f(max));
     const plotH = c.H - c.padB - c.padT;
     let html = `<line class="axis" x1="0" x2="${c.W}" y1="${c.H - c.padB}" y2="${c.H - c.padB}"/>`;
     counts.forEach((v, i) => {
-      const h = (v / max) * plotH;
+      const h = (f(v) / maxS) * plotH;
       const on = i >= range[0] && i <= range[1];
       html += `<rect class="bar${on ? ' on' : ''}" x="${i * c.bw + 0.5}" y="${c.padT + plotH - h}" width="${Math.max(c.bw - 1, 0.8)}" height="${Math.max(h, v ? 1 : 0)}"></rect>`;
       const lab = c.labelsFn(i);
@@ -467,7 +585,14 @@
       html += `<rect class="brush" x="${x0}" y="${c.padT - 2}" width="${x1 - x0}" height="${c.H - c.padB - c.padT + 2}"></rect>`;
       [x0, x1].forEach((x) => { html += `<rect class="grip" x="${x - 2}" y="${c.padT + plotH / 2 - 9}" width="4" height="18" rx="2"></rect>`; });
     }
-    html += `<text x="2" y="9" text-anchor="start">máx ${fmt.format(max)}</text>`;
+    if (c.svg.id === 'chart-hour' && state.layer === 'insights') {
+      BANDS.forEach((b, i) => {
+        const x0 = (b.lo / 60) * c.bw, x1 = (b.hi / 60) * c.bw;
+        html += `<rect x="${x0}" y="${c.padT - 2}" width="${x1 - x0}" height="${c.H - c.padB - c.padT + 2}" fill="#0b5fb8" fill-opacity="${i === 1 ? 0.13 : 0.06}" stroke="#0b5fb8" stroke-opacity=".35"/>`;
+        html += `<text x="${(x0 + x1) / 2}" y="9" text-anchor="middle" style="font-size:10px;font-weight:600">${b.label}</text>`;
+      });
+    }
+    html += `<text x="2" y="9" text-anchor="start">máx ${fmt.format(max)}${c.useScale && state.scale !== 'linear' ? ' · escala ' + SCALE_NAME[state.scale] : ''}</text>`;
     c.svg.innerHTML = html;
   }
 
@@ -483,8 +608,10 @@
     drawSeries(charts['chart-time'], countBy(TIME_N, tv));
     drawSeries(charts['chart-hour'], countBy(24, hv));
     const [t0, t1] = state.time, [h0, h1] = state.hours;
-    $('time-range').textContent = (t0 === 0 && t1 === TIME_N - 1) ? `Todo (${monthLabel(0)} – ${monthLabel(TIME_N - 1)})` : `${monthLabel(t0)} – ${monthLabel(t1)}`;
-    $('hour-range').textContent = (h0 === 0 && h1 === 23) ? 'Todo el día' : `${hh(h0)}:00 – ${hh(h1)}:59`;
+    const share = (c, [a, b]) => { const sel = c.counts.slice(a, b + 1).reduce((x, y) => x + y, 0); return c.total ? ` · ${fmt(sel)} (${pct(sel / c.total)})` : ''; };
+    const ct = charts['chart-time'], ch = charts['chart-hour'];
+    $('time-range').textContent = ((t0 === 0 && t1 === TIME_N - 1) ? `Todo (${monthLabel(0)} – ${monthLabel(TIME_N - 1)})` : `${monthLabel(t0)} – ${monthLabel(t1)}`) + share(ct, [t0, t1]);
+    $('hour-range').textContent = state.layer === 'insights' ? 'Franjas: no aplica el filtro' : ((h0 === 0 && h1 === 23) ? 'Todo el día' : `${hh(h0)}:00 – ${hh(h1)}:59`) + share(ch, [h0, h1]);
   }
 
   // ---------------------------------------------------------------- resumen y ranking
@@ -553,9 +680,20 @@
       },
       {
         q: '¿Cómo se desplaza quien captura?',
-        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, ${pct(vShare)} corresponde a velocidades de vehículo motorizado. La actividad se concentra a mediodía y primera tarde, con pico a las ${hh(S.peak_trip_hour)}:00 h (hora local); casi no hay capturas nocturnas.`,
+        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, ${pct(vShare)} corresponde a velocidades de vehículo motorizado (inferencia por velocidad poco fiable: tramos de ~2 s). La actividad se concentra a mediodía y primera tarde, con pico a las ${hh(S.peak_trip_hour)}:00 h (hora local); casi no hay capturas nocturnas.`,
         hint: 'Mueve el reloj de 24 h o pulsa Reproducir. Cada trayectoria se desvanece tras pasar.',
         apply: go('trips'),
+      },
+      {
+        q: '¿Cómo cambia el recorrido durante el día?',
+        text: (() => {
+          const st = BANDS.map(bandStat);
+          const tot = st.reduce((a, b) => a + b.km, 0);
+          const early = T.filter((d) => d.t < 240).length;
+          return `Entre 04:00 y 24:00 se reconstruyen ≈ ${fmt.format(Math.round(tot))} km: la tarde concentra el ${pct(st[1].km / tot)}, la mañana el ${pct(st[0].km / tot)} y la noche el ${pct(st[2].km / tot)}. Dentro de cada franja, el 10 % de las celdas más recorridas reúne el ${pct(st[0].topShare)} (mañana), ${pct(st[1].topShare)} (tarde) y ${pct(st[2].topShare)} (noche) del recorrido. ${fmt.format(early)} trayectorias ocurren entre 00:00 y 04:00 y no se muestran.`;
+        })(),
+        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Cada franja se normaliza por separado.',
+        apply: go('insights'),
       },
       {
         q: 'Conclusión provisional y límites',
@@ -565,6 +703,44 @@
       },
     ];
   }
+  // ---------------------------------------------------------------- insights: tres mapas de calor por franja horaria
+  let insPanes = null, insView = null;
+  function ensureInsights() {
+    if (insPanes) return;
+    insView = Object.assign(baseView(), { zoom: 11.6 });
+    insPanes = BANDS.map((b, i) => new deck.DeckGL({
+      container: 'ins-map-' + i, map: maplibregl, mapStyle: MAP_STYLE, viewState: insView, controller: true,
+      // las tres vistas comparten cámara: mover una mueve las demás
+      onViewStateChange: ({ viewState }) => { insView = viewState; insPanes.forEach((pn) => pn.setProps({ viewState: insView })); },
+    }));
+  }
+  function renderInsights() {
+    ensureInsights();
+    const trips = getTrips();
+    const per = BANDS.map((b) => trips.filter((d) => d.t >= b.lo && d.t < b.hi));
+    const kms = per.map((tr) => tr.reduce((a, d) => a + d.s.length, 0) * SAMPLE_KM);
+    const totKm = kms.reduce((a, b) => a + b, 0) || 1;
+    BANDS.forEach((b, i) => {
+      insPanes[i].setProps({
+        layers: [new deck.HeatmapLayer({
+          id: 'heat-' + b.id, data: per[i].flatMap((d) => d.s), getPosition: posPt, getWeight: 1,
+          radiusPixels: 26, intensity: 1.2, threshold: 0.04, colorRange: HEAT_RAMP.map(hex2rgb),
+        })],
+      });
+      $('ins-stats-' + i).textContent = `${fmt(per[i].length)} trayectorias · ≈ ${fmt(Math.round(kms[i]))} km · ${pct(kms[i] / totKm)}`;
+    });
+  }
+  // Estadísticas de una franja con todos los datos (para el texto del recorrido guiado)
+  function bandStat(b) {
+    const tr = T.filter((d) => d.t >= b.lo && d.t < b.hi);
+    const pts = tr.flatMap((d) => d.s);
+    const cells = new Map();
+    pts.forEach(([x, y]) => { const k = Math.floor(x / 0.0013) + '|' + Math.floor(y / 0.0009); cells.set(k, (cells.get(k) || 0) + 1); });
+    const v = [...cells.values()].sort((a, c) => c - a);
+    const top = v.slice(0, Math.max(1, Math.floor(v.length / 10))).reduce((a, c) => a + c, 0);
+    return { n: tr.length, km: pts.length * SAMPLE_KM, topShare: top / (pts.length || 1) };
+  }
+
   function goStep(n) {
     STEPS = STEPS || steps();
     step = Math.max(0, Math.min(STEPS.length - 1, n));

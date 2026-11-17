@@ -23,7 +23,7 @@ cd deliveries/week12/app
 python -m http.server 8000      # abrir http://localhost:8000
 ```
 
-Requiere conexión (bibliotecas y mapa base por CDN). Enlaces directos a pasos del recorrido: `index.html#step=4`.
+Requiere conexión (bibliotecas y mapa base por CDN). Enlaces directos a pasos del recorrido: `index.html#step=4`; con filtro de hora de inicio: `index.html#step=5&hours=11-17`.
 
 ## Despliegue
 

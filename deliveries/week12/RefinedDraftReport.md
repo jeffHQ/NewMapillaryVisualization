@@ -35,7 +35,7 @@ Diccionario de datos: [`data/data_dictionary.csv`](data/data_dictionary.csv). Ta
 
 ## 3. Preguntas de dominio y secuencia analítica
 
-La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una capa y unos filtros y muestra un hallazgo calculado con los datos.
+La aplicación presenta un recorrido guiado de siete pasos. Cada paso fija una capa y unos filtros y muestra un hallazgo calculado con los datos.
 
 | # | Pregunta | Vista | Hallazgo preliminar |
 |---|---|---|---|
@@ -44,17 +44,21 @@ La aplicación presenta un recorrido guiado de seis pasos. Cada paso fija una ca
 | 3 | ¿Qué elementos dominan? | Filtro por categoría + ranking | Señalización vertical 34,4 %, alumbrado y postes 25,0 %, comercio y publicidad 11,8 %; mobiliario urbano solo 6,2 %. |
 | 4 | ¿Dónde se concentra el recorrido? | Hexágonos 3D de recorrido | Con ≈ 1.331 km de trayectoria reconstruida, el 40,6 % cae en el 10 % de las celdas de ~100 m recorridas (1.289 celdas). Con puntos de detección el valor es similar (39,5 %), pero los puntos miden dónde hubo datos, no tráfico. |
 | 5 | ¿Cómo se desplaza quien captura? | Trayectorias animadas | 62,6 % vehículo, 24,6 % bici/scooter, 12,8 % a pie; pico a las 13:00 h (20,7 % de las trayectorias) y casi nada de noche. |
-| 6 | ¿Qué límites tiene la lectura? | Vista libre | Ver §6. |
+| 6 | ¿Cómo cambia el recorrido durante el día? | Insights: tres mapas de calor (mañana 04–11 h, tarde 11–18 h, noche 18–24 h) | Entre 04:00 y 24:00 se reconstruyen ≈ 1.327 km: la tarde concentra el 73 %, la mañana el 16 % y la noche el 11 %. Dentro de cada franja el 10 % de las celdas más recorridas reúne el 37 % (mañana), 41 % (tarde) y 38 % (noche). 20 trayectorias (entre 00:00 y 04:00) no se muestran. |
+| 7 | ¿Qué límites tiene la lectura? | Vista libre | Ver §6. |
 
 **Hallazgo transversal.** El volumen de imágenes y el de detecciones no coinciden en el tiempo: 2020 es el año con más imágenes en la zona (15.259) pero 2022 el de más detecciones (10.446 con 7.770 imágenes). La razón detecciones/imagen varía de ~0,4 (2020) a ~1,3 (2022). Sin más información no podemos atribuirlo a un dispositivo, a un cambio de procesamiento o a una ruta distinta; es una pregunta abierta para la versión final. Por fabricante, Samsung aporta el 27 % de las imágenes, Mosaic51 el 20 % y "desconocido" el 13 %.
 
 ## 4. Decisiones de diseño
 
-- **Mapa como lienzo principal + panel lateral.** El contexto espacial es la pregunta central; el panel agrupa narrativa, filtros y detalle.
+- **Mapa como lienzo principal, panel izquierdo y barra inferior.** El contexto espacial es la pregunta central; el panel izquierdo contiene solo insights (recorrido guiado y ranking) y la leyenda, que es también el filtro de categoría o modo; las series de tiempo enlazadas ocupan una barra bajo el mapa.
 - **Tres capas, un mismo conjunto de filtros.** *Objetos* (puntos) responde "qué y dónde"; *Densidad 3D* (hexágonos) mide **recorrido reconstruido** —muestras cada ~40 m de trayectoria—, no puntos, porque los puntos solo indican dónde hay datos y no dónde hay tráfico; *Trayectorias* responde "cómo". Alternativa descartada: mapa de calor 2D, porque ocultaba las diferencias de magnitud entre celdas.
 - **Series de tiempo enlazadas (crossfilter).** Una serie mensual (2014–2026) y una serie por hora, ambas con selección por arrastre, bordes ajustables y teclado (flechas, Mayús+flechas, Escape). La serie de horas muestra solo el periodo elegido arriba (serie anidada) y cada serie ignora su propio filtro para mostrar qué se pierde al estrechar. Sustituyen al histograma anual y a los selectores `Desde/Hasta`, que eran redundantes.
 - **Recorrido guiado.** Convierte el panel de controles en una narrativa; cada paso es reversible y deja todos los filtros activos.
 - **Color.** Okabe-Ito (seguro ante daltonismo) reservado a las categorías de objeto. Los modos usan otros tonos (índigo, frambuesa, verde azulado) y la densidad una rampa neutra azul-grisácea, así que ningún color significa dos cosas. Fondo de mapa y de interfaz claros.
+- **Series interactivas.** Un solo mes (octubre de 2022) aporta el 26 % de las detecciones, así que con escala lineal el resto de la serie se ve plano. La serie mensual ofrece escala raíz (por defecto), logarítmica o lineal; tooltip con valor y porcentaje; clic en el eje para elegir un año (o una franja del día); atajos «Todo», «Mayor año» y «12 m»; un recorrido animado que desliza una ventana por los meses; y la selección se lee con su recuento y porcentaje. Con escala no lineal las alturas no son proporcionales, y la serie lo indica.
+- **Filtro por hora de inicio en las trayectorias.** La serie por hora filtra las trayectorias (y la densidad 3D) por su hora de inicio. El reloj de 24 h recorre solo la ventana elegida, la resalta en su barra, muestra «Hora de inicio: 11:00 – 17:59» y ofrece «Quitar filtro de hora»; el tooltip indica la hora exacta de inicio (HH:MM).
+- **Insights por franja.** Tres mapas de calor del recorrido con cámara sincronizada (mañana 04:00–10:59, tarde 11:00–17:59 y noche 18:00–23:59). Cada mapa se normaliza por separado, así que el color compara zonas dentro de la franja y el peso de cada una (trayectorias, km y %) va en su encabezado. En esta vista el filtro de hora no aplica, porque las franjas ya dividen el día.
 - **Leyenda = filtro.** Se fusionaron la leyenda y la lista de categorías: casillas, «solo», «las 3 mayores» y opción de mostrar el resto en gris.
 - **Trayectorias que se desvanecen.** Se eliminó la capa de líneas permanentes; solo se dibujan estelas que desaparecen, con reloj de 24 h.
 - **Detalle bajo demanda.** Tooltip por punto, hexágono o trayectoria; lista de las 8 clases más frecuentes que se recalcula con los filtros.

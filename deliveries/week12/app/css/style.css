@@ -42,12 +42,13 @@ code { background: var(--surface-2); padding: 0 4px; border-radius: 4px; font-si
 .top nav a:hover { background: var(--surface-2); }
 
 /* Layout */
-.layout { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr var(--panel-w); }
-.map-wrap { position: relative; min-height: 0; background: #fff; }
+.layout { flex: 1; min-height: 0; display: grid; grid-template-columns: var(--panel-w) 1fr; }
+.stage { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.map-wrap { position: relative; flex: 1; min-height: 0; background: #fff; }
 #map { position: absolute; inset: 0; }
 .panel {
-  overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px;
-  background: var(--bg); border-left: 1px solid var(--border);
+  overflow-y: auto; scrollbar-gutter: stable; padding: 14px; display: flex; flex-direction: column; gap: 12px;
+  background: var(--bg); border-right: 1px solid var(--border);
 }
 
 /* Cards */
@@ -81,11 +82,11 @@ select {
 }
 
 /* Series de tiempo */
-.series { margin-top: 14px; }
+.series { margin-top: 14px; position: relative; }
 .series-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .series-head h3 { margin: 0; }
 .readout { font-size: 12px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; text-align: right; }
-.chart { width: 100%; height: 104px; display: block; touch-action: none; cursor: crosshair; margin-top: 4px; border-radius: 6px; }
+.chart { width: 100%; height: 96px; display: block; touch-action: none; cursor: crosshair; margin-top: 4px; border-radius: 6px; }
 .chart:focus-visible { outline-offset: 0; }
 .chart .bar { fill: #c3cfdf; }
 .chart .bar.on { fill: var(--accent); }
@@ -112,11 +113,7 @@ select {
 .layer-switch button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
 
 /* Leyenda = filtro */
-.legend {
-  position: absolute; left: 12px; bottom: 28px; z-index: 5; background: var(--surface);
-  border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; font-size: 12.5px;
-  width: 292px; max-height: calc(100% - 110px); overflow-y: auto; box-shadow: var(--shadow);
-}
+.legend { font-size: 12.5px; }
 .legend h4 { margin: 0 0 6px; font-size: 12.5px; }
 .legend .group + .group { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); }
 .legend .row {
@@ -146,8 +143,10 @@ select {
 }
 .clock-title { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; }
 .clock-time { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--accent); }
-.clock-bar { height: 4px; background: var(--surface-2); border-radius: 2px; margin: 4px 0 8px; overflow: hidden; }
-.clock-bar span { display: block; height: 100%; width: 0; background: var(--accent); }
+.clock-bar { position: relative; height: 6px; background: var(--surface-2); border-radius: 3px; margin: 4px 0 8px; overflow: hidden; }
+.clock-bar span { position: absolute; top: 0; bottom: 0; left: 0; width: 0; background: var(--accent); }
+.clock-bar .win { background: rgba(11, 95, 184, .22); }
+#clock-clear-hours { margin-top: 4px; }
 .clock-row { display: flex; justify-content: space-between; gap: 8px; }
 .clock-row b { font-variant-numeric: tabular-nums; }
 .scrub { width: 100%; accent-color: var(--accent); margin: 0 0 6px; }
@@ -163,14 +162,59 @@ select {
 .loading { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg); z-index: 20; color: var(--muted); }
 .noscript { padding: 20px; }
 
+/* Series: herramientas y tooltip */
+.series-head { flex-wrap: wrap; row-gap: 4px; min-height: 56px; align-content: flex-start; }
+.series-tools { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; order: 3; flex-basis: 100%; margin: 2px 0 0; }
+.series-head h3 { flex: 1; white-space: nowrap; }
+.readout { white-space: nowrap; }
+.series-hour .series-head { flex-direction: column; align-items: flex-start; gap: 2px; }
+.series-hour .readout { text-align: left; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface-2); color: var(--text); padding: 2px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.btn[aria-pressed="true"]#t-play { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.chart-tip {
+  position: absolute; z-index: 4; pointer-events: none; transform: translate(-50%, -100%);
+  background: var(--text); color: #fff; padding: 2px 8px; border-radius: 6px; font-size: 11.5px; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.chart-guide { position: absolute; z-index: 3; width: 1px; background: rgba(20, 32, 46, .4); pointer-events: none; }
+
+/* Insights: tres mapas de calor */
+.insights {
+  position: absolute; inset: 56px 0 0 0; z-index: 2; display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 6px; padding: 0 6px 6px;
+}
+.pane { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #fff; }
+.pane-head { padding: 6px 10px; background: var(--surface); border-bottom: 1px solid var(--border); }
+.pane-head h3 { margin: 0; font-size: 14px; color: var(--text); }
+.pane-stats { margin: 0; font-size: 12px; color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+.pane-map { position: relative; flex: 1; min-height: 0; }
+.chart[aria-disabled="true"] { cursor: not-allowed; }
+@media (max-width: 900px) { .insights { grid-template-columns: 1fr; position: static; padding: 6px; } .pane-map { height: 38vh; flex: none; } }
+
+/* Barra inferior de series de tiempo */
+.timebar { flex: none; height: 248px; overflow: hidden; background: var(--surface); border-top: 1px solid var(--border); padding: 8px 16px 10px; }   /* altura fija: al filtrar no se mueve el mapa */
+.timebar-head { display: flex; align-items: baseline; gap: 14px; }
+.timebar-head h2 { margin: 0; font-size: 14px; }
+.timebar-head .result { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.timebar-charts { display: grid; grid-template-columns: 2.2fr 1fr; gap: 22px; }
+.timebar .series { margin-top: 4px; }
+.timebar .hint { margin: 2px 0 0; }
+.about summary { cursor: pointer; font-weight: 600; font-size: 15px; }
+.about[open] summary { margin-bottom: 8px; }
+
 /* Responsive */
 @media (max-width: 900px) {
   body { height: auto; display: block; }
-  .layout { display: block; }
-  .map-wrap { height: 70vh; }
-  .panel { border-left: 0; border-top: 1px solid var(--border); overflow: visible; }
+  .layout { display: flex; flex-direction: column-reverse; }
+  .stage { display: block; }
+  .map-wrap { height: 62vh; }
+  .panel { border-right: 0; border-top: 1px solid var(--border); overflow: visible; }
+  .timebar { height: auto; overflow: visible; }
+  .timebar-charts { grid-template-columns: 1fr; }
   .top { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .legend { bottom: 8px; width: 250px; max-height: 40%; }
   .clock { width: 200px; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }

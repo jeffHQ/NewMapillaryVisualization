@@ -46,7 +46,7 @@ Bocetos candidatos finales (en [`sketches/`](sketches/)):
 
 ## 4. Dirección de visualización seleccionada y justificación
 
-**Una sola aplicación guiada, con el mapa como lienzo y filtros enlazados**, compuesta por S1–S4 (S5 queda como ampliación).
+**Una sola aplicación guiada, con el mapa como lienzo, insights y leyenda a la izquierda y filtros de tiempo enlazados en la barra inferior**, compuesta por S1–S4 (S5 queda como ampliación).
 
 - *Por qué un mapa:* la pregunta central es espacial; el contexto geográfico es insustituible.
 - *Por qué tres capas:* puntos (qué y dónde), hexágonos 3D (concentración del recorrido) y trayectorias animadas (cuándo y cómo se mueven); una sola capa visible a la vez evita el desorden.
@@ -57,7 +57,7 @@ Alternativas descartadas: mapa de calor 2D (oculta diferencias de magnitud), un 
 
 ## 5. Arquitectura de la información y layout
 
-Una pantalla con el mapa a la izquierda y un panel lateral a la derecha (en móvil, el panel pasa debajo).
+Una pantalla con un panel izquierdo que contiene solo insights y leyenda, el mapa en el centro y las series de tiempo enlazadas en una barra inferior (en móvil se apilan: mapa, series y panel).
 
 ![Layout](architecture/information_architecture_layout.png)
 
