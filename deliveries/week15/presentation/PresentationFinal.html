@@ -22,6 +22,10 @@ table { border-collapse:collapse; width:100%; font-size:15pt; } td,th { border-b
 code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
 .warn { background:#fff8dc; border-left:6px solid #d9a400; padding:8pt 14pt; border-radius:6px; }
 .tm { position:absolute; top:.22in; right:.7in; font-size:11pt; color:#8a97aa; }
+.td { background:#f3f7fd; border-left:5px solid #0b5fb8; padding:6pt 12pt; border-radius:6px; font-size:14pt; margin-top:10pt; line-height:1.3; }
+.td b { color:#0b5fb8; }
+.qrow { display:flex; gap:.25in; margin-top:.3in; } .qrow > div { flex:1; background:#eef4ff; border:1px solid #c7d6ee; border-radius:12px; padding:10pt 14pt; font-size:17pt; line-height:1.25; }
+.qrow b { color:#0b5fb8; display:block; font-size:15pt; }
 </style></head><body>
 
 <section class="cover">
@@ -39,23 +43,31 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
   <ul style="margin-top:.4in">
     <li>Cada dato existe porque alguien pasó con una cámara: depende de <b>quién</b>, <b>cuándo</b> y <b>con qué dispositivo</b>.</li>
     <li><b>Audiencia:</b> analistas y estudiantes de datos geoespaciales y de movilidad urbana.</li>
-    <li><b>Pregunta guía:</b> ¿puedo confiar en estos datos para mi análisis?</li>
+    <li><b>Pregunta guía:</b> ¿puedo confiar en estos datos para mi análisis? Para responderla, tres preguntas:</li>
   </ul>
+  <div class="qrow">
+    <div><b>1 · ¿Quién y cuándo?</b>¿Qué meses y horas aportan los datos?</div>
+    <div><b>2 · ¿Qué?</b>¿Qué objetos dominan lo capturado?</div>
+    <div><b>3 · ¿Dónde y a qué hora?</b>¿Dónde y cuándo se concentra el recorrido?</div>
+  </div>
 </section>
 
 <section>
   <span class="tm">Bloque 1</span>
   <h2>Los datos</h2>
   <div class="row">
-    <div class="kpi"><div class="big">39.564</div>detecciones de objetos · 277 clases</div>
-    <div class="kpi"><div class="big">6.379</div>trayectorias reconstruidas</div>
-    <div class="kpi"><div class="big">76.225</div>imágenes con metadatos de cámara</div>
+    <div class="kpi"><div class="big">97.644</div>detecciones de objetos · 374 clases</div>
+    <div class="kpi"><div class="big">16.546</div>trayectorias reconstruidas</div>
+    <div class="kpi"><div class="big">258.209</div>imágenes con metadatos de cámara</div>
   </div>
-  <ul style="margin-top:.35in">
-    <li><b>Mapillary API v4</b> (CC BY-SA) · oeste de Praga, ~4,6 × 8,9 km · 2014–2026.</li>
-    <li><b>Pipeline reproducible:</b> cuadrícula → limpieza → trayectorias ajustadas a la red (OSRM) → 7 categorías → JSON de ≈ 3 MB.</li>
-    <li>Sin nombres de contribuyentes; dispositivos agregados por fabricante.</li>
-  </ul>
+  <p class="muted" style="margin:.2in 0 .08in"><b>Mapillary API v4</b> (CC BY-SA) · oeste de Praga, ~4,6 × 8,9 km · 2014–2026 · sin nombres de contribuyentes.</p>
+  <table style="font-size:14.5pt">
+    <tr><th>Dato original</th><th>Transformación</th><th>Para qué</th></tr>
+    <tr><td>Detecciones y clases de objeto</td><td>Descarga por cuadrícula, limpieza y 374 clases en <b>7 categorías</b></td><td>Comparar con una paleta legible</td></tr>
+    <tr><td>Detecciones por secuencia</td><td>Ordenadas por hora → <b>trayectorias</b> (tramos de ≤ 15 s) ajustadas a la calle con OSRM</td><td>Medir recorrido, no solo puntos</td></tr>
+    <tr><td>Posiciones de las trayectorias</td><td>Muestreo cada ~40 m y suma de <b>km por celda</b> de ~100 m</td><td>Densidad de recorrido</td></tr>
+    <tr><td>Fechas en UTC</td><td>Hora local de Praga: mes, hora y franja del día</td><td>Series de tiempo y filtros</td></tr>
+  </table>
 </section>
 
 <section>
@@ -72,6 +84,20 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
 </section>
 
 <section>
+  <span class="tm">Bloque 2 · demostración</span>
+  <h2>Demostración: de la pregunta a la respuesta</h2>
+  <table style="font-size:16pt">
+    <tr><th>Pregunta</th><th>Interacción en la aplicación</th><th>Respuesta</th></tr>
+    <tr><td>¿Quién y cuándo aportó los datos?</td><td>Arrastrar sobre la serie mensual</td><td><b class="acc">26 %</b> en octubre de 2022</td></tr>
+    <tr><td>¿Qué objetos dominan?</td><td>Clic y doble clic en la leyenda (filtro)</td><td><b class="acc">70 %</b> señalización, alumbrado y comercio</td></tr>
+    <tr><td>¿Dónde se concentra el recorrido?</td><td>Densidad 3D: inclinar y girar el mapa</td><td><b class="acc">48 %</b> del recorrido en el 10 % de las celdas</td></tr>
+    <tr><td>¿A qué hora?</td><td>Insights: tres franjas y «Cada 2 horas»</td><td><b class="acc">69 %</b> en la tarde · pico de 12 a 14 h</td></tr>
+    <tr><td>¿Cómo transcurre el día?</td><td>Trayectorias: reloj de 24 h y filtro por hora</td><td>Cada trayectoria aparece a su hora y se desvanece</td></tr>
+  </table>
+  <p class="muted" style="margin-top:.2in">Recorrido guiado de la aplicación: <code>#step=1</code> … <code>#step=7</code>.</p>
+</section>
+
+<section>
   <span class="tm">Bloque 2</span>
   <h2>Decisión de diseño: series de tiempo para datos asimétricos</h2>
   <div class="row">
@@ -79,6 +105,7 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
     <div>
       <p>Un solo mes aporta el <b class="acc">26 %</b> de las detecciones: con escala lineal el resto se ve plano.</p>
       <ul style="font-size:17pt"><li>Escala <b>raíz</b>, log o lineal</li><li>Tooltip con valor y %</li><li>Selección por arrastre y bordes</li><li>Clic en el eje: año o franja</li><li>Recorrido animado de meses</li></ul>
+      <div class="td"><b>Tarea:</b> ver cuándo se aportaron los datos.<br><b>Decisión:</b> escala raíz por defecto: muestra el mes dominante sin aplastar al resto.</div>
     </div>
   </div>
 </section>
@@ -89,9 +116,9 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
   <div class="row">
     <div class="wide"><img src="img/objects.png" alt="Objetos"></div>
     <div>
-      <p><b class="acc">71 %</b> son señalización (34 %), alumbrado (25 %) y comercio (12 %).</p>
-      <p>El mobiliario urbano es el 6 %.</p>
-      <p class="muted">Color = categoría (Okabe-Ito). El resto, en gris.</p>
+      <p><b class="acc">70 %</b> son señalización (34 %), alumbrado (22 %) y comercio (14 %).</p>
+      <p>El mobiliario urbano es el 7 %.</p>
+      <div class="td"><b>Tarea:</b> comparar el peso de cada categoría.<br><b>Decisión:</b> color categórico (Okabe-Ito, apto para daltonismo); lo no seleccionado, en gris.</div>
     </div>
   </div>
 </section>
@@ -102,8 +129,9 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
   <div class="row">
     <div class="wide"><img src="img/density.png" alt="Densidad 3D"></div>
     <div>
-      <div class="kpi"><div class="big">41 %</div>del recorrido cae en el <b>10 %</b> de las celdas</div>
-      <p style="margin-top:10pt" class="muted">≈ 1.331 km reconstruidos. Se mide con trayectorias, no con puntos: los puntos indican dónde hay datos, no dónde hay tráfico.</p>
+      <div class="kpi"><div class="big">48 %</div>del recorrido cae en el <b>10 %</b> de las celdas</div>
+      <p style="margin-top:10pt" class="muted">≈ 3.806 km reconstruidos.</p>
+      <div class="td"><b>Tarea:</b> ver dónde se concentra el recorrido.<br><b>Decisión:</b> altura y color secuencial = km de trayectoria por celda, no puntos: los puntos indican dónde hay datos, no dónde hay tráfico.</div>
     </div>
   </div>
 </section>
@@ -114,8 +142,9 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
   <div class="row">
     <div class="wide"><img src="img/insights.png" alt="Insights"></div>
     <div>
-      <p><b class="acc">73 %</b> en la tarde · 16 % mañana · 11 % noche.</p>
-      <p class="muted">Tres mapas con tramos de calle coloreados del amarillo (pocas trayectorias) al rojo (muchas). Misma escala en las tres franjas y cámara sincronizada.</p>
+      <p><b class="acc">69 %</b> en la tarde · 21 % mañana · 9 % noche.</p>
+      <p class="muted">Tramos de calle del amarillo (pocas trayectorias) al rojo (muchas).</p>
+      <div class="td"><b>Tarea:</b> comparar mañana, tarde y noche.<br><b>Decisión:</b> misma escala de color en las tres y cámara sincronizada: el mismo color significa lo mismo en cada mapa.</div>
     </div>
   </div>
 </section>
@@ -128,7 +157,7 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
     <div>
       <p>El pico es de <b class="acc">12 a 14 h</b>: 30 % del recorrido.</p>
       <p>De 20:00 a 08:00, cada franja de 2 h aporta un 1 % o menos.</p>
-      <p class="muted">Misma escala de color en los 12 mapas; en gris, la red recorrida a cualquier hora.</p>
+      <div class="td"><b>Tarea:</b> seguir el día con más detalle.<br><b>Decisión:</b> 12 mapas pequeños con la misma escala; la red en gris da el contexto de dónde se recorre a cualquier hora.</div>
     </div>
   </div>
 </section>
@@ -142,6 +171,7 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
       <p>Cada trayectoria aparece a su hora de inicio y <b>se desvanece</b>.</p>
       <p>La serie por hora filtra la hora de inicio; el reloj recorre solo esa ventana.</p>
       <p class="muted">Todas las fechas se superponen: es el ciclo diario, no un día concreto.</p>
+      <div class="td"><b>Tarea:</b> ver el ritmo del día.<br><b>Decisión:</b> estela que se desvanece y reloj de 24 h; sin líneas permanentes, que sugerirían tráfico constante.</div>
     </div>
   </div>
 </section>
@@ -161,9 +191,20 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
 
 <section>
   <span class="tm">Bloque 3 · conclusiones, límites y trabajo futuro (2 min)</span>
+  <h2>Hallazgos: respuestas a las preguntas</h2>
+  <div class="row" style="margin-top:.2in">
+    <div class="kpi"><h3>1 · ¿Quién y cuándo?</h3><div class="big">26 %</div>de las detecciones son de un solo mes (octubre de 2022); cinco meses suman el 60 %.</div>
+    <div class="kpi"><h3>2 · ¿Qué?</h3><div class="big">70 %</div>son señalización, alumbrado y comercio; el mobiliario urbano, solo el 7 %.</div>
+    <div class="kpi"><h3>3 · ¿Dónde y cuándo?</h3><div class="big">48 %</div>del recorrido cae en el 10 % de las celdas; la tarde concentra el 69 % y el pico es de 12 a 14 h.</div>
+  </div>
+  <p class="quote" style="font-size:24pt;margin-top:.4in">Respuesta a la pregunta guía: <b class="acc">no del todo</b>. Estos datos describen mejor a quien captura que a la ciudad.</p>
+</section>
+
+<section>
+  <span class="tm">Bloque 3</span>
   <h2>Límites</h2>
   <div class="warn"><ul style="font-size:18pt">
-    <li>Solo 2 de 5 lotes de detecciones: la zona es parcial.</li>
+    <li>Solo el oeste de Praga (~4,6 × 8,9 km): la zona es parcial.</li>
     <li>Las trayectorias se reconstruyen desde detecciones (tramos de ~2 s): <b>el modo de transporte es una inferencia débil</b>.</li>
     <li>Las detecciones son automáticas, no un censo. El 3D no incluye edificios.</li>
   </ul></div>

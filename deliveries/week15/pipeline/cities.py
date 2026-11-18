@@ -23,7 +23,7 @@ CITIES = {
         "place": "oeste de Praga",
         "cos_lat": 0.6411,                              # cos(latitud); fija la escala metros/grado en longitud
         "tz": "Europe/Prague",
-        "bbox": (14.350, 50.050, 14.500, 50.130),       # lon_min, lat_min, lon_max, lat_max
+        "bbox": (14.350, 50.050, 14.415, 50.130),       # lon_min, lat_min, lon_max, lat_max (zona de estudio: oeste de Praga)
         "view_zoom": 12.6,
     },
     "miraflores": {

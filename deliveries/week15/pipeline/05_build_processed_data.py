@@ -56,8 +56,11 @@ def categorize(value: str) -> str:
     return OTHER[0]
 
 
-def to_dt(ms):
-    return datetime.fromtimestamp(ms / 1000, tz=PRAGUE)
+def to_dt(t):
+    """La API da la hora como milisegundos; unos pocos registros la traen como texto ISO (p. ej. 2020-05-26T17:35:28+0000)."""
+    if isinstance(t, str):
+        return datetime.strptime(t, "%Y-%m-%dT%H:%M:%S%z").astimezone(PRAGUE)
+    return datetime.fromtimestamp(t / 1000, tz=PRAGUE)
 
 
 # ------------------------------------------------------------------ features

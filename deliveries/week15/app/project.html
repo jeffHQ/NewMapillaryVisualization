@@ -47,8 +47,8 @@
   </figure>
   <p>Mapillary reúne fotografías de calle aportadas por voluntarios y detecta en ellas objetos urbanos. Cada dato existe porque alguien pasó por allí con una cámara, así que estos datos suelen describir mejor a <strong>quien captura</strong> que a la ciudad capturada. Este proyecto hace visible ese sesgo en el oeste de Praga (~4,6 × 8,9 km) con cuatro vistas —objetos, densidad de recorrido en 3D, trayectorias con reloj de 24 h y mapas de tráfico por franja horaria (tres franjas o un mini mapa cada 2 horas)—, series de tiempo enlazadas, una leyenda que filtra y un recorrido guiado de siete pasos.</p>
   <div class="grid3">
-    <div class="kpi"><b>39.564</b>detecciones de objetos urbanos</div>
-    <div class="kpi"><b>6.379</b>trayectorias reconstruidas</div>
+    <div class="kpi"><b>97.644</b>detecciones de objetos urbanos</div>
+    <div class="kpi"><b>16.546</b>trayectorias reconstruidas</div>
     <div class="kpi"><b>26 %</b>de las detecciones son de un solo mes (octubre de 2022)</div>
   </div>
 
@@ -70,7 +70,7 @@
   <h2>Datos y metodología</h2>
   <ul>
     <li>La aplicación incluye una segunda pestaña, <strong>Miraflores (Lima)</strong>, con el mismo diseño y filtros (selector junto a «Página del proyecto»). El paper, el póster y los videos se centran en Praga.</li>
-    <li><a href="https://www.mapillary.com/developer/api-documentation">Mapillary API v4</a> (<code>map_features</code> e <code>images</code>), datos colaborativos bajo CC BY-SA. Se descargaron 2 de los 5 lotes de detecciones planeados (lon 14,350–14,415); las imágenes y detecciones usadas están en la zona común.</li>
+    <li><a href="https://www.mapillary.com/developer/api-documentation">Mapillary API v4</a> (<code>map_features</code> e <code>images</code>), datos colaborativos bajo CC BY-SA. Se descargó el oeste de Praga (lon 14,350–14,415; lat 50,050–50,130); detecciones e imágenes cubren la misma zona. Cada celda se pide con páginas grandes y, si la API falla, se subdivide, porque con páginas pequeñas la API recorta los resultados en silencio.</li>
     <li>Las trayectorias se <em>reconstruyen</em> con las marcas de tiempo de las detecciones y se ajustan a la red vial con OSRM. El modo de desplazamiento se infiere solo por la velocidad media y es poco fiable.</li>
     <li>Pipeline, datos procesados y diccionario de datos en el <a href="https://github.com/jeffHQ/NewMapillaryVisualization/tree/main/deliveries/week15">repositorio</a>.</li>
   </ul>

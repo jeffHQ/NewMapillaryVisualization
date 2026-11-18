@@ -1,6 +1,7 @@
 """
 Reintenta las celdas que `01_extract_features.py` no pudo recuperar (raw/features/failed_cells.txt), pidiendo páginas
-cada vez más pequeñas (la API devuelve 500 cuando una celda muy densa pide 1.000 elementos con sus imágenes).
+cada vez más pequeñas. OJO: con páginas pequeñas la API puede devolver resultados recortados (ver mapillary_api.py), así que
+lo recuperado aquí puede ser parcial; con la descarga actual (páginas grandes + subdivisión) este script casi no hace falta.
 Los elementos recuperados se guardan en raw/features/<ciudad>_lote_extra.json, que `03_clean_features.py` procesa
 junto a los demás lotes.
 

@@ -61,7 +61,7 @@ def generate_grid(min_lon, min_lat, max_lon, max_lat, step=0.005):
 # ==========================================
 def extract_images_from_bbox(bbox, token):
     """Descarga robusta (reintentos + subdivisión de celdas que fallan); ver mapillary_api.py."""
-    params = {"access_token": token, "fields": ",".join(FIELDS), "limit": 1000}
+    params = {"access_token": token, "fields": ",".join(FIELDS), "limit": 5000}
     return fetch_bbox("https://graph.mapillary.com/images", params, bbox,
                       failed_log=os.path.join(OUTPUT_DIR, "failed_cells.txt"))
 

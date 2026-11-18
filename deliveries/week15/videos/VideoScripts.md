@@ -16,9 +16,9 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 | Tiempo | Imagen (qué se ve) | Narración |
 |---|---|---|
 | 0:00–0:08 | Pantalla negra → título «Praga a pie de calle» sobre un mapa lleno de puntos (`#step=1`) | «Miles de personas fotografían las calles del mundo. Y usamos esas imágenes como si describieran la ciudad.» |
-| 0:08–0:16 | Zoom lento sobre los puntos de colores; texto en pantalla: «39.564 objetos · 6.379 trayectorias» | «En el oeste de Praga, Mapillary detecta casi cuarenta mil objetos: farolas, señales, pasos de peatones.» |
+| 0:08–0:16 | Zoom lento sobre los puntos de colores; texto en pantalla: «97.644 objetos · 16.546 trayectorias» | «En el oeste de Praga, Mapillary detecta casi cien mil objetos: farolas, señales, pasos de peatones.» |
 | 0:16–0:30 | Arrastrar sobre la serie mensual hasta octubre de 2022 (`#step=2`); el mapa se vacía; resaltar «26 %» | «Pero un solo mes, octubre de 2022, aporta la cuarta parte de todos los datos. El resto de la serie casi no se ve.» |
-| 0:30–0:45 | Vista Insights con los tres mapas de colores (amarillo a rojo); mover un mapa y los otros dos se mueven (`#step=6`) | «Y el recorrido también es desigual: la tarde concentra el 73 % de lo que se reconstruye. Mañana, tarde y noche cuentan historias muy distintas.» |
+| 0:30–0:45 | Vista Insights con los tres mapas de colores (amarillo a rojo); mover un mapa y los otros dos se mueven (`#step=6`) | «Y el recorrido también es desigual: la tarde concentra el 69 % de lo que se reconstruye. Mañana, tarde y noche cuentan historias muy distintas.» |
 | 0:45–0:55 | Trayectorias con el reloj de 24 h avanzando; estelas que se desvanecen (`#step=5`) | «Cada trayectoria aparece a su hora y se desvanece. Explora el día entero.» |
 | 0:55–1:00 | Título final con QR y URL: «jeffhq.github.io/NewMapillaryVisualization» | «Estos datos describen mejor a quien captura que a la ciudad. Descúbrelo tú mismo.» |
 
@@ -28,39 +28,38 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 
 ## 2. Video de presentación — máximo 5 minutos (§5.4)
 
-**Debe cubrir:** motivación, datos y audiencia, demostración de la aplicación final, decisiones de diseño y hallazgos principales.
-**Ritmo:** ≈ 650 palabras. Objetivo de duración: 4:30, para dejar margen.
+**Debe cubrir (rúbrica):** motivación, audiencia, datos, demostración, decisiones de diseño y hallazgos. Estructura: tres preguntas → datos y transformaciones → demostración «pregunta → interacción → respuesta» → decisiones justificadas por la tarea → hallazgos que responden a las preguntas.
+**Ritmo:** ≈ 520 palabras (≈ 4 min de voz) más las pausas de la demostración. Objetivo de duración: 4:40, para dejar margen. Las diapositivas son las de `../PresentationFinal.pdf`.
 
-### 0:00–0:40 · Motivación, audiencia y datos
-*Imagen:* diapositivas 1–3 de `../PresentationFinal.pdf` (portada, problema, datos).
+### 0:00–0:45 · Motivación, audiencia, preguntas y datos
+*Imagen:* diapositivas 2–3 (problema y datos).
 
-> «Hola, soy Jeffry Hilario y esta es mi visualización “Praga a pie de calle”. Mapillary es una plataforma colaborativa de fotografía a nivel de calle. A partir de las imágenes detecta objetos urbanos, y estos datos se usan en inventarios de infraestructura y en análisis de movilidad, suponiendo que describen la ciudad. Pero cada dato existe porque alguien pasó por allí con una cámara. Mi audiencia son analistas y estudiantes de datos geoespaciales, y la pregunta es: ¿puedo confiar en estos datos para mi análisis? Trabajo con 39.564 detecciones de objetos, 76.225 imágenes y 6.379 trayectorias reconstruidas, en un área de unos 4,6 por 8,9 kilómetros del oeste de Praga, entre 2014 y 2026.»
+> «Hola, soy Jeffry Hilario y esta es mi visualización “Praga a pie de calle”. Mapillary es una plataforma colaborativa de fotografía a nivel de calle; sus datos se usan en inventarios de infraestructura y en análisis de movilidad, como si describieran la ciudad. Pero cada dato existe porque alguien pasó con una cámara. Mi audiencia son analistas y estudiantes de datos geoespaciales, y la pregunta es: ¿puedo confiar en estos datos? Para responderla me hago tres preguntas: quién y cuándo aportó los datos, qué objetos dominan, y dónde y a qué hora se concentra el recorrido. Trabajo con 97.644 detecciones de objetos, 258.209 imágenes y 16.546 trayectorias, en unos 4,6 por 8,9 kilómetros del oeste de Praga, de 2014 a 2026.»
 
-### 0:40–1:00 · Cómo se construyó
-*Imagen:* resumen gráfico de la primera página de `../FinalPaper.pdf`.
+### 0:45–1:05 · Cómo se transformaron los datos
+*Imagen:* tabla de transformaciones (diapositiva 3) o el resumen gráfico de la primera página de `../FinalPaper.pdf`.
 
-> «Descargué los datos con la API de Mapillary, los limpié, reconstruí las trayectorias ajustándolas a la red vial con OSRM y agrupé 277 clases de objeto en siete categorías. Todo es reproducible desde el repositorio.»
+> «Descargué los datos con la API de Mapillary y los limpié. Agrupé 374 clases de objeto en siete categorías; ordené las detecciones de cada secuencia por hora para reconstruir trayectorias y las ajusté a la calle con OSRM; y medí el recorrido en kilómetros por celda de cien metros. Las horas están en hora local de Praga.»
 
-### 1:00–3:20 · Demostración de la aplicación (`#step=1` … `#step=7`)
-*Imagen:* la aplicación en pantalla completa. Sigue el recorrido guiado con el botón «Siguiente».
+### 1:05–3:25 · Demostración: de la pregunta a la respuesta (`#step=1` … `#step=7`)
+*Imagen:* la aplicación en pantalla completa. Cada bloque sigue el orden **pregunta → interacción → respuesta**.
 
-1. **(1:00)** *Vista general.* «A la izquierda el recorrido guiado y la leyenda, que también es el filtro; al centro el mapa; abajo, los filtros activos y las series de tiempo enlazadas.»
-2. **(1:15)** *Objetos y leyenda* (`#step=3`). Haz doble clic en una categoría para dejarla sola, o desmarca varias con un clic. «Señalización, alumbrado y comercio suman el 71 % de los objetos; el resto queda en gris.»
-3. **(1:35)** *Serie mensual* (`#step=2`). En ⚙ Opciones cambia entre escala lineal y raíz, pasa el cursor y arrastra un periodo. «Un solo mes, octubre de 2022, aporta el 26 % de las detecciones. Con escala lineal el resto se ve plano, por eso añadí escala raíz y logarítmica, tooltip y atajos.»
-4. **(2:05)** *Serie por hora.* Arrastra de 11 a 17. «La serie de horas muestra solo el periodo elegido y también filtra el mapa.»
-5. **(2:20)** *Densidad 3D* (`#step=4`). Inclina el mapa con Ctrl y arrastre. «La densidad se mide con kilómetros de trayectoria, no con puntos: los puntos indican dónde hay datos, no dónde hay tráfico. El 41 % del recorrido cae en el 10 % de las celdas.»
-6. **(2:45)** *Trayectorias* (`#step=5`). Reproduce el reloj de 24 h. «Cada trayectoria aparece a su hora de inicio y se desvanece. Puedo filtrar la hora y el reloj recorre solo esa ventana.»
-7. **(3:05)** *Insights* (`#step=6`). Mueve un mapa. «Tres mapas con líneas del amarillo al rojo según el tráfico: mañana, tarde y noche, con la misma escala y cámara sincronizada. La tarde concentra el 73 % del recorrido. Y si pulso «Cada 2 horas» veo el día en doce mapas pequeños: el pico es de 12 a 14 horas.»
+1. **(1:05) Vista general.** «A la izquierda, el recorrido guiado y la leyenda, que también filtra; al centro, el mapa; abajo, las series de tiempo enlazadas.»
+2. **(1:15) ¿Quién y cuándo aportó los datos?** *Serie mensual (`#step=2`): arrastra sobre octubre de 2022; cambia entre escala raíz y lineal.* «Un solo mes, octubre de 2022, aporta el 26 % de las detecciones. Con escala lineal el resto se ve plano, por eso uso escala raíz.»
+3. **(1:40) ¿Qué objetos dominan?** *Leyenda (`#step=3`): doble clic en una categoría para dejarla sola; desmarca otras.* «Señalización, alumbrado y comercio suman el 70 %; el resto queda en gris.»
+4. **(2:00) ¿Dónde se concentra el recorrido?** *Densidad 3D (`#step=4`): inclina el mapa con Ctrl y arrastre.* «Mido kilómetros de trayectoria por celda, no puntos: los puntos indican dónde hay datos, no dónde hay tráfico. El 48 % del recorrido cae en el 10 % de las celdas.»
+5. **(2:25) ¿A qué hora?** *Insights (`#step=6`): mueve un mapa y se mueven los tres; pulsa «Cada 2 horas».* «La tarde concentra el 69 % del recorrido; con un mapa cada dos horas, el pico es de 12 a 14 horas.»
+6. **(2:55) ¿Cómo transcurre el día?** *Trayectorias (`#step=5`): reproduce el reloj de 24 h; arrastra de 11 a 17 en la serie por hora.* «Cada trayectoria aparece a su hora de inicio y se desvanece. Si filtro una franja, el reloj recorre solo esa ventana.»
 
-### 3:20–4:05 · Decisiones de diseño
-*Imagen:* diapositiva «Cómo llegamos aquí: feedback e iteraciones».
+### 3:25–4:05 · Decisiones de diseño
+*Imagen:* diapositivas de visualización (cajas «Tarea · Decisión») y «Cómo llegamos aquí».
 
-> «Tomé varias decisiones de diseño a partir de la retroalimentación del profesor: eliminé las líneas permanentes de las trayectorias, porque sugerían tráfico constante; medí el tráfico con trayectorias y no con puntos; sustituí los selectores de año por series de tiempo con selección; separé las paletas de color para que un color no signifique dos cosas; y fusioné la leyenda con los filtros. El mapa es el lienzo principal y las series van en una barra inferior de altura fija para que nada se desplace al filtrar.»
+> «Cada decisión responde a una tarea. Para comparar categorías, color categórico apto para daltonismo y lo demás en gris. Para ver concentración, kilómetros de trayectoria y no puntos. Para comparar franjas, la misma escala amarillo-rojo en todos los mapas, de modo que un color signifique lo mismo. Para el ritmo del día, estelas que se desvanecen y un reloj, en lugar de líneas permanentes que sugerirían tráfico constante. Muchas de estas decisiones nacieron de la retroalimentación del profesor.»
 
 ### 4:05–4:40 · Hallazgos y límites
-*Imagen:* diapositivas de conclusión y límites.
+*Imagen:* diapositivas «Hallazgos: respuestas a las preguntas» y «Límites».
 
-> «La conclusión es que estos datos describen mejor a quien captura que a la ciudad capturada: pocos meses, pocas calles y unas horas del día concentran la información. Hay límites importantes: solo descargué dos de cinco lotes de detecciones, y las trayectorias son una reconstrucción de tramos de unos dos segundos, así que el modo de transporte es una inferencia débil. Antes de usar datos colaborativos hay que preguntarse: ¿quién, cuándo y con qué?»
+> «Respondiendo a las tres preguntas: un solo mes aporta la cuarta parte de los datos; tres categorías dominan los objetos; y el recorrido se concentra en pocas calles y en la tarde. Por eso mi respuesta a la pregunta guía es: no del todo; estos datos describen mejor a quien captura que a la ciudad. Hay límites: la zona es parcial, las trayectorias son tramos de unos dos segundos, así que el modo de transporte es una inferencia débil, y las detecciones son automáticas, no un censo. Antes de usar datos colaborativos, pregunta: ¿quién, cuándo y con qué?»
 
 ### 4:40–4:50 · Cierre
 *Imagen:* QR y URL.

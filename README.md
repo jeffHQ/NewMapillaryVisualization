@@ -3,7 +3,7 @@
 **Visualización interactiva de capturas colaborativas de Mapillary en el oeste de Praga.**
 Proyecto final de **DS5343 – Data Visualization** (UTEC, Data Science, 2026-2).
 
-Mapillary reúne fotografías de calle aportadas por voluntarios y detecta en ellas objetos urbanos. Este proyecto convierte ese rastro en una exploración visual: 39.564 detecciones de objetos y 6.379 trayectorias reconstruidas en una zona de ~4,6 × 8,9 km. Su mensaje: **Mapillary describe mejor a quien captura que a la ciudad capturada**, así que cualquier lectura urbana debe preguntar quién, cuándo y con qué dispositivo.
+Mapillary reúne fotografías de calle aportadas por voluntarios y detecta en ellas objetos urbanos. Este proyecto convierte ese rastro en una exploración visual: 97.644 detecciones de objetos y 16.546 trayectorias reconstruidas en una zona de ~4,6 × 8,9 km. Su mensaje: **Mapillary describe mejor a quien captura que a la ciudad capturada**, así que cualquier lectura urbana debe preguntar quién, cuándo y con qué dispositivo.
 
 ## Entrega final (Semana 15)
 
@@ -27,13 +27,13 @@ La aplicación tiene **dos pestañas de ciudad**, con el selector **«Praga | Mi
 
 | | Praga | Miraflores (Lima) |
 |---|---|---|
-| Zona | oeste de Praga, ~4,6 × 8,9 km (2 de 5 lotes) | distrito completo, ~5,4 × 5,0 km (lon -77,060 a -77,010; lat -12,145 a -12,100) |
-| Detecciones de objetos | 39.564 (277 clases, 1.096 secuencias) | 36.071 (166 clases, 2.897 secuencias) |
-| Trayectorias reconstruidas | 6.379 (≈ 1.331 km) | 6.284 (≈ 1.255 km) |
-| Imágenes en la zona | 76.225 | 43.845 |
+| Zona | oeste de Praga, ~4,6 × 8,9 km (lon 14,350 a 14,415; lat 50,050 a 50,130) | distrito completo, ~5,4 × 5,0 km (lon -77,060 a -77,010; lat -12,145 a -12,100) |
+| Detecciones de objetos | 97.644 (374 clases, 1.947 secuencias) | 36.071 (166 clases, 2.897 secuencias) |
+| Trayectorias reconstruidas | 16.546 (≈ 3.806 km) | 6.284 (≈ 1.255 km) |
+| Imágenes en la zona | 258.209 | 43.845 |
 | Periodo | 2014–2026 | 2016–2026 (2016, 2022 y 2024 concentran el 96 % de las detecciones) |
 | Zona horaria de las horas | Europe/Prague | America/Lima |
-| Acceso a la API | 20 y 21 de octubre de 2026 | 16 de noviembre de 2026 |
+| Acceso a la API | 17 de noviembre de 2026 | 16 de noviembre de 2026 |
 
 
 Cuatro vistas, un mismo conjunto de filtros:
@@ -90,20 +90,20 @@ python build_pdfs.py             # requiere Chrome, Edge o Chromium (variable op
 
 ## Datos
 
-- **Fuente:** [Mapillary API v4](https://www.mapillary.com/developer/api-documentation) (`map_features`, `images`), CC BY-SA. Acceso: 20 y 21 de octubre de 2026 (Praga) y 16 de noviembre de 2026 (Miraflores).
+- **Fuente:** [Mapillary API v4](https://www.mapillary.com/developer/api-documentation) (`map_features`, `images`), CC BY-SA. Acceso: 17 de noviembre de 2026 (Praga) y 16 de noviembre de 2026 (Miraflores).
 - **Procesados:** [`deliveries/week15/data/praga/processed/`](deliveries/week15/data/praga/processed/) y [`deliveries/week15/data/miraflores/processed/`](deliveries/week15/data/miraflores/processed/); diccionario en [`data_dictionary.csv`](deliveries/week15/data/data_dictionary.csv). Las horas están en la zona horaria de cada ciudad.
 - **Privacidad:** no se publican nombres de contribuyentes ni miniaturas de imágenes; los dispositivos se agregan por fabricante.
 
 ## Limitaciones conocidas
 
-1. **Cobertura parcial.** Solo se descargaron 2 de los 5 lotes de `map_features` planeados (lon 14,350–14,415 de 14,500); la zona de estudio es de ~4,6 × 8,9 km y no representa toda Praga. Además, **la descarga de Praga se hizo con una versión anterior del script que descartaba en silencio las celdas que la API rechazaba (error 500)**: una comprobación posterior recuperó ≈ 9.100 detecciones en 13 celdas del centro (lon 14,370–14,410; lat 50,070–50,110) que figuran casi vacías en los datos actuales. Los datos de Praga y los documentos que se basan en ellos (paper, póster, presentación, videos) no se han regenerado; Miraflores sí se descargó con el pipeline corregido.
-2. **Las trayectorias son una reconstrucción**, no un dato observado: los tramos duran 2,1 s de mediana, la posición es la del *objeto* detectado y no la de la cámara, y el 25 % de las velocidades supera los 80 km/h. **El modo de transporte (63 % «vehículo») es una inferencia débil.**
+1. **Cobertura parcial.** Solo se descarga el oeste de Praga (lon 14,350–14,415; lat 50,050–50,130; ~4,6 × 8,9 km): no representa toda la ciudad. **Lección sobre la descarga:** con páginas pequeñas (`limit` ≤ 1000) la API de Mapillary recorta en silencio los resultados de las celdas densas (una celda del centro devolvía 692 de 1.395 detecciones) y además responde 500 en ellas. Una primera descarga con ese método perdió más de la mitad de las detecciones del centro. Por eso el pipeline pide páginas grandes, subdivide la celda cuando la API falla y contrasta las celdas densas con sus cuadrantes ([`pipeline/mapillary_api.py`](deliveries/week15/pipeline/mapillary_api.py)). Los datos actuales de Praga se descargaron así.
+2. **Las trayectorias son una reconstrucción**, no un dato observado: los tramos duran 2,0 s de mediana, la posición es la del *objeto* detectado y no la de la cámara, y el 26 % de las velocidades supera los 80 km/h. **El modo de transporte (64 % «vehículo») es una inferencia débil.**
 3. Las detecciones son automáticas; no son un censo de la infraestructura.
 4. El reloj de 24 h superpone todas las fechas: muestra un ciclo diario, no un día concreto.
 5. El 3D no incluye edificios: la altura solo codifica el valor.
 6. Se usa el perfil de automóvil de OSRM para todos los modos.
-7. Hay 4 detecciones con fecha de 2006 (inconsistentes) excluidas de la aplicación (Praga).
-8. **Miraflores:** una sola descarga del distrito; los tramos de trayectoria duran 2,6 s de mediana y el 14 % de las velocidades supera los 80 km/h, así que el modo de transporte (54 % «vehículo») también es una inferencia débil. Tres años (2016, 2022 y 2024) concentran el 96 % de las detecciones. Los datos viejos de `dust/` (2.186 detecciones sin secuencia) no se usan.
+7. Hay 25 detecciones de Praga con fecha anterior a 2014 (2003–2013, inconsistentes) excluidas de la aplicación.
+8. **Miraflores:** una sola descarga del distrito, hecha con el método anterior (páginas pequeñas), por lo que **sus cifras pueden estar incompletas en las celdas densas del centro; se está repitiendo con el método corregido** y se actualizarán; los tramos de trayectoria duran 2,6 s de mediana y el 14 % de las velocidades supera los 80 km/h, así que el modo de transporte (54 % «vehículo») también es una inferencia débil. Tres años (2016, 2022 y 2024) concentran el 96 % de las detecciones. Los datos viejos de `dust/` (2.186 detecciones sin secuencia) no se usan.
 
 ## Contribution statement
 
