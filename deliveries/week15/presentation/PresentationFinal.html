@@ -43,13 +43,13 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
   <ul style="margin-top:.4in">
     <li>Cada dato existe porque alguien pasó con una cámara: depende de <b>quién</b>, <b>cuándo</b> y <b>con qué dispositivo</b>.</li>
     <li><b>Audiencia:</b> analistas y estudiantes de datos geoespaciales y de movilidad urbana.</li>
-    <li><b>Pregunta guía:</b> ¿puedo confiar en estos datos para mi análisis? Para responderla, tres preguntas:</li>
+    <li><b>Pregunta guía:</b> ¿puedo confiar en estos datos para mi análisis? Para responderla, dos preguntas principales:</li>
   </ul>
   <div class="qrow">
-    <div><b>1 · ¿Quién y cuándo?</b>¿Qué meses y horas aportan los datos?</div>
-    <div><b>2 · ¿Qué?</b>¿Qué objetos dominan lo capturado?</div>
-    <div><b>3 · ¿Dónde y a qué hora?</b>¿Dónde y cuándo se concentra el recorrido?</div>
+    <div><b>1 · ¿Quién tomó la fotografía?</b>Vehículos, scooters o peatones: ¿cómo se desplaza quien captura?</div>
+    <div><b>2 · ¿Dónde se concentra el tráfico?</b>En qué lugares y a qué hora se concentra el recorrido.</div>
   </div>
+  <p class="muted" style="margin-top:.22in">Preguntas adicionales: cuándo se capturó, qué objetos dominan y cómo transcurre el día.</p>
 </section>
 
 <section>
@@ -200,12 +200,17 @@ code { background:#eef2f7; padding:0 4px; border-radius:4px; font-size:.85em; }
 <section>
   <span class="tm">Bloque 3 · conclusiones, límites y trabajo futuro (2 min)</span>
   <h2>Hallazgos: respuestas a las preguntas</h2>
-  <div class="row" style="margin-top:.2in">
-    <div class="kpi"><h3>1 · ¿Quién y cuándo?</h3><div class="big">26 %</div>de las detecciones son de un solo mes (octubre de 2022); cinco meses suman el 60 %.</div>
-    <div class="kpi"><h3>2 · ¿Qué?</h3><div class="big">70 %</div>son señalización, alumbrado y comercio; el mobiliario urbano, solo el 7 %.</div>
-    <div class="kpi"><h3>3 · ¿Dónde y cuándo?</h3><div class="big">48 %</div>del recorrido cae en el 10 % de las celdas; la tarde concentra el 69 % y el pico es de 12 a 14 h.</div>
+  <div class="row" style="margin-top:.15in">
+    <div class="kpi"><h3>1 · ¿Quién tomó la fotografía?</h3><div class="big">64&nbsp;%</div>de las trayectorias son de velocidad de vehículo; 24&nbsp;% bici o scooter y 12&nbsp;% a pie (inferencia por velocidad).</div>
+    <div class="kpi"><h3>2 · ¿Dónde se concentra el tráfico?</h3><div class="big">48&nbsp;%</div>del recorrido cae en el 10&nbsp;% de las celdas; la tarde concentra el 69&nbsp;% y el pico es de 12 a 14&nbsp;h.</div>
   </div>
-  <p class="quote" style="font-size:24pt;margin-top:.4in">Respuesta a la pregunta guía: <b class="acc">no del todo</b>. Estos datos describen mejor a quien captura que a la ciudad.</p>
+  <p class="muted" style="margin:.22in 0 .06in"><b>Preguntas adicionales</b></p>
+  <div class="qrow" style="margin-top:0">
+    <div><b>¿Quién y cuándo?</b>26&nbsp;% de las detecciones son de un solo mes (octubre de 2022); cinco meses suman el 60&nbsp;%.</div>
+    <div><b>¿Qué objetos?</b>70&nbsp;% son señalización, alumbrado y comercio; el mobiliario urbano, solo el 7&nbsp;%.</div>
+    <div><b>¿Cómo transcurre el día?</b>De 10 a 16&nbsp;h se concentra el 70&nbsp;% del recorrido; de 20:00 a 08:00, casi nada.</div>
+  </div>
+  <p class="quote" style="font-size:22pt;margin-top:.3in">Respuesta a la pregunta guía: <b class="acc">no del todo</b>. Estos datos describen mejor a quien captura que a la ciudad.</p>
 </section>
 
 <section>
