@@ -11,8 +11,8 @@ Praga a pie de calle: visualización interactiva de capturas colaborativas de Ma
 |---|---|
 | **Aplicación publicada** (§5.1) | <https://jeffhq.github.io/NewMapillaryVisualization/> · código en [`app/`](app/) |
 | **Paper final** (§5.2) `FinalPaper.pdf` + fuente editable | [`FinalPaper.pdf`](FinalPaper.pdf) · [`paper/paper.html`](paper/paper.html) (+ [`paper/img/`](paper/img/)) |
-| **Video teaser, 1 min** (§5.3) | enlace pendiente de publicar · guion: [`videos/VideoScripts.md`](videos/VideoScripts.md) |
-| **Video de presentación, ≤ 5 min** (§5.4) | enlace pendiente de publicar · guion: [`videos/VideoScripts.md`](videos/VideoScripts.md) |
+| **Video teaser, 1 min** (§5.3) | `teaser.mp4` en [`VIDEOS_ZOOM.zip`](VIDEOS_ZOOM.zip) · guion: [`videos/VideoScripts.md`](videos/VideoScripts.md) |
+| **Video de presentación, ≤ 5 min** (§5.4) | `presentacion.mp4` en [`VIDEOS_ZOOM.zip`](VIDEOS_ZOOM.zip) · guion: [`videos/VideoScripts.md`](videos/VideoScripts.md) |
 | **Póster en PDF, con QR** (§5.5) | [`FinalPoster.pdf`](FinalPoster.pdf) · fuente: [`poster/poster.html`](poster/poster.html) · QR: [`poster/qr.svg`](poster/qr.svg) |
 | **Página del proyecto** (§5.6) | <https://jeffhq.github.io/NewMapillaryVisualization/project.html> · fuente: [`app/project.html`](app/project.html) |
 | **Presentación final** (§4.7) `PresentationFinal.pdf` | [`PresentationFinal.pdf`](PresentationFinal.pdf) · fuente: [`presentation/PresentationFinal.html`](presentation/PresentationFinal.html) |
@@ -60,5 +60,5 @@ El pipeline de datos (extracción, limpieza, trayectorias y tablas procesadas) e
 
 ## Pendiente de publicar
 
-- Grabar y subir los dos videos, y pegar sus enlaces en `app/project.html` y en el README principal (ver `videos/VideoScripts.md`).
+- Los dos videos se entregan en [`VIDEOS_ZOOM.zip`](VIDEOS_ZOOM.zip). Opcional: subirlos a YouTube como no listados y sustituir los enlaces de descarga en `app/project.html` y en el README principal.
 - Comprobar que la URL publicada responde y que todos los enlaces de la página del proyecto funcionan.

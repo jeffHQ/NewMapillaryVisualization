@@ -14,8 +14,8 @@ Mapillary reúne fotografías de calle aportadas por voluntarios y detecta en el
 | **Paper final** | [`FinalPaper.pdf`](deliveries/week15/FinalPaper.pdf) · fuente editable: [`paper/paper.html`](deliveries/week15/paper/paper.html) |
 | **Póster** | [`FinalPoster.pdf`](deliveries/week15/FinalPoster.pdf) (A1, con QR) |
 | **Presentación final** | [`PresentationFinal.pdf`](deliveries/week15/PresentationFinal.pdf) |
-| **Video teaser (1 min)** | *enlace pendiente de publicar* — guion en [`videos/VideoScripts.md`](deliveries/week15/videos/VideoScripts.md) |
-| **Video de presentación (≤ 5 min)** | *enlace pendiente de publicar* — guion en [`videos/VideoScripts.md`](deliveries/week15/videos/VideoScripts.md) |
+| **Video teaser (1 min)** | `teaser.mp4` en [`VIDEOS_ZOOM.zip`](deliveries/week15/VIDEOS_ZOOM.zip) — guion en [`videos/VideoScripts.md`](deliveries/week15/videos/VideoScripts.md) |
+| **Video de presentación (≤ 5 min)** | `presentacion.mp4` en [`VIDEOS_ZOOM.zip`](deliveries/week15/VIDEOS_ZOOM.zip) — guion en [`videos/VideoScripts.md`](deliveries/week15/videos/VideoScripts.md) |
 | **Carpeta de la entrega** | [`deliveries/week15/`](deliveries/week15/) |
 | **Lineamientos** | [`docs/Lineamientos_del_Proyecto.pdf`](docs/Lineamientos_del_Proyecto.pdf) |
 
