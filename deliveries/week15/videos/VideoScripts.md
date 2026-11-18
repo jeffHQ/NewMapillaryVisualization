@@ -15,11 +15,11 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 
 | Tiempo | Imagen (qué se ve) | Narración |
 |---|---|---|
-| 0:00–0:08 | Pantalla negra → título «Praga a pie de calle» sobre un mapa lleno de puntos (`#step=4`) | «Miles de personas fotografían las calles del mundo. Y usamos esas imágenes como si describieran la ciudad.» |
+| 0:00–0:08 | Pantalla negra → título «Praga a pie de calle» sobre un mapa lleno de puntos (`#step=6`) | «Miles de personas fotografían las calles del mundo. Y usamos esas imágenes como si describieran la ciudad.» |
 | 0:08–0:16 | Zoom lento sobre los puntos de colores; texto en pantalla: «97.644 objetos · 16.546 trayectorias» | «En el oeste de Praga, Mapillary detecta casi cien mil objetos: farolas, señales, pasos de peatones.» |
-| 0:16–0:30 | Arrastrar sobre la serie mensual hasta octubre de 2022 (`#step=5`); el mapa se vacía; resaltar «26 %» | «Pero un solo mes, octubre de 2022, aporta la cuarta parte de todos los datos. El resto de la serie casi no se ve.» |
-| 0:30–0:45 | Vista Insights con los tres mapas de colores (amarillo a rojo); mover un mapa y los otros dos se mueven (`#step=3`) | «Y el recorrido también es desigual: la tarde concentra el 69 % de lo que se reconstruye. Mañana, tarde y noche cuentan historias muy distintas.» |
-| 0:45–0:55 | Trayectorias con el reloj de 24 h avanzando; estelas que se desvanecen (`#step=1`) | «Cada trayectoria aparece a su hora y se desvanece. Explora el día entero.» |
+| 0:16–0:30 | Arrastrar sobre la serie mensual hasta octubre de 2022 (`#step=7`); el mapa se vacía; resaltar «26 %» | «Pero un solo mes, octubre de 2022, aporta la cuarta parte de todos los datos. El resto de la serie casi no se ve.» |
+| 0:30–0:45 | Vista Insights con los tres mapas de colores (amarillo a rojo); mover un mapa y los otros dos se mueven (`#step=5`) | «Y el recorrido también es desigual: la tarde concentra el 69 % de lo que se reconstruye. Mañana, tarde y noche cuentan historias muy distintas.» |
+| 0:45–0:55 | Trayectorias con el reloj de 24 h avanzando; estelas que se desvanecen (`#step=3`) | «Cada trayectoria aparece a su hora y se desvanece. Explora el día entero.» |
 | 0:55–1:00 | Título final con QR y URL: «jeffhq.github.io/NewMapillaryVisualization» | «Estos datos describen mejor a quien captura que a la ciudad. Descúbrelo tú mismo.» |
 
 **Plano final:** el QR del póster (`../poster/qr.svg`) sobre fondo claro, 3 segundos.
@@ -30,7 +30,7 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 
 **Debe cubrir (rúbrica):** motivación, audiencia, datos, demostración, decisiones de diseño y hallazgos. Estructura: tres preguntas → datos y transformaciones → demostración «pregunta → interacción → respuesta» → decisiones justificadas por la tarea → hallazgos que responden a las preguntas.
 **Ritmo:** ≈ 520 palabras (≈ 4 min de voz) más las pausas de la demostración. Objetivo de duración: 4:40, para dejar margen. Las diapositivas son las de `../PresentationFinal.pdf`.
-**Nota:** el recorrido guiado de la aplicación (`#step=1` … `#step=7`) es un texto para leer, no este guion; úsalo solo para abrir cada vista con un enlace directo.
+**Nota:** el recorrido guiado de la aplicación (`#step=1` … `#step=10`) es un texto para leer, de unos cinco minutos, y no este guion; úsalo solo para abrir cada vista con un enlace directo.
 
 ### 0:00–0:45 · Motivación, audiencia, preguntas y datos
 *Imagen:* diapositivas 2–3 (problema y datos).
@@ -42,15 +42,15 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 
 > «Descargué los datos con la API de Mapillary y los limpié. Agrupé 374 clases de objeto en siete categorías; ordené las detecciones de cada secuencia por hora para reconstruir trayectorias y las ajusté a la calle con OSRM; y medí el recorrido en kilómetros por celda de cien metros. Las horas están en hora local de Praga.»
 
-### 1:05–3:25 · Demostración: de la pregunta a la respuesta (recorrido guiado, `#step=1` … `#step=7`)
+### 1:05–3:25 · Demostración: de la pregunta a la respuesta (recorrido guiado, `#step=3` … `#step=8`)
 *Imagen:* la aplicación en pantalla completa. Cada bloque sigue el orden **pregunta → interacción → respuesta**.
 
 1. **(1:05) Vista general.** «A la izquierda, el recorrido guiado y la leyenda, que también filtra; al centro, el mapa; abajo, las series de tiempo enlazadas.»
-2. **(1:15) ¿Quién y cuándo aportó los datos?** *Serie mensual (`#step=5`): arrastra sobre octubre de 2022; cambia entre escala raíz y lineal.* «Un solo mes, octubre de 2022, aporta el 26 % de las detecciones. Con escala lineal el resto se ve plano, por eso uso escala raíz.»
-3. **(1:40) ¿Qué objetos dominan?** *Leyenda (`#step=6`): doble clic en una categoría para dejarla sola; desmarca otras.* «Señalización, alumbrado y comercio suman el 70 %; el resto queda en gris.»
-4. **(2:00) ¿Dónde se concentra el recorrido?** *Densidad 3D (`#step=2`): inclina el mapa con Ctrl y arrastre.* «Mido kilómetros de trayectoria por celda, no puntos: los puntos indican dónde hay datos, no dónde hay tráfico. El 48 % del recorrido cae en el 10 % de las celdas.»
-5. **(2:25) ¿A qué hora?** *Insights (`#step=3`): mueve un mapa y se mueven los tres; pulsa «Cada 2 horas».* «La tarde concentra el 69 % del recorrido; con un mapa cada dos horas, el pico es de 12 a 14 horas.»
-6. **(2:55) ¿Cómo transcurre el día?** *Trayectorias (`#step=1`): reproduce el reloj de 24 h; arrastra de 11 a 17 en la serie por hora.* «Cada trayectoria aparece a su hora de inicio y se desvanece. Si filtro una franja, el reloj recorre solo esa ventana.»
+2. **(1:15) ¿Quién y cuándo aportó los datos?** *Serie mensual (`#step=7`): arrastra sobre octubre de 2022; cambia entre escala raíz y lineal.* «Un solo mes, octubre de 2022, aporta el 26 % de las detecciones. Con escala lineal el resto se ve plano, por eso uso escala raíz.»
+3. **(1:40) ¿Qué objetos dominan?** *Leyenda (`#step=8`): doble clic en una categoría para dejarla sola; desmarca otras.* «Señalización, alumbrado y comercio suman el 70 %; el resto queda en gris.»
+4. **(2:00) ¿Dónde se concentra el recorrido?** *Densidad 3D (`#step=4`): inclina el mapa con Ctrl y arrastre.* «Mido kilómetros de trayectoria por celda, no puntos: los puntos indican dónde hay datos, no dónde hay tráfico. El 48 % del recorrido cae en el 10 % de las celdas.»
+5. **(2:25) ¿A qué hora?** *Insights (`#step=5`): mueve un mapa y se mueven los tres; pulsa «Cada 2 horas».* «La tarde concentra el 69 % del recorrido; con un mapa cada dos horas, el pico es de 12 a 14 horas.»
+6. **(2:55) ¿Cómo transcurre el día?** *Trayectorias (`#step=3`): reproduce el reloj de 24 h; arrastra de 11 a 17 en la serie por hora.* «Cada trayectoria aparece a su hora de inicio y se desvanece. Si filtro una franja, el reloj recorre solo esa ventana.»
 
 ### 3:25–4:05 · Decisiones de diseño
 *Imagen:* diapositivas de visualización (cajas «Tarea · Decisión») y «Cómo llegamos aquí».
@@ -81,4 +81,4 @@ Hay dos videos (lineamientos §5.3 y §5.4). **Los graba el equipo**; este archi
 
 ## 4. Herramientas sugeridas
 
-OBS Studio o la barra de juegos de Windows (`Win + G`) para grabar la pantalla; Clipchamp o DaVinci Resolve para editar. Los enlaces directos `#step=N` y `#step=1&hours=11-17` abren la aplicación en el paso o filtro indicado.
+OBS Studio o la barra de juegos de Windows (`Win + G`) para grabar la pantalla; Clipchamp o DaVinci Resolve para editar. Los enlaces directos `#step=N` y `#step=3&hours=11-17` abren la aplicación en el paso o filtro indicado.

@@ -743,51 +743,72 @@
     const nightShare = [22, 23, 0, 1, 2, 3, 4, 5].reduce((a, hr) => a + (th[hr] || 0), 0) / thTot;
     const med = (S.trip_quality && S.trip_quality.median_duration_s) || 2;
     const go = (layer, mut) => () => { resetFilters(); if (mut) mut(); setLayer(layer); };
+    // Recorrido para leer (≈ 5 min): introducción → datos → preguntas (trayectorias, densidad, insights, cobertura, tiempo, objetos) → diseño → conclusión.
     const mc = new Map();
     F.ti.forEach((t) => mc.set(t, (mc.get(t) || 0) + 1));
     const peakM = [...mc.entries()].sort((a, b) => b[1] - a[1])[0];
     const bins2h = new Array(12).fill(0);
     T.forEach((d) => { bins2h[Math.min(11, Math.floor(d.t / 120))] += d.s.length; });
     const pb = bins2h.indexOf(Math.max(...bins2h)), binTot = bins2h.reduce((x, y) => x + y, 0) || 1;
+    const bandSt = BANDS.map(bandStat), bandKm = bandSt.reduce((a, b) => a + b.km, 0) || 1;
+    const top3 = share('signage') + share('lighting') + share('commerce');
+    const km = fmt.format(Math.round(tc.km_total));
+    const area = `~${S.area.width_km.toString().replace('.', ',')} × ${S.area.height_km.toString().replace('.', ',')} km`;
     return [
       {
+        q: 'Introducción: ¿puedo confiar en estos datos?',
+        text: 'Mapillary reúne fotografías de calle aportadas por voluntarios, empresas y municipios, y detecta en ellas objetos urbanos: farolas, señales, pasos de peatones. Con esos datos se hacen inventarios de infraestructura y análisis de movilidad, como si el mapa describiera la ciudad.\n\n'
+          + 'Pero cada dato existe porque alguien pasó por allí con una cámara. Esta aplicación es para analistas y estudiantes de datos geoespaciales que se preguntan si pueden confiar en ellos, y para qué zonas, periodos y objetos.\n\n'
+          + 'Este recorrido de diez pasos se lee en unos cinco minutos: primero los datos, después seis preguntas sobre el recorrido, la cobertura y los objetos, y al final el diseño y las conclusiones.',
+        hint: 'Pulsa «Siguiente» para avanzar. El mapa cambia de vista en cada paso y puedes explorarlo en cualquier momento.',
+        apply: go('trips'),
+      },
+      {
+        q: 'Los datos y cómo se prepararon',
+        text: `${S.city.place[0].toUpperCase() + S.city.place.slice(1)} (${area}) reúne ${fmt.format(total)} detecciones de objetos urbanos de ${fmt.format(S.n_distinct_values)} clases, agrupadas en siete categorías. Hay ${fmt.format(S.n_images)} imágenes asociadas y ${fmt.format(S.n_sequences_detections)} secuencias de captura. Fuente: API de Mapillary (CC BY-SA).\n\n`
+          + `Las trayectorias no vienen en los datos: se reconstruyen. Las detecciones de cada secuencia se ordenan por hora, se encadenan cuando están cerca en el tiempo y el espacio (≤ 15 s y ≤ 60 m) y se ajustan a la calle con OSRM. Resultan ${fmt.format(S.n_trips)} trayectorias que suman ≈ ${km} km. Las horas son locales (${S.city.tz}).`,
+        hint: 'Cada trayectoria del mapa es un tramo reconstruido: aparece a su hora de inicio y se desvanece.',
+        apply: go('trips'),
+      },
+      {
         q: '¿Cómo se desplaza quien captura?',
-        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, ${pct(vShare)} corresponde a velocidades de vehículo motorizado (inferencia por velocidad poco fiable: tramos de ~${fmt1(med)} s de mediana). El inicio de las trayectorias tiene su pico a las ${hh(S.peak_trip_hour)}:00 h (hora local; ${pct(peakShare)} del total) y el ${pct(nightShare)} empieza entre las 22:00 y las 06:00.`,
-        hint: 'Mueve el reloj de 24 h o pulsa Reproducir. Cada trayectoria se desvanece tras pasar.',
+        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, el ${pct(vShare)} corresponde a velocidades de vehículo motorizado, el ${pct(S.trips_by_mode.micro / modeTot)} a bici o scooter y el ${pct(S.trips_by_mode.walk / modeTot)} a pie. Es una inferencia por velocidad media y poco fiable: los tramos duran ~${fmt1(med)} s de mediana y la posición es la del objeto detectado, no la de la cámara.\n\n`
+          + `El inicio de las trayectorias tiene su pico a las ${hh(S.peak_trip_hour)}:00 h (hora local; ${pct(peakShare)} del total), y el ${pct(nightShare)} empieza entre las 22:00 y las 06:00.`,
+        hint: 'Mueve el reloj de 24 h o pulsa Reproducir. Arrastra sobre la serie por hora para ver solo una franja del día.',
         apply: go('trips'),
       },
       {
         q: '¿Dónde se concentra el recorrido?',
-        text: `Medido con trayectorias (≈ ${fmt.format(Math.round(tc.km_total))} km reconstruidos), el ${pct(tc.top10pct_cells_share)} del recorrido cae en el 10 % de las celdas de ~100 m recorridas (de ${fmt.format(tc.occupied_cells_100m)}). Las torres marcan las calles más transitadas por quienes capturan.`,
+        text: `Medido con trayectorias (≈ ${km} km reconstruidos), el ${pct(tc.top10pct_cells_share)} del recorrido cae en el 10 % de las celdas de ~100 m recorridas (de ${fmt.format(tc.occupied_cells_100m)}). Las torres marcan las calles más transitadas por quienes capturan.\n\n`
+          + 'La altura y el tono no cuentan puntos, sino kilómetros de trayectoria por celda: los puntos indican dónde hay datos, no dónde hay tráfico. Una calle con muchas detecciones pero pocas pasadas no destaca; una avenida recorrida muchas veces, sí.',
         hint: 'Inclina el mapa con Ctrl + arrastrar. Filtra por modo, periodo y hora para ver cómo cambia.',
         apply: go('density'),
       },
       {
         q: '¿Cómo cambia el recorrido durante el día?',
-        text: (() => {
-          const st = BANDS.map(bandStat);
-          const tot = st.reduce((a, b) => a + b.km, 0);
-          const early = T.filter((d) => d.t < 240).length;
-          return `Entre 04:00 y 24:00 se reconstruyen ≈ ${fmt.format(Math.round(tot))} km: la tarde concentra el ${pct(st[1].km / tot)}, la mañana el ${pct(st[0].km / tot)} y la noche el ${pct(st[2].km / tot)}. Dentro de cada franja, el 10 % de las celdas más recorridas reúne el ${pct(st[0].topShare)} (mañana), ${pct(st[1].topShare)} (tarde) y ${pct(st[2].topShare)} (noche) del recorrido. ${fmt.format(early)} trayectorias ocurren entre 00:00 y 04:00 y no se muestran. Con un mapa cada 2 horas, el pico es de ${hh(2 * pb)} a ${hh(2 * pb + 2)} h (${pct(bins2h[pb] / binTot)} del recorrido).`;
-        })(),
-        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Pulsa «Cada 2 horas» para ver el día en 12 mapas pequeños. Misma escala en todos: amarillo = pocas trayectorias, rojo = muchas.',
+        text: `Entre 04:00 y 24:00 se reconstruyen ≈ ${fmt.format(Math.round(bandKm))} km: la tarde (11:00–17:59) concentra el ${pct(bandSt[1].km / bandKm)}, la mañana (04:00–10:59) el ${pct(bandSt[0].km / bandKm)} y la noche (18:00–23:59) el ${pct(bandSt[2].km / bandKm)}.\n\n`
+          + `Cada tramo de calle se dibuja con un color (amarillo, naranja, rojo) y un grosor según cuántas trayectorias pasan por él, con la misma escala en los tres mapas. Con «Cada 2 horas» el día se ve en 12 mapas pequeños; el pico es de ${hh(2 * pb)} a ${hh(2 * pb + 2)} h (${pct(bins2h[pb] / binTot)} del recorrido).`,
+        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Pulsa «Cada 2 horas» para ver el detalle.',
         apply: go('insights'),
       },
       {
         q: '¿Qué tan completa es la cobertura?',
-        text: `La zona de estudio (~${S.area.width_km.toString().replace('.', ',')} × ${S.area.height_km.toString().replace('.', ',')} km, ${S.city.place}) reúne ${fmt.format(total)} detecciones de objetos urbanos en ${fmt.format(S.n_sequences_detections)} secuencias de captura (${fmt.format(S.n_images)} imágenes). Cada punto es un objeto; el color indica su categoría.`,
+        text: `Cada punto del mapa es un objeto detectado y su color indica la categoría. En total hay ${fmt.format(total)} detecciones en ${fmt.format(S.n_sequences_detections)} secuencias de captura.\n\n`
+          + 'La cobertura no es uniforme: hay calles llenas de puntos y zonas casi vacías. Un hueco no significa que no haya nada allí, sino que nadie capturó ese lugar o que no se detectó nada. Antes de interpretar un vacío conviene preguntarse quién pasó por esa calle.',
         hint: 'Acerca el mapa y pasa el cursor sobre un punto para ver qué es y cuándo se detectó.',
         apply: go('objects'),
       },
       {
         q: '¿Cuándo se capturó la ciudad?',
-        text: `La captura es muy desigual: ${peakYear} concentra ${pct(dy[peakYear] / total)} de las detecciones (${fmt.format(dy[peakYear])}) y varios años apenas aportan datos. Un solo mes, ${monthLabel(peakM[0])}, reúne el ${pct(peakM[1] / F.ti.length)}. Mostramos solo ${peakYear}; compáralo con otros periodos.`,
+        text: `La captura es muy desigual en el tiempo: ${peakYear} concentra el ${pct(dy[peakYear] / total)} de las detecciones (${fmt.format(dy[peakYear])}) y varios años apenas aportan datos. Un solo mes, ${monthLabel(peakM[0])}, reúne el ${pct(peakM[1] / F.ti.length)}.\n\n`
+          + `Por eso la serie mensual usa escala raíz por defecto: con escala lineal el mes dominante aplasta al resto y la serie parece plana. Puedes cambiar entre raíz, logarítmica y lineal en ⚙ Opciones. Aquí se muestra solo ${peakYear}; compáralo con otros periodos arrastrando sobre la serie.`,
         hint: 'Arrastra sobre la serie mensual para elegir un periodo; arrastra los bordes para ajustarlo (doble clic restablece).',
         apply: go('objects', () => { state.time = [monthIdx(peakYear, 1), monthIdx(peakYear, 12)]; }),
       },
       {
-        q: '¿Qué elementos dominan el paisaje urbano?',
-        text: `Señalización vertical (${pct(share('signage'))}), alumbrado y postes (${pct(share('lighting'))}) y comercio/publicidad (${pct(share('commerce'))}) suman ${pct(share('signage') + share('lighting') + share('commerce'))} de lo detectado. El mobiliario urbano representa el ${pct(share('furniture'))}. Resaltamos las tres categorías mayores y dejamos el resto en gris.`,
+        q: '¿Qué objetos dominan?',
+        text: `Señalización vertical (${pct(share('signage'))}), alumbrado y postes (${pct(share('lighting'))}) y comercio/publicidad (${pct(share('commerce'))}) suman ${pct(top3)} de lo detectado. El mobiliario urbano representa el ${pct(share('furniture'))}.\n\n`
+          + 'Se resaltan las tres categorías mayores y el resto queda en gris, para comparar su peso sin perder el contexto. Los colores de las categorías (paleta de Okabe e Ito, apta para daltonismo) se usan solo para ellas: ningún color significa dos cosas en la aplicación. La leyenda es también el filtro.',
         hint: 'En la leyenda: clic para activar o desactivar una categoría y doble clic para dejar solo esa.',
         apply: go('objects', () => {
           state.cats = new Set(F.categories.map((c, i) => [i, c.count]).filter(([i]) => F.catIds[i] !== 'other')
@@ -795,9 +816,17 @@
         }),
       },
       {
-        q: 'Conclusión provisional y límites',
-        text: 'Mapillary describe bien dónde y cuándo se ha mirado la ciudad, pero no es un censo: la cobertura la determinan pocas campañas y dispositivos, y el modo de desplazamiento es solo una inferencia por velocidad. Cualquier lectura "urbana" debe ir acompañada de la pregunta: ¿quién capturó y cuándo?',
-        hint: 'Explora libremente: todos los filtros siguen activos.',
+        q: 'Cómo está diseñada la visualización',
+        text: 'Cada decisión responde a una tarea del usuario. Para ver cuándo se capturó, series de tiempo enlazadas con selección por arrastre y escala ajustable. Para ver concentración, kilómetros de trayectoria y no puntos. Para comparar franjas del día, la misma escala de color en todos los mapas y cámaras sincronizadas.\n\n'
+          + 'Las trayectorias se dibujan como estelas que se desvanecen y no como líneas permanentes, que sugerirían un tráfico constante. El mapa es el lienzo principal; el panel izquierdo reúne el recorrido y la leyenda-filtro, y las series de tiempo van abajo con altura fija para que nada se desplace al filtrar.',
+        hint: 'Prueba las cuatro vistas desde las pestañas y combina filtros: se aplican a todas.',
+        apply: go('trips'),
+      },
+      {
+        q: 'Conclusión y límites',
+        text: `Mapillary describe bien dónde y cuándo se ha mirado la ciudad, pero no es un censo. La cobertura la determinan pocas campañas y dispositivos: un solo mes reúne el ${pct(peakM[1] / F.ti.length)} de las detecciones, el ${pct(tc.top10pct_cells_share)} del recorrido cae en el 10 % de las celdas y la tarde concentra el ${pct(bandSt[1].km / bandKm)} de lo reconstruido.\n\n`
+          + `Límites: la zona es parcial, las detecciones son automáticas y las trayectorias son una reconstrucción de tramos de ~${fmt1(med)} s, así que el modo de desplazamiento es solo una inferencia. Toda lectura urbana de estos datos debe preguntar: ¿quién capturó, cuándo y con qué?`,
+        hint: 'Explora libremente: todos los filtros siguen activos. Puedes cambiar de ciudad con el selector de arriba.',
         apply: go('objects'),
       },
     ];

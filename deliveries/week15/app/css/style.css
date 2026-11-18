@@ -253,3 +253,5 @@ select {
   .clock { width: 200px; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+
+#tour-text { white-space: pre-line; }   /* los pasos del recorrido tienen varios párrafos */
