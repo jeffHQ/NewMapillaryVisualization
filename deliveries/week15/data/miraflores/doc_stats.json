@@ -1,0 +1,341 @@
+{
+ "n_detections_app": 258497,
+ "n_detections": 258497,
+ "n_sequences": 6999,
+ "n_images": 569833,
+ "n_trips": 49492,
+ "n_classes": 240,
+ "area": {
+  "lon": [
+   -77.06003,
+   -77.00997
+  ],
+  "lat": [
+   -12.145,
+   -12.099972
+  ],
+  "center": [
+   -77.035,
+   -12.1225
+  ],
+  "width_km": 5.4,
+  "height_km": 5.0
+ },
+ "year_range": [
+  2016,
+  2026
+ ],
+ "detections_by_year": {
+  "2016": 41817,
+  "2017": 1729,
+  "2018": 30,
+  "2019": 259,
+  "2022": 85660,
+  "2023": 2553,
+  "2024": 122093,
+  "2025": 3357,
+  "2026": 999
+ },
+ "top_years": [
+  [
+   2024,
+   122093,
+   47.2
+  ],
+  [
+   2022,
+   85660,
+   33.1
+  ],
+  [
+   2016,
+   41817,
+   16.2
+  ],
+  [
+   2025,
+   3357,
+   1.3
+  ]
+ ],
+ "top_month": [
+  [
+   2024,
+   10
+  ],
+  121791,
+  47.1
+ ],
+ "top5_months_share": 97.6,
+ "months_with_data": 30,
+ "categories": {
+  "lighting": [
+   100470,
+   38.9
+  ],
+  "commerce": [
+   45498,
+   17.6
+  ],
+  "signage": [
+   40282,
+   15.6
+  ],
+  "marking": [
+   27860,
+   10.8
+  ],
+  "utilities": [
+   16617,
+   6.4
+  ],
+  "furniture": [
+   9802,
+   3.8
+  ],
+  "other": [
+   9201,
+   3.6
+  ],
+  "traffic_light": [
+   8767,
+   3.4
+  ]
+ },
+ "top_values": [
+  [
+   "object--support--utility-pole",
+   48902
+  ],
+  [
+   "object--street-light",
+   37117
+  ],
+  [
+   "object--sign--advertisement",
+   21763
+  ]
+ ],
+ "detections_peak_hour": [
+  10,
+  33729,
+  13.0
+ ],
+ "detections_concentration": {
+  "cells": 1924,
+  "top10pct_share": 34.0
+ },
+ "trip_concentration": {
+  "occupied_cells_100m": 1857,
+  "top10pct_cells_share": 0.403,
+  "km_total": 9757.3
+ },
+ "modes": {
+  "vehicle": [
+   27616,
+   55.8
+  ],
+  "micro": [
+   16170,
+   32.7
+  ],
+  "walk": [
+   5706,
+   11.5
+  ]
+ },
+ "trip_quality": {
+  "median_duration_s": 3.0,
+  "share_le_3s": 53.5,
+  "share_over_80": 14.0,
+  "max_speed_kmh": 7841.0
+ },
+ "trips_peak_hour": [
+  10,
+  6497,
+  13.1
+ ],
+ "trips_night_share_22_06": 1.9,
+ "bands": {
+  "morning": {
+   "trips": 21806,
+   "km": 4373.96,
+   "top10_share": 41.5,
+   "km_share": 45.2
+  },
+  "afternoon": {
+   "trips": 26368,
+   "km": 5070.8,
+   "top10_share": 39.9,
+   "km_share": 52.4
+  },
+  "night": {
+   "trips": 1024,
+   "km": 235.52,
+   "top10_share": 38.6,
+   "km_share": 2.4
+  }
+ },
+ "bands_total_km": 9680,
+ "trips_before_04h": 294,
+ "bins_2h": [
+  {
+   "trips": 18,
+   "km": 4.8,
+   "top10_share": 14.2,
+   "bin": "00-02",
+   "km_share": 0.0
+  },
+  {
+   "trips": 276,
+   "km": 72.2,
+   "top10_share": 36.1,
+   "bin": "02-04",
+   "km_share": 0.7
+  },
+  {
+   "trips": 572,
+   "km": 119.48,
+   "top10_share": 38.5,
+   "bin": "04-06",
+   "km_share": 1.2
+  },
+  {
+   "trips": 2482,
+   "km": 583.6800000000001,
+   "top10_share": 40.0,
+   "bin": "06-08",
+   "km_share": 6.0
+  },
+  {
+   "trips": 12252,
+   "km": 2458.76,
+   "top10_share": 40.7,
+   "bin": "08-10",
+   "km_share": 25.2
+  },
+  {
+   "trips": 10758,
+   "km": 2060.12,
+   "top10_share": 38.8,
+   "bin": "10-12",
+   "km_share": 21.1
+  },
+  {
+   "trips": 6041,
+   "km": 1211.04,
+   "top10_share": 44.6,
+   "bin": "12-14",
+   "km_share": 12.4
+  },
+  {
+   "trips": 7365,
+   "km": 1291.08,
+   "top10_share": 35.2,
+   "bin": "14-16",
+   "km_share": 13.2
+  },
+  {
+   "trips": 8704,
+   "km": 1720.6000000000001,
+   "top10_share": 41.3,
+   "bin": "16-18",
+   "km_share": 17.6
+  },
+  {
+   "trips": 786,
+   "km": 191.44,
+   "top10_share": 40.1,
+   "bin": "18-20",
+   "km_share": 2.0
+  },
+  {
+   "trips": 172,
+   "km": 31.28,
+   "top10_share": 28.1,
+   "bin": "20-22",
+   "km_share": 0.3
+  },
+  {
+   "trips": 66,
+   "km": 12.8,
+   "top10_share": 22.2,
+   "bin": "22-24",
+   "km_share": 0.1
+  }
+ ],
+ "bins_2h_peak": "08-10",
+ "images_by_year": {
+  "2015": 6,
+  "2016": 96567,
+  "2017": 5246,
+  "2018": 205,
+  "2019": 3566,
+  "2021": 1,
+  "2022": 182198,
+  "2023": 6665,
+  "2024": 263518,
+  "2025": 9562,
+  "2026": 2299
+ },
+ "device_makes_top": [
+  [
+   "Desconocido",
+   391611
+  ],
+  [
+   "Garmin",
+   98209
+  ],
+  [
+   "Gopro",
+   55472
+  ],
+  [
+   "Apple",
+   12362
+  ],
+  [
+   "Samsung",
+   6615
+  ],
+  [
+   "Xiaomi",
+   4052
+  ],
+  [
+   "Motorola",
+   1161
+  ],
+  [
+   "Crosscall",
+   184
+  ]
+ ],
+ "device_shares_top3": [
+  [
+   "Desconocido",
+   391611,
+   68.7
+  ],
+  [
+   "Garmin",
+   98209,
+   17.2
+  ],
+  [
+   "Gopro",
+   55472,
+   9.7
+  ]
+ ],
+ "ratio_det_per_image": {
+  "2016": 0.43,
+  "2017": 0.33,
+  "2019": 0.07,
+  "2022": 0.47,
+  "2023": 0.38,
+  "2024": 0.46,
+  "2025": 0.35
+ }
+}

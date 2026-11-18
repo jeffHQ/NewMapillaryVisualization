@@ -56,6 +56,9 @@
   const monthIdx = (y, m) => (y - YEAR0) * 12 + (m - 1);
   const monthLabel = (ti) => `${MES[ti % 12]} ${YEAR0 + Math.floor(ti / 12)}`;
   const hh = (h) => String(h).padStart(2, '0');
+  // Math.min(...a) falla con arrays enormes (límite de argumentos); estas versiones recorren el array
+  const amin = (a) => { let m = Infinity; for (let i = 0; i < a.length; i++) if (a[i] < m) m = a[i]; return m; };
+  const amax = (a) => { let m = -Infinity; for (let i = 0; i < a.length; i++) if (a[i] > m) m = a[i]; return m; };
 
   const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
   // Franjas del día para los mapas de insights (minutos desde 00:00, hora local de Praga)
@@ -97,13 +100,13 @@
   )).then(([f, t, s]) => {
     F = f; T = t; S = s;
     S.city = S.city || { id: 'praga', name: 'Praga', place: 'oeste de Praga', view_zoom: 12.6 };
-    YEAR0 = Math.min(...F.year, ...T.map((d) => d.y));
+    YEAR0 = Math.min(amin(F.year), amin(T.map((d) => d.y)));
     applyCity();
     F.catIds = F.categories.map((c) => c.id);
     F.catColor = F.catIds.map((id) => hex2rgb(CAT_COLORS[id]));
     F.ti = F.year.map((y, i) => monthIdx(y, F.month[i]));
     T.forEach((d) => { d.ti = monthIdx(d.y, d.o); d.rgb = MODE_RGB[d.m]; });
-    TIME_N = Math.max(...F.ti, ...T.map((d) => d.ti)) + 1;
+    TIME_N = Math.max(amax(F.ti), amax(T.map((d) => d.ti))) + 1;
     state.time = [0, TIME_N - 1];
     state.cats = new Set(F.catIds.map((_, i) => i));
     init();
@@ -125,7 +128,7 @@
     $('about-area').textContent = `lon ${a.lon[0].toFixed(3)}–${a.lon[1].toFixed(3)}, lat ${a.lat[0].toFixed(3)}–${a.lat[1].toFixed(3)} (~${dot(a.width_km)} × ${dot(a.height_km)} km, ${c.place})`;
     const q = S.trip_quality;
     $('about-quality').textContent = q ? `los tramos duran ~${fmt1(q.median_duration_s)} s de mediana y el ${pct(q.share_over_80kmh)} supera los 80 km/h` : 'los tramos son muy cortos';
-    $('about-years').textContent = `${YEAR0}–${Math.max(...F.year)}`;
+    $('about-years').textContent = `${YEAR0}–${amax(F.year)}`;
     const n = S.n_excluded_dates || 0, ex = $('about-excl');
     ex.hidden = n === 0;
     if (n) ex.textContent = `${n} detecciones con fecha anterior a ${YEAR0} se omiten de la app por inconsistencia de fecha.`;
