@@ -75,7 +75,7 @@
 
   // ---- Estado ----
   const state = {
-    layer: 'objects',
+    layer: 'trips',
     time: [0, 0],                 // rango de meses (índices)
     hours: [0, 23],
     cats: new Set(),
@@ -745,6 +745,29 @@
     const go = (layer, mut) => () => { resetFilters(); if (mut) mut(); setLayer(layer); };
     return [
       {
+        q: '¿Cómo se desplaza quien captura?',
+        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, ${pct(vShare)} corresponde a velocidades de vehículo motorizado (inferencia por velocidad poco fiable: tramos de ~${fmt1(med)} s de mediana). El inicio de las trayectorias tiene su pico a las ${hh(S.peak_trip_hour)}:00 h (hora local; ${pct(peakShare)} del total) y el ${pct(nightShare)} empieza entre las 22:00 y las 06:00.`,
+        hint: 'Mueve el reloj de 24 h o pulsa Reproducir. Cada trayectoria se desvanece tras pasar.',
+        apply: go('trips'),
+      },
+      {
+        q: '¿Dónde se concentra el recorrido?',
+        text: `Medido con trayectorias (≈ ${fmt.format(Math.round(tc.km_total))} km reconstruidos), el ${pct(tc.top10pct_cells_share)} del recorrido cae en el 10 % de las celdas de ~100 m recorridas (de ${fmt.format(tc.occupied_cells_100m)}). Las torres marcan las calles más transitadas por quienes capturan.`,
+        hint: 'Inclina el mapa con Ctrl + arrastrar. Filtra por modo, periodo y hora para ver cómo cambia.',
+        apply: go('density'),
+      },
+      {
+        q: '¿Cómo cambia el recorrido durante el día?',
+        text: (() => {
+          const st = BANDS.map(bandStat);
+          const tot = st.reduce((a, b) => a + b.km, 0);
+          const early = T.filter((d) => d.t < 240).length;
+          return `Entre 04:00 y 24:00 se reconstruyen ≈ ${fmt.format(Math.round(tot))} km: la tarde concentra el ${pct(st[1].km / tot)}, la mañana el ${pct(st[0].km / tot)} y la noche el ${pct(st[2].km / tot)}. Dentro de cada franja, el 10 % de las celdas más recorridas reúne el ${pct(st[0].topShare)} (mañana), ${pct(st[1].topShare)} (tarde) y ${pct(st[2].topShare)} (noche) del recorrido. ${fmt.format(early)} trayectorias ocurren entre 00:00 y 04:00 y no se muestran.`;
+        })(),
+        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Pulsa «Cada 2 horas» para ver el día en 12 mapas pequeños. Misma escala en todos: amarillo = pocas trayectorias, rojo = muchas.',
+        apply: go('insights'),
+      },
+      {
         q: '¿Qué tan completa es la cobertura?',
         text: `La zona de estudio (~${S.area.width_km.toString().replace('.', ',')} × ${S.area.height_km.toString().replace('.', ',')} km, ${S.city.place}) reúne ${fmt.format(total)} detecciones de objetos urbanos en ${fmt.format(S.n_sequences_detections)} secuencias de captura (${fmt.format(S.n_images)} imágenes). Cada punto es un objeto; el color indica su categoría.`,
         hint: 'Acerca el mapa y pasa el cursor sobre un punto para ver qué es y cuándo se detectó.',
@@ -764,29 +787,6 @@
           state.cats = new Set(F.categories.map((c, i) => [i, c.count]).filter(([i]) => F.catIds[i] !== 'other')
             .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([i]) => i));
         }),
-      },
-      {
-        q: '¿Dónde se concentra el recorrido?',
-        text: `Medido con trayectorias (≈ ${fmt.format(Math.round(tc.km_total))} km reconstruidos), el ${pct(tc.top10pct_cells_share)} del recorrido cae en el 10 % de las celdas de ~100 m recorridas (de ${fmt.format(tc.occupied_cells_100m)}). Las torres marcan las calles más transitadas por quienes capturan.`,
-        hint: 'Inclina el mapa con Ctrl + arrastrar. Filtra por modo, periodo y hora para ver cómo cambia.',
-        apply: go('density'),
-      },
-      {
-        q: '¿Cómo se desplaza quien captura?',
-        text: `De ${fmt.format(modeTot)} trayectorias reconstruidas, ${pct(vShare)} corresponde a velocidades de vehículo motorizado (inferencia por velocidad poco fiable: tramos de ~${fmt1(med)} s de mediana). El inicio de las trayectorias tiene su pico a las ${hh(S.peak_trip_hour)}:00 h (hora local; ${pct(peakShare)} del total) y el ${pct(nightShare)} empieza entre las 22:00 y las 06:00.`,
-        hint: 'Mueve el reloj de 24 h o pulsa Reproducir. Cada trayectoria se desvanece tras pasar.',
-        apply: go('trips'),
-      },
-      {
-        q: '¿Cómo cambia el recorrido durante el día?',
-        text: (() => {
-          const st = BANDS.map(bandStat);
-          const tot = st.reduce((a, b) => a + b.km, 0);
-          const early = T.filter((d) => d.t < 240).length;
-          return `Entre 04:00 y 24:00 se reconstruyen ≈ ${fmt.format(Math.round(tot))} km: la tarde concentra el ${pct(st[1].km / tot)}, la mañana el ${pct(st[0].km / tot)} y la noche el ${pct(st[2].km / tot)}. Dentro de cada franja, el 10 % de las celdas más recorridas reúne el ${pct(st[0].topShare)} (mañana), ${pct(st[1].topShare)} (tarde) y ${pct(st[2].topShare)} (noche) del recorrido. ${fmt.format(early)} trayectorias ocurren entre 00:00 y 04:00 y no se muestran.`;
-        })(),
-        hint: 'Mueve o acerca un mapa: los tres se mueven a la vez. Pulsa «Cada 2 horas» para ver el día en 12 mapas pequeños. Misma escala en todos: amarillo = pocas trayectorias, rojo = muchas.',
-        apply: go('insights'),
       },
       {
         q: 'Conclusión provisional y límites',
