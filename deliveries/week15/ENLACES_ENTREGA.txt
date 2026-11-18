@@ -1,0 +1,64 @@
+PRAGA A PIE DE CALLE - ENLACES DE LA ENTREGA FINAL
+DS5343 Data Visualization - UTEC - 2026-2
+Autor: Jeffry Arturo Hilario Quintana
+Todos los enlaces fueron comprobados el 18 de noviembre de 2026.
+
+------------------------------------------------------------------------------
+1. APLICACION (version final publicada y funcional)
+------------------------------------------------------------------------------
+https://jeffhq.github.io/NewMapillaryVisualization/
+
+   Incluye dos pestanas de ciudad: Praga (por defecto) y Miraflores (Lima).
+   Implementada con deck.gl y MapLibre GL (sin D3.js, de acuerdo con el docente).
+
+------------------------------------------------------------------------------
+2. ARTICULO (PDF, 4 paginas, dos columnas, con resumen grafico)
+------------------------------------------------------------------------------
+PDF:
+https://jeffhq.github.io/NewMapillaryVisualization/files/FinalPaper.pdf
+
+Archivo fuente editable (HTML):
+https://github.com/jeffHQ/NewMapillaryVisualization/blob/main/deliveries/week15/paper/paper.html
+
+------------------------------------------------------------------------------
+3. TEASER (video de 1 minuto) Y 4. VIDEO DE PRESENTACION (maximo 5 minutos)
+------------------------------------------------------------------------------
+Ambos videos estan en un ZIP (teaser.mp4 y presentacion.mp4):
+https://github.com/jeffHQ/NewMapillaryVisualization/raw/main/deliveries/week15/VIDEOS_ZOOM.zip
+
+Guiones de los videos:
+https://github.com/jeffHQ/NewMapillaryVisualization/blob/main/deliveries/week15/videos/VideoScripts.md
+
+------------------------------------------------------------------------------
+5. POSTER (PDF, con codigo QR a la aplicacion)
+------------------------------------------------------------------------------
+https://jeffhq.github.io/NewMapillaryVisualization/files/FinalPoster.pdf
+
+------------------------------------------------------------------------------
+6. PAGINA DEL PROYECTO
+------------------------------------------------------------------------------
+https://jeffhq.github.io/NewMapillaryVisualization/project.html
+
+------------------------------------------------------------------------------
+7. REPOSITORIO FINAL (codigo, datos, scripts, materiales y README)
+------------------------------------------------------------------------------
+Repositorio:
+https://github.com/jeffHQ/NewMapillaryVisualization
+
+README (instrucciones de ejecucion, dependencias, datos, limitaciones y contribuciones):
+https://github.com/jeffHQ/NewMapillaryVisualization/blob/main/README.md
+
+Scripts de procesamiento (pipeline 01-05 por ciudad):
+https://github.com/jeffHQ/NewMapillaryVisualization/blob/main/deliveries/week15/pipeline
+
+Datos procesados y diccionario de datos:
+https://github.com/jeffHQ/NewMapillaryVisualization/blob/main/deliveries/week15/data
+
+------------------------------------------------------------------------------
+8. DIAPOSITIVAS FINALES (PDF utilizado en la exposicion)
+------------------------------------------------------------------------------
+PDF:
+https://jeffhq.github.io/NewMapillaryVisualization/files/PresentationFinal.pdf
+
+Archivo fuente editable (HTML):
+https://github.com/jeffHQ/NewMapillaryVisualization/blob/main/deliveries/week15/presentation/PresentationFinal.html
